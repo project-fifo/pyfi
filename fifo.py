@@ -7,14 +7,17 @@ from api.wiggle import Wiggle, VM, Package
 from pprint import pprint
 import json
 
+# We need to add a own action for lists as arguments
 class ListAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, values.split(','))
 
+
+
+#First we initialize our configuration read the data and generate a default if needed
+
 config = configparser.ConfigParser()
 config_file = os.environ.get('HOME') + "/.fifo"
-
-
 
 config.read(config_file);
 
@@ -30,7 +33,6 @@ if not config.has_section('GENERAL'):
         config.write(configfile)
         exit(1)
 
-
 active_config = config.get('GENERAL', 'active')
 
 if not config.has_section(active_config):
@@ -41,24 +43,24 @@ host = config.get(active_config, 'host')
 user = config.get(active_config, 'user')
 pw = config.get(active_config, 'pass')
 
-
 token = False
 
 if config.has_option(active_config, 'token'):
     token = config.get(active_config, 'token')
 
+
+# Now we initialize our wiggle endpoint
 wiggle = Wiggle(host, user, pw, token)
 
+#We check if we can get a valid token from wiggle and store it on our config
 if wiggle.get_token():
     config.set('default', 'token', wiggle.get_token())
 with open(config_file, 'w') as configfile:
     config.write(configfile)
 
 
-def show_help():
-    print("help!")
-
-
+# Gets a value from a nested hash map or returns a given default if the value
+# is not present
 def d(o, p, deflt="-"):
     if p == []:
         return o
@@ -70,6 +72,7 @@ def d(o, p, deflt="-"):
             return deflt
 
 
+#Returns the ip of a vm (first ip in the networks)
 def vm_ip(e):
     n = d(e, ['config', 'networks'], [])
     if len(n) > 0:
@@ -77,6 +80,8 @@ def vm_ip(e):
     else:
         return "-"
 
+
+#Define the Diferent format options for the list sections
 vm_fmt = {
     'uuid':
     {'title': 'UUID', 'len': 36, 'fmt': "%36s", 'get': lambda e: d(e, ['uuid'])},
@@ -103,18 +108,22 @@ pkg_fmt = {
     {'title': 'RAM', 'len': 10, 'fmt': "%-10s", 'get': lambda e: str(d(e, ['ram'])) + " MB"},
 }
 
+
+# Helper function to generate a formatstring out of the format definition and the selected fields
 def mk_fmt_str(args):
     s = ""
     for k in args.fmt:
         s = s + args.fmt_def[k]['fmt'] + " "
     return s
 
+# Helper function to generate the format values for one of the lines.
 def mk_fmt_line(args, e):
     r = []
     for k in args.fmt:
         r.append(args.fmt_def[k]['get'](e))
     return r
 
+# Prints the header for a list opperation based on the selected format
 def header(args):
     fmt = mk_fmt_str(args)
     r = []
@@ -130,6 +139,8 @@ def header(args):
             r.append("-" * args.fmt_def[k]['len'])
         print(fmt % tuple(r))
 
+
+# Shows the data when get was selected, outputs it in JSON
 def show_get(args):
     e = args.endpoint.get(args.uuid)
     if not e:
@@ -139,6 +150,8 @@ def show_get(args):
         e = args.map_fn(e)
     print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
 
+
+# Shows the data when list was selected.
 def show_list(args):
     l = args.endpoint.list()
     if not l:
@@ -159,12 +172,15 @@ def show_list(args):
         else:
             print(fmt%tuple(l))
 
-
+# Helper functions to format the different getters for VM's
 def vm_map_fn(vm):
     return(vm['config'])
 
 def vm_info_map_fn(vm):
     return(vm['info'])
+
+
+# Parse the arguments ...
 
 parser = argparse.ArgumentParser(description='FiFo API client.')
 
