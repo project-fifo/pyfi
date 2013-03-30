@@ -3,7 +3,12 @@ import configparser
 import os
 import sys
 import argparse
-from api.wiggle import Wiggle, VM, Package
+
+
+from ..fifo.api.wiggle import Wiggle
+#from fifo.api.vm import VM
+#from fifo.api.package import Package
+
 from pprint import pprint
 import json
 
