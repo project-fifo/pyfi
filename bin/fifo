@@ -1,13 +1,15 @@
-#! /usr/bin/env python3.3
-import configparser
+#!/usr/bin/env python2
+import ConfigParser
 import os
 import sys
 import argparse
 
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from ..fifo.api.wiggle import Wiggle
-#from fifo.api.vm import VM
-#from fifo.api.package import Package
+from fifo.api.wiggle import Wiggle
+from fifo.api.vm import VM
+from fifo.api.package import Package
 
 from pprint import pprint
 import json
@@ -21,7 +23,7 @@ class ListAction(argparse.Action):
 
 #First we initialize our configuration read the data and generate a default if needed
 
-config = configparser.ConfigParser()
+config = ConfigParser.ConfigParser()
 config_file = os.environ.get('HOME') + "/.fifo"
 
 config.read(config_file);
@@ -29,11 +31,11 @@ config.read(config_file);
 if not config.has_section('GENERAL'):
     print ("fifo client is not configured creating an example config at: " + config_file)
     config.add_section('GENERAL')
-    config.set('GENERAL', 'active', 'default')
-    config.add_section('default')
-    config.set('default', 'host', '127.0.0.1')
-    config.set('default', 'user', 'test')
-    config.set('default', 'pass', 'test')
+    config.set('GENERAL', 'active', 'fifo_default')
+    config.add_section('fifo_default')
+    config.set('fifo_default', 'host', '127.0.0.1')
+    config.set('fifo_default', 'user', 'test')
+    config.set('fifo_default', 'pass', 'test')
     with open(config_file, 'w') as configfile:
         config.write(configfile)
         exit(1)
@@ -59,7 +61,7 @@ wiggle = Wiggle(host, user, pw, token)
 
 #We check if we can get a valid token from wiggle and store it on our config
 if wiggle.get_token():
-    config.set('default', 'token', wiggle.get_token())
+    config.set(active_config, 'token', wiggle.get_token())
 with open(config_file, 'w') as configfile:
     config.write(configfile)
 

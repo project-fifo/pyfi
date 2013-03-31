@@ -1,11 +1,11 @@
-import http.client
+import httplib
 import json
 from pprint import pprint
 
 
 class Wiggle:
     def __init__(self, host, user, pw, token):
-        self.conn = http.client.HTTPConnection(host);
+        self.conn = httplib.HTTPConnection(host);
         self.headers = {"Content-type": "application/json;charset=UTF-8",
                         "Accept": "application/json"}
         if token:
@@ -28,7 +28,7 @@ class Wiggle:
         if (response.status != 200):
             return False
         else:
-            return json.loads(str(response.read(), "utf8"))
+            return json.loads(response.read())
 
     def delete(self, resource, entity):
         self.conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity, "", self.headers)
@@ -52,7 +52,7 @@ class Wiggle:
         if (response.status != 200):
             return False
         else:
-            return json.loads(str(response.read(), "utf8"))
+            return json.loads(response.read())
 
     def put(self, resource, entity, body):
         self.conn.request("PUT", "/api/0.1.0/" + resource + "/" + entity, json.dumps(body), self.headers)
@@ -60,7 +60,7 @@ class Wiggle:
         if (response.status != 200):
             return False
         else:
-            return json.loads(str(response.read(), "utf8"))
+            return json.loads(response.read())
 
     def post(self, resource, body):
         self.conn.request("POST", "/api/0.1.0/" + resource,  json.dumps(body), self.headers)
@@ -72,9 +72,9 @@ class Wiggle:
             if (response.status != 200):
                 return False
             else:
-                return json.loads(str(response.read(), "utf8"))
+                return json.loads(response.read())
         elif (response.status == 200):
-            return json.loads(str(response.read(), "utf8"))
+            return json.loads(response.read())
         else:
             return False
 
@@ -84,7 +84,7 @@ class Wiggle:
         if (response.status != 200):
             return False
         else:
-            return json.loads(str(response.read(), "utf8"))
+            return json.loads(response.read())
 
     def connect(self, user, pw):
         self.conn.request("POST", "/api/0.1.0/sessions",  json.dumps({"user":user, "password": pw}), self.headers)
@@ -127,5 +127,3 @@ class Entity:
         return self._wiggle.put(self._resource, uuid, "metadata" + path , {k: v})
     def delete_metadata(self, uuid, path, k):
         return self._wiggle.put(self._resource, uuid, "metadata" + path, {k: v})
-
-
