@@ -52,7 +52,7 @@ def header(args):
 # Shows the data when list was selected.
 def show_list(args):
     l = args.endpoint.list()
-    if not l:
+    if not l and l != []:
         print("error!")
         exit(1)
     if args.H:
@@ -79,5 +79,13 @@ def show_get(args):
     if 'map_fn' in args:
         e = args.map_fn(e)
     print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
+
+
+# Shows the data when get was selected, outputs it in JSON
+def show_delete(args):
+    if not args.endpoint.delete(args.uuid):
+        print("Failed to delete " + args.uuid)
+        exit(1)
+    print(args.uuid + " deleted successful.")
 
 

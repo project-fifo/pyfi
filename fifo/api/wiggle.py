@@ -37,14 +37,24 @@ class Wiggle:
         conn = self.conn()
         conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity, "", self.headers)
         response = conn.getresponse()
-        if (response.status != 200):
-            return False
-        else:
+        if (response.status >= 200 and response.status < 300):
             return True
+        else:
+            return False
 
     def delete_attr(self, resource, entity, attr):
         conn = self.conn()
         conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity + "/" + attr, "", self.headers)
+        response = conn.getresponse()
+        if (response.status < 300 and response.status >= 300):
+            return False
+        else:
+            return True
+
+    def put_attr(self, resource, entity, attr, body):
+        conn = self.conn()
+        conn.request("PUT", "/api/0.1.0/" + resource + "/" + entity + "/" + attr,
+                     json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status < 300 and response.status >= 300):
             return False
@@ -145,6 +155,8 @@ class Entity:
         return self._wiggle.post(self._resource, uuid, body)
     def _post_attr(self, uuid, entity, body):
         return self._wiggle.post_attr(self._resource, uuid, entity, body)
+    def _put_attr(self, uuid, entity, body):
+        return self._wiggle.put_attr(self._resource, uuid, entity, body)
     def _delete_attr(self, uuid, attr):
         return self._wiggle.delete_attr(self._resource, uuid, attr)
     def _get_attr(self, uuid, attr):

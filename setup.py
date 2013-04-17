@@ -6,11 +6,9 @@ setup(
     author='Heinz N. Gies',
     author_email='heinz@licenser.net',
     packages=['fifo', 'fifo.api'],
-    scripts=['bin/fifo.py'],
+    scripts=['bin/fifo'],
     url='http://project-fifo.net',
     license='LICENSE.txt',
     description='Project FiFo API implementation and console client.',
     long_description=open('README.md').read(),
-    install_requires=[
-    ],
 )

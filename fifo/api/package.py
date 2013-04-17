@@ -21,9 +21,9 @@ class Package(Entity):
         self._wiggle = wiggle
         self._resource = "packages"
     def make_parser(self, subparsers):
-        parser_pkgs = subparsers.add_parser('packages', help='vm related commands')
+        parser_pkgs = subparsers.add_parser('packages', help='package related commands')
         parser_pkgs.set_defaults(endpoint=self)
-        subparsers_pkgs = parser_pkgs.add_subparsers(help='vm commands')
+        subparsers_pkgs = parser_pkgs.add_subparsers(help='package commands')
         parser_pkgs_list = subparsers_pkgs.add_parser('list', help='lists packages')
         parser_pkgs_list.add_argument("--fmt", action=ListAction, default=['uuid', 'name', 'ram', 'cpu_cap', 'quota'])
         parser_pkgs_list.add_argument("-H", action='store_false')
@@ -32,5 +32,7 @@ class Package(Entity):
                                       fmt_def=pkg_fmt)
         parser_pkgs_get = subparsers_pkgs.add_parser('get', help='gets a package')
         parser_pkgs_get.add_argument("uuid")
-        parser_pkgs_get.set_defaults(func=show_get,
-                                     fmt_def=pkg_fmt)
+        parser_pkgs_get.set_defaults(func=show_get)
+        parser_pkgs_delete = subparsers_pkgs.add_parser('delete', help='deletes a package')
+        parser_pkgs_delete.add_argument("uuid")
+        parser_pkgs_delete.set_defaults(func=show_get)

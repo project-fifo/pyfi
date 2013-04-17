@@ -101,6 +101,13 @@ def snapshot_delete(args):
         exit(1)
     print "Snapshot deleted successfully."
 
+def snapshot_rollback(args):
+    e = args.endpoint.rollback_snapsot(args.vmuuid, args.snapuuid)
+    if not e:
+        print("error!")
+        exit(1)
+    print "Snapshot deleted successfully."
+
 class VM(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
@@ -123,6 +130,8 @@ class VM(Entity):
         return self._get_attr(uuid, "snapshots/" + snapid)
     def delete_snapsot(self, uuid, snapid):
         return self._delete_attr(uuid, "snapshots/" + snapid)
+    def rollback_snapsot(self, uuid, snapid):
+        return self._put_attr(uuid, "snapshots/" + snapid)
     def make_parser(self, subparsers):
         parser_vms = subparsers.add_parser('vms', help='vm related commands')
         parser_vms.set_defaults(endpoint=self)
@@ -175,6 +184,9 @@ class VM(Entity):
         parser_snapshots_delete = subparsers_snapshots.add_parser('delete', help='deletes snapshots')
         parser_snapshots_delete.add_argument("snapuuid")
         parser_snapshots_delete.set_defaults(func=snapshot_delete)
+        parser_snapshots_rollback = subparsers_snapshots.add_parser('rollback', help='rolls back a snapshot')
+        parser_snapshots_rollback.add_argument("snapuuid")
+        parser_snapshots_rollback.set_defaults(func=snapshot_rollback)
         parser_snapshots_create = subparsers_snapshots.add_parser('create', help='gets snapshots')
         parser_snapshots_create.add_argument("comment")
         parser_snapshots_create.set_defaults(func=snapshot_create)
