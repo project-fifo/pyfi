@@ -14,7 +14,7 @@ class Wiggle:
             self.connect(user, pw)
 
     def conn(self):
-	return httplib.HTTPConnection(self.host);	
+	return httplib.HTTPConnection(self.host)
 
     def get_token(self):
         return self._token
@@ -50,6 +50,25 @@ class Wiggle:
             return False
         else:
             return True
+
+    def post_attr(self, resource, entity, attr, body):
+        conn = self.conn()
+        conn.request("POST", "/api/0.1.0/" + resource + "/" + entity + "/" + attr,
+                     json.dumps(body), self.headers)
+        response = conn.getresponse()
+        if (response.status == 303):
+            newurl = response.getheader('Location')
+            conn = self.conn()
+            conn.request("GET", newurl, "", self.headers)
+            response = conn.getresponse()
+            if (response.status != 200):
+                return False
+            else:
+                return json.loads(response.read())
+        elif (response.status == 200):
+            return json.loads(response.read())
+        else:
+            return False
 
     def get_attr(self, resource, entity, attr):
         conn = self.conn()
@@ -123,7 +142,9 @@ class Entity:
     def _put(self, uuid, body):
         return self._wiggle.put(self._resource, uuid, body)
     def _post(self, uuid, body):
-        return self._wiggle.put(self._resource, uuid, body)
+        return self._wiggle.post(self._resource, uuid, body)
+    def _post_attr(self, uuid, entity, body):
+        return self._wiggle.post_attr(self._resource, uuid, entity, body)
     def _delete_attr(self, uuid, attr):
         return self._wiggle.delete_attr(self._resource, uuid, attr)
     def list(self):
