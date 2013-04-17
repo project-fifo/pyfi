@@ -1,4 +1,4 @@
-from wiggle import Entity
+from .wiggle import Entity
 
 class Package(Entity):
     def __init__(self, wiggle):

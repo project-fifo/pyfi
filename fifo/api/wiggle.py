@@ -1,17 +1,20 @@
-import http.client
+import httplib
 import json
 from pprint import pprint
 
 class Wiggle:
     def __init__(self, host, user, pw, token):
-        self.conn = http.client.HTTPConnection(host);
+	self.host = host
         self.headers = {"Content-type": "application/json;charset=UTF-8",
                         "Accept": "application/json"}
         if token:
             if not self.set_token(token):
-                connect(user, pw)
+                self.connect(user, pw)
         else:
             self.connect(user, pw)
+
+    def conn(self):
+	return httplib.HTTPConnection(self.host);	
 
     def get_token(self):
         return self._token
@@ -22,72 +25,81 @@ class Wiggle:
         return self.get("sessions", token)
 
     def get(self, resource, entity):
-        self.conn.request("GET", "/api/0.1.0/" + resource + "/" + entity, "", self.headers)
-        response = self.conn.getresponse()
+        conn = self.conn()
+	conn.request("GET", "/api/0.1.0/" + resource + "/" + entity, "", self.headers)
+        response = conn.getresponse()
         if (response.status != 200):
             return False
         else:
-            return json.loads(str(response.read(), "utf8"))
+            return json.loads(response.read())
 
     def delete(self, resource, entity):
-        self.conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity, "", self.headers)
-        response = self.conn.getresponse()
+        conn = self.conn()
+        conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity, "", self.headers)
+        response = conn.getresponse()
         if (response.status != 200):
             return False
         else:
             return True
 
     def delete_attr(self, resource, entity, attr):
-        self.conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity + "/" + attr, "", self.headers)
-        response = self.conn.getresponse()
+        conn = self.conn()
+        conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity + "/" + attr, "", self.headers)
+        response = conn.getresponse()
         if (response.status != 200):
             return False
         else:
             return True
 
     def get_attr(self, resource, entity, attr):
-        self.conn.request("GET", "/api/0.1.0/" + resource + "/" + entity + "/" + attr, "", self.headers)
-        response = self.conn.getresponse()
+        conn = self.conn()
+        conn.request("GET", "/api/0.1.0/" + resource + "/" + entity + "/" + attr, "", self.headers)
+        response = conn.getresponse()
         if (response.status != 200):
             return False
         else:
-            return json.loads(str(response.read(), "utf8"))
+            return json.loads(response.read())
 
     def put(self, resource, entity, body):
-        self.conn.request("PUT", "/api/0.1.0/" + resource + "/" + entity, json.dumps(body), self.headers)
-        response = self.conn.getresponse()
+        conn = self.conn()
+        conn.request("PUT", "/api/0.1.0/" + resource + "/" + entity, json.dumps(body), self.headers)
+        response = conn.getresponse()
         if (response.status != 200):
             return False
         else:
-            return json.loads(str(response.read(), "utf8"))
+            return json.loads(response.read())
 
     def post(self, resource, body):
-        self.conn.request("POST", "/api/0.1.0/" + resource,  json.dumps(body), self.headers)
-        response = self.conn.getresponse()
+        conn = self.conn()
+        conn.request("POST", "/api/0.1.0/" + resource,  json.dumps(body), self.headers)
+        response = conn.getresponse()
         if (response.status == 303):
             newurl = response.getheader('Location')
-            self.conn.request("POST", newurl,  json.dumps(body), self.headers)
-            response = self.conn.getresponse()
+            conn = self.conn()
+            conn.request("POST", newurl,  json.dumps(body), self.headers)
+            response = conn.getresponse()
             if (response.status != 200):
                 return False
             else:
-                return json.loads(str(response.read(), "utf8"))
+                return json.loads(response.read())
         elif (response.status == 200):
-            return json.loads(str(response.read(), "utf8"))
+            return json.loads(response.read())
         else:
             return False
 
     def list(self, resource):
-        self.conn.request("GET", "/api/0.1.0/" + resource, "", self.headers)
-        response = self.conn.getresponse()
+	conn = self.conn();
+        conn.request("GET", "/api/0.1.0/" + resource, "", self.headers)
+        response = conn.getresponse()
         if (response.status != 200):
             return False
         else:
-            return json.loads(str(response.read(), "utf8"))
+            return json.loads(response.read())
 
     def connect(self, user, pw):
-        self.conn.request("POST", "/api/0.1.0/sessions",  json.dumps({"user":user, "password": pw}), self.headers)
-        response = self.conn.getresponse()
+	conn = self.conn();
+        conn.request("POST", "/api/0.1.0/sessions",  json.dumps({"user":user, "password": pw}), self.headers)
+        response = conn.getresponse()
         if (response.status == 303):
             self._token = response.getheader("X-Snarl-Token")
             self.headers["X-Snarl-Token"] = self._token
@@ -104,4 +116,25 @@ class Cloud:
     def connection(self):
         return self._wiggle.get("cloud", "connection")
 
-
+class Entity:
+    def __init__(self, wiggle):
+        self._resource = "none"
+        self._wiggle = wiggle
+    def _put(self, uuid, body):
+        return self._wiggle.put(self._resource, uuid, body)
+    def _post(self, uuid, body):
+        return self._wiggle.put(self._resource, uuid, body)
+    def _delete_attr(self, uuid, attr):
+        return self._wiggle.delete_attr(self._resource, uuid, attr)
+    def list(self):
+        return self._wiggle.list(self._resource)
+    def get(self, uuid):
+        return self._wiggle.get(self._resource, uuid)
+    def delete(self, uuid):
+        return self._wiggle.delete(self._resource, uuid)
+    def get_metadata(self, uuid):
+        return self._wiggle.get_attr(self._resource, uuid, "metadata")
+    def set_metadata(self, uuid, path, k, v):
+        return self._wiggle.put(self._resource, uuid, "metadata" + path , {k: v})
+    def delete_metadata(self, uuid, path, k):
+        return self._wiggle.put(self._resource, uuid, "metadata" + path, {k: v})

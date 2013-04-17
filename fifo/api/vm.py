@@ -1,5 +1,4 @@
-
-from fifo.api.entity import Entity
+from .wiggle import Entity
 
 class VM(Entity):
     def __init__(self, wiggle):
