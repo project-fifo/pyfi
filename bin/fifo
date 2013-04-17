@@ -14,6 +14,9 @@ from fifo.api.vm import VM
 from fifo.api.package import Package
 from fifo.api.dataset import Dataset
 
+from fifo.api.user import User
+from fifo.api.group import Group
+
 from pprint import pprint
 import json
 
@@ -76,8 +79,11 @@ VM(wiggle).make_parser(subparsers)
 ## Packages
 Package(wiggle).make_parser(subparsers)
 
-## Packages
+## Datasets
 Dataset(wiggle).make_parser(subparsers)
+
+User(wiggle).make_parser(subparsers)
+Group(wiggle).make_parser(subparsers)
 
 args = parser.parse_args(sys.argv[1:])
 if 'func' in args:
