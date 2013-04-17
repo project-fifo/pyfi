@@ -10,9 +10,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
 from fifo.api.wiggle import Wiggle
+from fifo.api.hypervisor import Hypervisor
 from fifo.api.vm import VM
 from fifo.api.package import Package
 from fifo.api.dataset import Dataset
+from fifo.api.network import Network
 
 from fifo.api.user import User
 from fifo.api.group import Group
@@ -73,14 +75,12 @@ with open(config_file, 'w') as configfile:
 parser = argparse.ArgumentParser(description='FiFo API client.')
 subparsers = parser.add_subparsers(help='sub commands')
 
-## VMS
+Hypervisor(wiggle).make_parser(subparsers)
+
 VM(wiggle).make_parser(subparsers)
-
-## Packages
 Package(wiggle).make_parser(subparsers)
-
-## Datasets
 Dataset(wiggle).make_parser(subparsers)
+Network(wiggle).make_parser(subparsers)
 
 User(wiggle).make_parser(subparsers)
 Group(wiggle).make_parser(subparsers)
