@@ -14,7 +14,7 @@ class Wiggle:
             self.connect(user, pw)
 
     def conn(self):
-	return httplib.HTTPConnection(self.host)
+	return httplib.HTTPSConnection(self.host)
 
     def get_token(self):
         return self._token

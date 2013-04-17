@@ -2,4 +2,3 @@ include *.txt
 include *.md
 recursive-include docs *.txt
 recursive-include docs *.md
-
