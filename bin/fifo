@@ -15,6 +15,7 @@ from fifo.api.vm import VM
 from fifo.api.package import Package
 from fifo.api.dataset import Dataset
 from fifo.api.network import Network
+from fifo.api.dtrace import Dtrace
 
 from fifo.api.user import User
 from fifo.api.group import Group
@@ -81,6 +82,7 @@ VM(wiggle).make_parser(subparsers)
 Package(wiggle).make_parser(subparsers)
 Dataset(wiggle).make_parser(subparsers)
 Network(wiggle).make_parser(subparsers)
+Dtrace(wiggle).make_parser(subparsers)
 
 User(wiggle).make_parser(subparsers)
 Group(wiggle).make_parser(subparsers)
