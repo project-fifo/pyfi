@@ -85,6 +85,21 @@ def snapshots_list(args):
         else:
             print(fmt%tuple(l))
 
+def snapshot_get(args):
+    e = args.endpoint.get_snapsot(args.vmuuid, args.snapuuid)
+    if not e:
+        print("error!")
+        exit(1)
+    if 'map_fn' in args:
+        e = args.map_fn(e)
+    print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
+
+def snapshot_delete(args):
+    e = args.endpoint.delete_snapsot(args.vmuuid, args.snapuuid)
+    if not e:
+        print("error!")
+        exit(1)
+    print "Snapshot deleted successfully."
 
 class VM(Entity):
     def __init__(self, wiggle):
@@ -104,8 +119,10 @@ class VM(Entity):
         return self._wiggle.get_attr(self._resource, uuid, "snapshots")
     def make_snapsot(self, uuid, comment):
         return self._post_attr(uuid, "snapshots", {"comment": comment})
-    def delete_snapsot(self, uuid, snap):
-        return self._delete_attr(uuid, "snapshots", snap)
+    def get_snapsot(self, uuid, snapid):
+        return self._get_attr(uuid, "snapshots/" + snapid)
+    def delete_snapsot(self, uuid, snapid):
+        return self._delete_attr(uuid, "snapshots/" + snapid)
     def make_parser(self, subparsers):
         parser_vms = subparsers.add_parser('vms', help='vm related commands')
         parser_vms.set_defaults(endpoint=self)
@@ -154,7 +171,10 @@ class VM(Entity):
                                            fmt_def=snapshot_fmt)
         parser_snapshots_get = subparsers_snapshots.add_parser('get', help='gets snapshots')
         parser_snapshots_get.add_argument("snapuuid")
-        parser_snapshots_get.set_defaults(func=show_get)
+        parser_snapshots_get.set_defaults(func=snapshot_get)
+        parser_snapshots_delete = subparsers_snapshots.add_parser('delete', help='deletes snapshots')
+        parser_snapshots_delete.add_argument("snapuuid")
+        parser_snapshots_delete.set_defaults(func=snapshot_delete)
         parser_snapshots_create = subparsers_snapshots.add_parser('create', help='gets snapshots')
         parser_snapshots_create.add_argument("comment")
         parser_snapshots_create.set_defaults(func=snapshot_create)
