@@ -2,7 +2,6 @@ import http.client
 import json
 from pprint import pprint
 
-
 class Wiggle:
     def __init__(self, host, user, pw, token):
         self.conn = http.client.HTTPConnection(host);
@@ -104,28 +103,5 @@ class Cloud:
         return self._wiggle.list("cloud")
     def connection(self):
         return self._wiggle.get("cloud", "connection")
-
-class Entity:
-    def __init__(self, wiggle):
-        self._resource = "none"
-        self._wiggle = wiggle
-    def _put(self, uuid, body):
-        return self._wiggle.put(self._resource, uuid, body)
-    def _post(self, uuid, body):
-        return self._wiggle.put(self._resource, uuid, body)
-    def _delete_attr(self, uuid, attr):
-        return self._wiggle.delete_attr(self._resource, uuid, attr)
-    def list(self):
-        return self._wiggle.list(self._resource)
-    def get(self, uuid):
-        return self._wiggle.get(self._resource, uuid)
-    def delete(self, uuid):
-        return self._wiggle.delete(self._resource, uuid)
-    def get_metadata(self, uuid):
-        return self._wiggle.get_attr(self._resource, uuid, "metadata")
-    def set_metadata(self, uuid, path, k, v):
-        return self._wiggle.put(self._resource, uuid, "metadata" + path , {k: v})
-    def delete_metadata(self, uuid, path, k):
-        return self._wiggle.put(self._resource, uuid, "metadata" + path, {k: v})
 
 

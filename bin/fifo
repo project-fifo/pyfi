@@ -5,9 +5,13 @@ import sys
 import argparse
 
 
-from ..fifo.api.wiggle import Wiggle
-#from fifo.api.vm import VM
-#from fifo.api.package import Package
+sys.path.append('..')
+sys.path.append('.')
+
+
+from fifo.api.wiggle import  Wiggle
+from fifo.api.vm import VM
+from fifo.api.package import Package
 
 from pprint import pprint
 import json
