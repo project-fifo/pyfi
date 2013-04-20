@@ -53,11 +53,15 @@ wiggle = Wiggle()
 # Parse the arguments ...
 
 parser = argparse.ArgumentParser(description='FiFo API client.')
-parser.add_argument("-c",
-                    default=config.get('GENERAL', 'active'))
-parser.add_argument("--host")
-parser.add_argument("--user")
-parser.add_argument("--password")
+parser.add_argument("--config", "-c",
+                    default=config.get('GENERAL', 'active'),
+                    help="Selectios the network config to use")
+parser.add_argument("--host", '-H',
+                    help="The host to use (dns or ip no https://)")
+parser.add_argument("--user", '-u',
+                    help="The user to log in with.")
+parser.add_argument("--password", '-P',
+                    help="The password to log in with.")
 
 subparsers = parser.add_subparsers(help='sub commands')
 
