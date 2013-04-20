@@ -151,25 +151,36 @@ class Entity:
     def __init__(self, wiggle):
         self._resource = "none"
         self._wiggle = wiggle
+
     def _put(self, uuid, body):
         return self._wiggle.put(self._resource, uuid, body)
-    def _post(self, uuid, body):
-        return self._wiggle.post(self._resource, uuid, body)
+
+    def _post(self, body):
+        return self._wiggle.post(self._resource, body)
+
     def _post_attr(self, uuid, entity, body):
         return self._wiggle.post_attr(self._resource, uuid, entity, body)
+
     def _put_attr(self, uuid, entity, body):
         return self._wiggle.put_attr(self._resource, uuid, entity, body)
+
     def _get_attr(self, uuid, attr):
         return self._wiggle.get_attr(self._resource, uuid, attr)
+
     def list(self):
         return self._wiggle.list(self._resource)
+
     def get(self, uuid):
         return self._wiggle.get(self._resource, uuid)
+
     def delete(self, uuid):
         return self._wiggle.delete(self._resource, uuid)
+
     def get_metadata(self, uuid):
         return self._wiggle.get_attr(self._resource, uuid, "metadata")
+
     def set_metadata(self, uuid, path, k, v):
         return self._wiggle.put(self._resource, uuid, "metadata" + path , {k: v})
+
     def delete_metadata(self, uuid, path, k):
         return self._wiggle.put(self._resource, uuid, "metadata" + path, {k: v})

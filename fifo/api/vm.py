@@ -1,6 +1,8 @@
 from .wiggle import Entity
 from fifo.helper import *
 from datetime import datetime
+import sys
+import json
 
 def vm_action(args):
     if args.action == 'start':
@@ -33,8 +35,6 @@ def vm_info_map_fn(vm):
 
 def vm_metadata_map_fn(vm):
     return(vm['metadata'])
-
-
 
 #Returns the ip of a vm (first ip in the networks)
 def vm_ip(e):
@@ -71,6 +71,18 @@ snapshot_fmt = {
 
 def vm_delete(args):
     args.endpoint.delete(args.uuid)
+
+def vm_create(args):
+    if args.config:
+        f = open(args.config, 'r')
+        config = json.loads(f.read())
+        f.close()
+    else:
+        config = json.loads(sys.stdin.read())
+    print "Package: " + args.package
+    print "Dataset: " + args.dataset
+    print "Config: " + json.dumps(config)
+    args.endpoint.create(args.package, args.dataset, config)
 
 # Shows the data when list was selected.
 def snapshots_list(args):
@@ -115,26 +127,41 @@ class VM(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
         self._resource = "vms"
+
+    def create(self, package, dataset, config):
+        return self._post({"package": package,
+                           "dataset": dataset,
+                           "config": config})
     def start(self, uuid):
         return self._put(uuid, {"action": "start"})
+
     def stop(self, uuid):
         return self._put(uuid, {"action": "start"})
+
     def reboot(self, uuid):
         return self._put(uuid, {"action": "reboot"})
+
     def force_stop(self, uuid):
         return self._put(uuid, {"action": "start", "force": True})
+
     def force_reboot(self, uuid):
         return self._put(uuid, {"action": "reboot", "force": True})
+
     def list_snapsots(self, uuid):
         return self._wiggle.get_attr(self._resource, uuid, "snapshots")
+
     def make_snapsot(self, uuid, comment):
         return self._post_attr(uuid, "snapshots", {"comment": comment})
+
     def get_snapsot(self, uuid, snapid):
         return self._get_attr(uuid, "snapshots/" + snapid)
+
     def delete_snapsot(self, uuid, snapid):
         return self._delete_attr(uuid, "snapshots/" + snapid)
+
     def rollback_snapsot(self, uuid, snapid):
         return self._put_attr(uuid, "snapshots/" + snapid)
+
     def make_parser(self, subparsers):
         parser_vms = subparsers.add_parser('vms', help='vm related commands')
         parser_vms.set_defaults(endpoint=self)
@@ -149,9 +176,17 @@ class VM(Entity):
         parser_vms_get.add_argument("uuid")
         parser_vms_get.set_defaults(func=show_get,
                                     map_fn=vm_map_fn)
+
         parser_vms_delete = subparsers_vms.add_parser('delete', help='gets a vms metadata')
         parser_vms_delete.add_argument("uuid")
         parser_vms_delete.set_defaults(func=vm_delete)
+
+        parser_vms_create = subparsers_vms.add_parser('create', help='gets a vms metadata')
+        parser_vms_create.add_argument("--package")
+        parser_vms_create.add_argument("--dataset")
+        parser_vms_create.add_argument("--config")
+        parser_vms_create.set_defaults(func=vm_create)
+
         parser_vms_get = subparsers_vms.add_parser('metadata', help='gets a vms metadata')
         parser_vms_get.add_argument("uuid")
         parser_vms_get.set_defaults(func=show_get,
