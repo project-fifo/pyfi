@@ -159,8 +159,6 @@ class Entity:
         return self._wiggle.post_attr(self._resource, uuid, entity, body)
     def _put_attr(self, uuid, entity, body):
         return self._wiggle.put_attr(self._resource, uuid, entity, body)
-    def _delete_attr(self, uuid, attr):
-        return self._wiggle.delete_attr(self._resource, uuid, attr)
     def _get_attr(self, uuid, attr):
         return self._wiggle.get_attr(self._resource, uuid, attr)
     def list(self):

@@ -69,6 +69,9 @@ snapshot_fmt = {
 
 }
 
+def vm_delete(args):
+    args.endpoint.delete(args.uuid)
+
 # Shows the data when list was selected.
 def snapshots_list(args):
     l = args.endpoint.list_snapsots(args.vmuuid)
@@ -146,6 +149,9 @@ class VM(Entity):
         parser_vms_get.add_argument("uuid")
         parser_vms_get.set_defaults(func=show_get,
                                     map_fn=vm_map_fn)
+        parser_vms_delete = subparsers_vms.add_parser('delete', help='gets a vms metadata')
+        parser_vms_delete.add_argument("uuid")
+        parser_vms_delete.set_defaults(func=vm_delete)
         parser_vms_get = subparsers_vms.add_parser('metadata', help='gets a vms metadata')
         parser_vms_get.add_argument("uuid")
         parser_vms_get.set_defaults(func=show_get,
