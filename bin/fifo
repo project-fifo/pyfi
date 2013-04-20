@@ -44,36 +44,21 @@ if not config.has_section('GENERAL'):
         config.write(configfile)
         exit(1)
 
-active_config = config.get('GENERAL', 'active')
-
-if not config.has_section(active_config):
-    print("Active configuration " + active_config + " does not exist")
-    exit(1)
-
-host = config.get(active_config, 'host')
-user = config.get(active_config, 'user')
-pw = config.get(active_config, 'pass')
-
-token = False
-
-if config.has_option(active_config, 'token'):
-    token = config.get(active_config, 'token')
-
 
 # Now we initialize our wiggle endpoint
-wiggle = Wiggle(host, user, pw, token)
-
-#We check if we can get a valid token from wiggle and store it on our config
-if wiggle.get_token():
-    config.set(active_config, 'token', wiggle.get_token())
-with open(config_file, 'w') as configfile:
-    config.write(configfile)
+wiggle = Wiggle()
 
 #Define the Diferent format options for the list sections
 
 # Parse the arguments ...
 
 parser = argparse.ArgumentParser(description='FiFo API client.')
+parser.add_argument("-c",
+                    default=config.get('GENERAL', 'active'))
+parser.add_argument("--host")
+parser.add_argument("--user")
+parser.add_argument("--password")
+
 subparsers = parser.add_subparsers(help='sub commands')
 
 Hypervisor(wiggle).make_parser(subparsers)
@@ -88,6 +73,32 @@ User(wiggle).make_parser(subparsers)
 Group(wiggle).make_parser(subparsers)
 
 args = parser.parse_args(sys.argv[1:])
+
+
+active_config = args.c
+
+if not config.has_section(active_config):
+    print("Active configuration " + active_config + " does not exist")
+    exit(1)
+
+host = args.host or config.get(active_config, 'host')
+user = args.user or config.get(active_config, 'user')
+pw = args.password or config.get(active_config, 'pass')
+
+token = False
+
+if config.has_option(active_config, 'token'):
+    token = config.get(active_config, 'token')
+
+
+wiggle.init(host, user, pw, token)
+#We check if we can get a valid token from wiggle and store it on our config
+if wiggle.get_token():
+    config.set(active_config, 'token', wiggle.get_token())
+with open(config_file, 'w') as configfile:
+    config.write(configfile)
+
+
 if 'func' in args:
     args.func(args)
 else:

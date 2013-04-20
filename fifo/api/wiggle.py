@@ -3,7 +3,9 @@ import json
 from pprint import pprint
 
 class Wiggle:
-    def __init__(self, host, user, pw, token):
+    def __init__(self):
+        self
+    def init(self, host, user, pw, token):
 	self.host = host
         self.headers = {"Content-type": "application/json;charset=UTF-8",
                         "Accept": "application/json"}
