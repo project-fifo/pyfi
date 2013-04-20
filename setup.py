@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='PyFi',
-    version='0.1.1',
+    version='0.1.2',
     author='Heinz N. Gies',
     author_email='heinz@licenser.net',
     packages=['fifo', 'fifo.api'],
