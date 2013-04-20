@@ -107,15 +107,17 @@ class Wiggle:
         if (response.status == 303):
             newurl = response.getheader('Location')
             conn = self.conn()
-            conn.request("POST", newurl,  json.dumps(body), self.headers)
+            conn.request("GET", newurl, "", self.headers)
             response = conn.getresponse()
             if (response.status != 200):
+                print response.status
                 return False
             else:
                 return json.loads(response.read())
         elif (response.status == 200):
             return json.loads(response.read())
         else:
+            print response.status
             return False
 
     def list(self, resource):

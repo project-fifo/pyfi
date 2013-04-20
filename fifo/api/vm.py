@@ -79,10 +79,11 @@ def vm_create(args):
         f.close()
     else:
         config = json.loads(sys.stdin.read())
-    print "Package: " + args.package
-    print "Dataset: " + args.dataset
-    print "Config: " + json.dumps(config)
-    args.endpoint.create(args.package, args.dataset, config)
+    reply = args.endpoint.create(args.package, args.dataset, config)
+    if reply:
+        print "VM " + reply["uuid"] + " created successfully."
+    else:
+        print "Faied to create VM."
 
 # Shows the data when list was selected.
 def snapshots_list(args):
