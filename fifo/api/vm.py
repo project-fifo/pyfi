@@ -4,17 +4,17 @@ from datetime import datetime
 
 def vm_action(args):
     if args.action == 'start':
-        args.endpoint.start()
+        args.endpoint.start(args.uuid)
     elif args.action == 'stop':
         if args.f:
-            args.endpoint.force_stop()
+            args.endpoint.force_stop(args.uuid)
         else:
-            args.endpoint.start()
+            args.endpoint.start(args.uuid)
     elif args.action == 'reboot':
         if args.f:
-            args.endpoint.force_reboot()
+            args.endpoint.force_reboot(args.uuid)
         else:
-            args.endpoint.reboot()
+            args.endpoint.reboot(args.uuid)
 
 
 def snapshot_create(args):
