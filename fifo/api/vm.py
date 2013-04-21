@@ -168,68 +168,90 @@ class VM(Entity):
         parser_vms.set_defaults(endpoint=self)
         subparsers_vms = parser_vms.add_subparsers(help='vm commands')
         parser_vms_list = subparsers_vms.add_parser('list', help='lists a vm')
-        parser_vms_list.add_argument("--fmt", action=ListAction, default=['uuid', 'hypervisor', 'alias', 'state'])
-        parser_vms_list.add_argument("-H", action='store_false')
-        parser_vms_list.add_argument("-p", action='store_true')
+        parser_vms_list.add_argument("--fmt",
+                                     action=ListAction, default=['uuid', 'hypervisor', 'alias', 'state'],
+                                     help="Rows to show, valid options are: uuid, alias, ip, state, hypervisor")
+        parser_vms_list.add_argument("-H", action='store_false',
+                                     help="Supress the header.")
+        parser_vms_list.add_argument("-p", action='store_true',
+                                     help="show in parsable format, rows sepperated by colon.")
         parser_vms_list.set_defaults(func=show_list,
                                      fmt_def=vm_fmt)
-        parser_vms_get = subparsers_vms.add_parser('get', help='gets a vm')
-        parser_vms_get.add_argument("uuid")
+        parser_vms_get = subparsers_vms.add_parser('get', help='gets a VM')
+        parser_vms_get.add_argument("uuid",
+                                    help="uuid of VM to show")
         parser_vms_get.set_defaults(func=show_get,
                                     map_fn=vm_map_fn)
 
-        parser_vms_delete = subparsers_vms.add_parser('delete', help='gets a vms metadata')
-        parser_vms_delete.add_argument("uuid")
+        parser_vms_delete = subparsers_vms.add_parser('delete', help='deletes a VM')
+        parser_vms_delete.add_argument("uuid",
+                                       help="uuid of VM to show")
         parser_vms_delete.set_defaults(func=vm_delete)
 
-        parser_vms_create = subparsers_vms.add_parser('create', help='gets a vms metadata')
-        parser_vms_create.add_argument("--package")
-        parser_vms_create.add_argument("--dataset")
-        parser_vms_create.add_argument("--config")
+        parser_vms_create = subparsers_vms.add_parser('create', help='creates a new VM')
+        parser_vms_create.add_argument("--package",
+                                       help="UUID of the package to use.")
+        parser_vms_create.add_argument("--dataset",
+                                       help="UUID of the dataset to use")
+        parser_vms_create.add_argument("--config",
+                                       help="Filename of config.json, not not present will be read from STDIN.")
         parser_vms_create.set_defaults(func=vm_create)
 
         parser_vms_get = subparsers_vms.add_parser('metadata', help='gets a vms metadata')
-        parser_vms_get.add_argument("uuid")
+        parser_vms_get.add_argument("uuid",
+                                       help="uuid of VM to show")
         parser_vms_get.set_defaults(func=show_get,
                                     map_fn=vm_metadata_map_fn)
         parser_vms_info = subparsers_vms.add_parser('info', help='gets a vm info')
-        parser_vms_info.add_argument("uuid")
+        parser_vms_info.add_argument("uuid",
+                                       help="uuid of VM to show")
         parser_vms_info.set_defaults(func=show_get,
                                      map_fn=vm_info_map_fn)
         parser_vms_start = subparsers_vms.add_parser('start', help='starts a vm')
-        parser_vms_start.add_argument("uuid")
+        parser_vms_start.add_argument("uuid",
+                                       help="uuid of VM to start")
         parser_vms_start.set_defaults(func=vm_action,
                                       action='start')
-        parser_vms_stop = subparsers_vms.add_parser('stop', help='starts a vm')
-        parser_vms_stop.add_argument("uuid")
+        parser_vms_stop = subparsers_vms.add_parser('stop', help='stops a vm')
+        parser_vms_stop.add_argument("uuid",
+                                     help="uuid of VM to stop")
         parser_vms_stop.add_argument("-f", action='store_true')
         parser_vms_stop.set_defaults(func=vm_action,
                                      action='stop')
-        parser_vms_reboot = subparsers_vms.add_parser('reboot', help='starts a vm')
-        parser_vms_reboot.add_argument("uuid")
+        parser_vms_reboot = subparsers_vms.add_parser('reboot', help='reboot a vm')
+        parser_vms_reboot.add_argument("uuid",
+                                       help="uuid of VM to reboot")
         parser_vms_reboot.add_argument("-f", action='store_true')
         parser_vms_reboot.set_defaults(func=vm_action,
                                        action='reboot')
         parser_snapshots = subparsers_vms.add_parser('snapshots', help='snapshot related commands')
-        parser_snapshots.add_argument("vmuuid")
+        parser_snapshots.add_argument("vmuuid",
+                                      help="UUID of the VM to work with.")
         subparsers_snapshots = parser_snapshots.add_subparsers(help='snapshot commands')
         parser_snapshots_list = subparsers_snapshots.add_parser('list', help='lists snapshots')
         parser_snapshots_list.add_argument("--fmt", action=ListAction,
-                                           default=['uuid', 'timestamp', 'comment'])
-        parser_snapshots_list.add_argument("-H", action='store_false')
-        parser_snapshots_list.add_argument("-p", action='store_true')
+                                           default=['uuid', 'timestamp', 'comment'],
+                                           help="Fields to show in the list, valid chances are: uuid, timestamp, comment")
+        parser_snapshots_list.add_argument("-H", action='store_false',
+                                           help="Supress the header.")
+        parser_snapshots_list.add_argument("-p", action='store_true',
+                                           help="show in parsable format, rows sepperated by colon.")
         parser_snapshots_list.set_defaults(func=snapshots_list,
                                            fmt_def=snapshot_fmt)
         parser_snapshots_get = subparsers_snapshots.add_parser('get', help='gets snapshots')
-        parser_snapshots_get.add_argument("snapuuid")
+        parser_snapshots_get.add_argument("snapuuid",
+                                          help="UUID if the snapshot")
         parser_snapshots_get.set_defaults(func=snapshot_get)
         parser_snapshots_delete = subparsers_snapshots.add_parser('delete', help='deletes snapshots')
-        parser_snapshots_delete.add_argument("snapuuid")
+        parser_snapshots_delete.add_argument("snapuuid",
+                                             help="UUID if the snapshot")
         parser_snapshots_delete.set_defaults(func=snapshot_delete)
         parser_snapshots_rollback = subparsers_snapshots.add_parser('rollback', help='rolls back a snapshot')
-        parser_snapshots_rollback.add_argument("snapuuid")
+        parser_snapshots_rollback.add_argument("snapuuid",
+                                               help="UUID if the snapshot")
         parser_snapshots_rollback.set_defaults(func=snapshot_rollback)
         parser_snapshots_create = subparsers_snapshots.add_parser('create', help='gets snapshots')
-        parser_snapshots_create.add_argument("comment")
+        parser_snapshots_create.add_argument("comment",
+                                             help="Comment for the snapshot.")
         parser_snapshots_create.set_defaults(func=snapshot_create)
 
