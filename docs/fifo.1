@@ -1,0 +1,271 @@
+.TH fifo 1  "April 21, 2013" "version 0.1.3" "USER COMMANDS"
+.SH NAME
+fifo \- Project FiFo console API client
+.SH SYNOPSIS
+.B fifo
+[\-h|\-\-help] [\-v|\-\-version] [\-c|\-\-config config] [\-H|\-\-host host]
+[\-u|\-\-user user] [\-P|\-\-password password] {datasets, dtrace, groups,
+hypervisors, networks, packages, users, vms} <command>
+.SH DESCRIPTION
+This program allows to use the HTTP/REST API provided by Project FiFo from
+the console and interact with it in a scripted manner.
+.PP
+Configuration data for the endpoint can either be passed via the commadline
+arguments or via the config file located (~/.fifo).
+.SH OPTIONS
+.TP
+\-h|\-\-help
+display a short help text, can be used for all sub commands
+.TP
+\-v|\-\-version
+shows the current version
+.TP
+\-c|\-\-config
+select which section of the config file to use
+.TP
+\-H|\-\-host
+manually selects the host to talk to, this is a fqdn or IP w/o protocoll
+.TP
+\-u|\-\-user
+specifies the user to authorize with
+.TP
+\-P|\-\-password
+specifies the password to authenticate with
+.TP
+\-p
+as part of any
+.B list
+command the \-p option outputs the data in parsable format sepperating
+the columns by a ':'
+.TP
+\-H
+as part of any
+.B list
+command the \-H option will supress the header to be printed making
+parsing easyer
+.TP
+\-\-fmt FMT
+as part of any
+.B list
+command this defines the fileds to be printed in order,
+.B FMT
+is a ',' seperated list without whitespaces
+.SH COMMANDS
+.TP
+datasets list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the datasets currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name, version, type and description.
+.TP
+datasets get <uuid>
+This command returns the JSON representation of a dataset object
+stored in the fifo server.
+.TP
+datasets delete <uuid>
+Deletes a dataset from the FiFo server, also the linked image will
+be removed from the database.
+.B Be careful
+this can't be undone!
+
+No VM's running the dataset will be affected and the dataset will
+.B NOT
+be removed from the hypervisors.
+.TP
+dtrace list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the dtrace scripts currently available on the
+server.
+
+Valid choices for
+.B FMT
+are: uuid and name.
+.TP
+dtrace get <uuid>
+This command returns the JSON representation of a dtrace script
+object stored in the fifo server.
+.TP
+dtrace delete <uuid>
+Deletes a dtrace script from the FiFo server.
+.B Be careful
+this can't be undone!
+.TP
+groups list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the groups currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid and name.
+.TP
+groups get <uuid>
+This command returns the JSON representation of a group object stored
+in the fifo server.
+.TP
+groups delete <uuid>
+Deletes a group from the FiFo server.
+.B Be careful
+this can't be undone!
+
+Please mind that users will not be automatically removed from the
+group. While this will not cause problems it might end up cluttering
+the data base.
+.TP
+hypervisors list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the groups currently available on the server.
+
+Valid choices for
+.B FMT
+are: name, free, used, total, smartos.
+
+Where free, used and total stand for memroy usage and smartos
+represents the current SmartOS version running on the hypervisor.
+.TP
+hypervisors get <uuid>
+This command returns the JSON representation of a hypervisor object
+stored in the fifo server.
+.TP
+networks list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the networks currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name, tag, network, first, next, last, gateway and netmask.
+.TP
+network get <uuid>
+This command returns the JSON representation of a network object stored
+in the fifo server.
+.TP
+networks delete <uuid>
+Deletes a network from the FiFo server.
+.TP
+packages list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the packages currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name, title, quota and ram.
+.TP
+packages get <uuid>
+This command returns the JSON representation of a package object stored
+in the fifo server.
+.TP
+packages delete <uuid>
+Deletes a package from the FiFo server. This does not affect VM's
+currently using the pacakge.
+.TP
+users list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the users currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name, groups.
+.TP
+users get <uuid>
+This command returns the JSON representation of a user object stored
+in the fifo server.
+.TP
+user delete <uuid>
+Deletes a group from the FiFo server.
+
+Please mind that groups will not be automatically removed from the
+user. While this will not cause problems it might end up cluttering
+the data base.
+.TP
+vms list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the users currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, alias, ip, state and hypervisor.
+.TP
+vms get <uuid>
+This command returns the JSON representation of a vm's configruation
+as stored in teh Fifo server.
+.TP
+vms info <uuid>
+This command gets the info section of the VM containing for example
+VNC information (only applicable for KVM VMs).
+.TP
+vms metadata <uuid>
+Retrieves the FiFo metadata associated with the VM.
+.TP
+vms delete <uuid>
+Deletes a group from the FiFo server.
+
+.B Beware
+this can't be undone all data associated with this VM, along with
+all of it's snapshots will be deleted forever!
+.TP
+vms create \-\-package <package uuid> \-\-dataset <dataset uuid> [\-\-config <config json file>]
+This commands creates a new VM on the FiFo system. Both <package uuid>
+and <dataset uuid> have to be valid uuid's existing in FiFo, no checks
+are done client side.
+
+If no config.json file is given as argument it is read from the
+STDIN. Please see fifo-vmconfig(5) for details on the structure of
+the file.
+.TP
+vms start <uuid>
+Starts the VM on the server, this will do no harm when the VM is
+already in a running or booting state.
+.TP
+vms stop [\-f] <uuid>
+Stops a VM on the server, if the \-f option is given this is forced.
+The command does no harm to already stopped VM's. Non the less the
+\-f option can be
+.B harmfull
+to programms running in the VM.
+.TP
+vm reboot [\-f] <uuid>
+.TP
+Set the maximum speed to 8 speed cdrom:
+Reboots a VM on the server, if the \-f option is given this is
+forced. The command does no harm to already stopped VM's. Non the
+less the \-f option can be
+.B harmfull
+to programms running in the VM.
+.TP
+vms snapshots <vm uuid> list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the snapshots registered for the given <vm uuid>.
+
+Valid choices for
+.B FMT
+are: uuid, timestamp and comment.
+.TP
+vms snapshots <vm uuid> get <uuid>
+This command returns the JSON representation of a snapshot configruation
+as stored in teh Fifo server.
+.TP
+vms snapshots <vm uuid> create "<comment>"
+Creates a new snapshot of the <vm uuid>, it is advised to power down
+the VM for this action even so it is technically working on running VM's
+but might leave applications in a broken state.
+.TP
+vms snapshots <vm uuid> delete <uuid>
+Removes a snapshot from the hypervisor.
+.TP
+vms snapshots <vm uuid> rollback <uuid>
+Rolls back the state of a VM, the VM has to be powered off for this. Be
+aware that all snapshots newer then <uuid> will be deleted as part of
+this process.
+.SH EXAMPLES
+.TP
+Lists all VM's in parsable format:
+.B fifo
+vms list \-p \-H
+.PP
+.TP
+Restore maximum speed:
+.B fifo
+vms create
+\-\-package 6fbe6997-e662-4235-b878-3bea5d05d9f5
+\-\-dataset cf7e2f40-9276-11e2-af9a-0bad2233fb0b
+\-\-config example.json
+.PP
+.SH EXIT STATUS
+fifo returns zero on a successful execution and one when a error
+occured printing some details of the errror.
+.SH AUTHOR
+Heinz N. 'Licenser' Gies (heinz (at) licenser.net)
+.SH SEE ALSO
+fifo-vmconfig(5)
