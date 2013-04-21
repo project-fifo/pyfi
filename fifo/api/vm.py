@@ -49,7 +49,6 @@ def vm_ip(e):
     else:
         return "-"
 
-
 vm_fmt = {
     'uuid':
     {'title': 'UUID', 'len': 36, 'fmt': "%36s", 'get': lambda e: d(e, ['uuid'])},
@@ -78,8 +77,7 @@ def vm_delete(args):
     args.endpoint.delete(args.uuid)
 
 def vm_create(args):
-    print "creating vm"
-    if args.config:
+    if args.file:
         f = open(args.file, 'r')
         config = json.loads(f.read())
         f.close()
@@ -211,9 +209,9 @@ class VM(Entity):
         parser_vms_delete.set_defaults(func=vm_delete)
 
         parser_vms_create = subparsers_vms.add_parser('create', help='creates a new VM')
-        parser_vms_create.add_argument("--package",
+        parser_vms_create.add_argument("--package", "-p",
                                        help="UUID of the package to use.")
-        parser_vms_create.add_argument("--dataset",
+        parser_vms_create.add_argument("--dataset", "-d",
                                        help="UUID of the dataset to use")
         parser_vms_create.add_argument("--file", "-f",
                                        help="Filename of config.json, not not present will be read from STDIN.")
