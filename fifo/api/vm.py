@@ -12,11 +12,11 @@ def vm_action(args):
             args.endpoint.force_stop(args.uuid)
         else:
             args.endpoint.start(args.uuid)
-    elif args.action == 'reboot':
-        if args.f:
-            args.endpoint.force_reboot(args.uuid)
-        else:
-            args.endpoint.reboot(args.uuid)
+        elif args.action == 'reboot':
+            if args.f:
+                args.endpoint.force_reboot(args.uuid)
+            else:
+                args.endpoint.reboot(args.uuid)
 
 
 def snapshot_create(args):
@@ -79,50 +79,50 @@ def vm_create(args):
         f.close()
     else:
         config = json.loads(sys.stdin.read())
-    reply = args.endpoint.create(args.package, args.dataset, config)
-    if reply:
-        print "VM " + reply["uuid"] + " created successfully."
-    else:
-        print "Faied to create VM."
+        reply = args.endpoint.create(args.package, args.dataset, config)
+        if reply:
+            print "VM " + reply["uuid"] + " created successfully."
+        else:
+            print "Faied to create VM."
 
 # Shows the data when list was selected.
 def snapshots_list(args):
     l = args.endpoint.list_snapsots(args.vmuuid)
     if args.H:
         header(args)
-    fmt = mk_fmt_str(args)
-    for e in l:
-        if not e:
-            print("error!")
-            exit(1)
-        l = mk_fmt_line(args, e)
-        if args.p:
-            print(":".join(l))
-        else:
-            print(fmt%tuple(l))
+        fmt = mk_fmt_str(args)
+        for e in l:
+            if not e:
+                print("error!")
+                exit(1)
+                l = mk_fmt_line(args, e)
+                if args.p:
+                    print(":".join(l))
+                else:
+                    print(fmt%tuple(l))
 
 def snapshot_get(args):
     e = args.endpoint.get_snapsot(args.vmuuid, args.snapuuid)
     if not e:
         print("error!")
         exit(1)
-    if 'map_fn' in args:
-        e = args.map_fn(e)
-    print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
+        if 'map_fn' in args:
+            e = args.map_fn(e)
+            print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
 
 def snapshot_delete(args):
     e = args.endpoint.delete_snapsot(args.vmuuid, args.snapuuid)
     if not e:
         print("error!")
         exit(1)
-    print "Snapshot deleted successfully."
+        print "Snapshot deleted successfully."
 
 def snapshot_rollback(args):
     e = args.endpoint.rollback_snapsot(args.vmuuid, args.snapuuid)
     if not e:
         print("error!")
         exit(1)
-    print "Snapshot deleted successfully."
+        print "Snapshot deleted successfully."
 
 class VM(Entity):
     def __init__(self, wiggle):
@@ -133,8 +133,8 @@ class VM(Entity):
         return self._post({"package": package,
                            "dataset": dataset,
                            "config": config})
-    def start(self, uuid):
-        return self._put(uuid, {"action": "start"})
+        def start(self, uuid):
+            return self._put(uuid, {"action": "start"})
 
     def stop(self, uuid):
         return self._put(uuid, {"action": "start"})
@@ -199,17 +199,17 @@ class VM(Entity):
 
         parser_vms_get = subparsers_vms.add_parser('metadata', help='gets a vms metadata')
         parser_vms_get.add_argument("uuid",
-                                       help="uuid of VM to show")
+                                    help="uuid of VM to show")
         parser_vms_get.set_defaults(func=show_get,
                                     map_fn=vm_metadata_map_fn)
         parser_vms_info = subparsers_vms.add_parser('info', help='gets a vm info')
         parser_vms_info.add_argument("uuid",
-                                       help="uuid of VM to show")
+                                     help="uuid of VM to show")
         parser_vms_info.set_defaults(func=show_get,
                                      map_fn=vm_info_map_fn)
         parser_vms_start = subparsers_vms.add_parser('start', help='starts a vm')
         parser_vms_start.add_argument("uuid",
-                                       help="uuid of VM to start")
+                                      help="uuid of VM to start")
         parser_vms_start.set_defaults(func=vm_action,
                                       action='start')
         parser_vms_stop = subparsers_vms.add_parser('stop', help='stops a vm')
@@ -254,4 +254,3 @@ class VM(Entity):
         parser_snapshots_create.add_argument("comment",
                                              help="Comment for the snapshot.")
         parser_snapshots_create.set_defaults(func=snapshot_create)
-
