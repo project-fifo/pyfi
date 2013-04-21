@@ -1,11 +1,19 @@
 import argparse
-from pprint import pprint
 import json
+import re
+from pprint import pprint
 
 # We need to add a own action for lists as arguments
 class ListAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, values.split(','))
+
+def is_uuid(str):
+    regexp = '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+    if re.match(regexp, str):
+        return True
+    else:
+        return False
 
 # Gets a value from a nested hash map or returns a given default if the value
 # is not present

@@ -1,6 +1,7 @@
 import httplib
 import json
 from pprint import pprint
+from fifo.helper import *
 
 class Wiggle:
     def __init__(self):
@@ -169,12 +170,25 @@ class Entity:
     def _get_attr(self, uuid, attr):
         return self._wiggle.get_attr(self._resource, uuid, attr)
 
+    def name_of(self, obj):
+        return obj["name"]
+
+    def uuid_by_name(self, name):
+        if is_uuid(name):
+            return name
+        else:
+            for uuid in self.list():
+                obj = self.get(uuid)
+                if self.name_of(obj) == name:
+                    return uuid
+            return False
+
     def list(self):
         return self._wiggle.list(self._resource)
 
     def get(self, uuid):
+        uuid = self.uuid_by_name(uuid)
         return self._wiggle.get(self._resource, uuid)
-
     def delete(self, uuid):
         return self._wiggle.delete(self._resource, uuid)
 

@@ -21,6 +21,9 @@ class Dataset(Entity):
         self._wiggle = wiggle
         self._resource = "datasets"
 
+    def name_of(self, obj):
+        return obj["name"] + "-" + obj["version"]
+
     def make_parser(self, subparsers):
         parser_datasets = subparsers.add_parser('datasets', help='dataset related commands')
         parser_datasets.set_defaults(endpoint=self)

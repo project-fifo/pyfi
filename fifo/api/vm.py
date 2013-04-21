@@ -1,4 +1,7 @@
 from .wiggle import Entity
+from .package import Package
+from .dataset import Dataset
+
 from fifo.helper import *
 from datetime import datetime
 import sys
@@ -7,16 +10,18 @@ import json
 def vm_action(args):
     if args.action == 'start':
         args.endpoint.start(args.uuid)
+
     elif args.action == 'stop':
         if args.f:
             args.endpoint.force_stop(args.uuid)
         else:
             args.endpoint.start(args.uuid)
-        elif args.action == 'reboot':
-            if args.f:
-                args.endpoint.force_reboot(args.uuid)
-            else:
-                args.endpoint.reboot(args.uuid)
+
+    elif args.action == 'reboot':
+        if args.f:
+            args.endpoint.force_reboot(args.uuid)
+        else:
+            args.endpoint.reboot(args.uuid)
 
 
 def snapshot_create(args):
@@ -73,17 +78,31 @@ def vm_delete(args):
     args.endpoint.delete(args.uuid)
 
 def vm_create(args):
+    print "creating vm"
     if args.config:
-        f = open(args.config, 'r')
+        f = open(args.file, 'r')
         config = json.loads(f.read())
         f.close()
     else:
         config = json.loads(sys.stdin.read())
-        reply = args.endpoint.create(args.package, args.dataset, config)
-        if reply:
-            print "VM " + reply["uuid"] + " created successfully."
-        else:
-            print "Faied to create VM."
+
+    wiggle = args.endpoint._wiggle
+
+    package = Package(wiggle).uuid_by_name(args.package)
+    if not package:
+        print "Could not find package: " + args.package + "."
+        exit(1)
+
+    dataset = Dataset(wiggle).uuid_by_name(args.dataset)
+    if not dataset:
+        print "Could not find dataset: " + args.dataset + "."
+        exit(1)
+
+    reply = args.endpoint.create(package, dataset, config)
+    if reply:
+        print "VM " + reply["uuid"] + " created successfully."
+    else:
+        print "Faied to create VM."
 
 # Shows the data when list was selected.
 def snapshots_list(args):
@@ -128,6 +147,9 @@ class VM(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
         self._resource = "vms"
+
+    def name_of(self, obj):
+        return d(obj, ["config", "alias"])
 
     def create(self, package, dataset, config):
         return self._post({"package": package,
@@ -193,7 +215,7 @@ class VM(Entity):
                                        help="UUID of the package to use.")
         parser_vms_create.add_argument("--dataset",
                                        help="UUID of the dataset to use")
-        parser_vms_create.add_argument("--config",
+        parser_vms_create.add_argument("--file", "-f",
                                        help="Filename of config.json, not not present will be read from STDIN.")
         parser_vms_create.set_defaults(func=vm_create)
 

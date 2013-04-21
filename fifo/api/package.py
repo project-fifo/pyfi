@@ -20,6 +20,7 @@ class Package(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
         self._resource = "packages"
+
     def make_parser(self, subparsers):
         parser_pkgs = subparsers.add_parser('packages', help='package related commands')
         parser_pkgs.set_defaults(endpoint=self)
