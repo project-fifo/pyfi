@@ -31,7 +31,7 @@ class fifo_install(install):
         print output
 
 setup(
-    name='PyFi',
+    name='PyFo',
     version='0.1.3',
     author='Heinz N. Gies',
     author_email='heinz@licenser.net',
