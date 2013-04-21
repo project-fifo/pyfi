@@ -1,0 +1,49 @@
+.TH fifo-vmconfig 5  "April 21, 2013" "version 0.1.3" "FILE FORMAT"
+.SH NAME
+fifo-vmconfig \- Configuration file for VM creation.
+.SH DESCRIPTION
+The file is a JSON object with certain predefined key value keys.
+
+.SH KEYS
+.TP
+.B alias
+Type: string
+
+The alias of the VM, must not be unique.
+.TP
+.B networks.*
+Type: objects
+
+The networks defined in a fashion wher the network interface is the key
+and the uuid of the network to take the IP data from is the value.
+.TP
+.B ssh_keys
+Type: string
+
+A string containing one or more SSH public keys with one key per line.
+.TP
+.B root_pw
+Type: string
+
+Passwort for the zones root user (won't allow SSH login!)
+.B admin_pw
+
+Password for the admin user (SSH login allowed)
+.TP
+.B metadata.*
+Type: object
+
+Any custom metadata that should go into customer_metadata.
+
+.SH EXAMPLES
+.nf
+{
+  "alias": "my_cool_vm",
+  "networks": {
+    "net0": "36f1f3da-05b6-4745-adf7-0f091ae06628"
+  }
+}
+.fi
+
+.SH SEE ALSO
+fifo(1)
