@@ -156,18 +156,22 @@ class Entity:
         self._wiggle = wiggle
 
     def _put(self, uuid, body):
+        uuid = self.uuid_by_name(uuid)
         return self._wiggle.put(self._resource, uuid, body)
 
     def _post(self, body):
         return self._wiggle.post(self._resource, body)
 
     def _post_attr(self, uuid, entity, body):
+        uuid = self.uuid_by_name(uuid)
         return self._wiggle.post_attr(self._resource, uuid, entity, body)
 
     def _put_attr(self, uuid, entity, body):
+        uuid = self.uuid_by_name(uuid)
         return self._wiggle.put_attr(self._resource, uuid, entity, body)
 
     def _get_attr(self, uuid, attr):
+        uuid = self.uuid_by_name(uuid)
         return self._wiggle.get_attr(self._resource, uuid, attr)
 
     def name_of(self, obj):
@@ -190,13 +194,17 @@ class Entity:
         uuid = self.uuid_by_name(uuid)
         return self._wiggle.get(self._resource, uuid)
     def delete(self, uuid):
+        uuid = self.uuid_by_name(uuid)
         return self._wiggle.delete(self._resource, uuid)
 
     def get_metadata(self, uuid):
+        uuid = self.uuid_by_name(uuid)
         return self._wiggle.get_attr(self._resource, uuid, "metadata")
 
     def set_metadata(self, uuid, path, k, v):
+        uuid = self.uuid_by_name(uuid)
         return self._wiggle.put(self._resource, uuid, "metadata" + path , {k: v})
 
     def delete_metadata(self, uuid, path, k):
+        uuid = self.uuid_by_name(uuid)
         return self._wiggle.put(self._resource, uuid, "metadata" + path, {k: v})
