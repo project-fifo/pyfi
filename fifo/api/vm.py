@@ -15,7 +15,7 @@ def vm_action(args):
         if args.f:
             args.endpoint.force_stop(args.uuid)
         else:
-            args.endpoint.start(args.uuid)
+            args.endpoint.stop(args.uuid)
 
     elif args.action == 'reboot':
         if args.f:
