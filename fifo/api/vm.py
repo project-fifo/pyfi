@@ -153,17 +153,18 @@ class VM(Entity):
         return self._post({"package": package,
                            "dataset": dataset,
                            "config": config})
-        def start(self, uuid):
-            return self._put(uuid, {"action": "start"})
+
+    def start(self, uuid):
+        return self._put(uuid, {"action": "start"})
 
     def stop(self, uuid):
-        return self._put(uuid, {"action": "start"})
+        return self._put(uuid, {"action": "stop"})
 
     def reboot(self, uuid):
         return self._put(uuid, {"action": "reboot"})
 
     def force_stop(self, uuid):
-        return self._put(uuid, {"action": "start", "force": True})
+        return self._put(uuid, {"action": "stop", "force": True})
 
     def force_reboot(self, uuid):
         return self._put(uuid, {"action": "reboot", "force": True})
