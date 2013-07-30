@@ -3,6 +3,9 @@ from .package import Package
 from .dataset import Dataset
 
 from fifo.helper import *
+from fifo.api.package import *
+from fifo.api.dataset import *
+
 from datetime import datetime
 import sys
 import json
@@ -22,7 +25,6 @@ def vm_action(args):
         else:
             args.endpoint.reboot(args.uuid)
 
-
 def snapshot_create(args):
     res = args.endpoint.make_snapsot(args.vmuuid, args.comment)
     if res:
@@ -40,7 +42,7 @@ def vm_info_map_fn(vm):
 def vm_metadata_map_fn(vm):
     return(vm['metadata'])
 
-#Returns the ip of a vm (first ip in the networks)
+# Returns the ip of a vm (first ip in the networks)
 def vm_ip(e):
     n = d(e, ['config', 'networks'], [])
     if len(n) > 0:
@@ -111,20 +113,20 @@ def snapshots_list(args):
             if not e:
                 print("error!")
                 exit(1)
-                l = mk_fmt_line(args, e)
-                if args.p:
-                    print(":".join(l))
-                else:
-                    print(fmt%tuple(l))
+            l = mk_fmt_line(args, e)
+            if args.p:
+                print(":".join(l))
+            else:
+                print(fmt%tuple(l))
 
 def snapshot_get(args):
     e = args.endpoint.get_snapsot(args.vmuuid, args.snapuuid)
     if not e:
         print("error!")
         exit(1)
-        if 'map_fn' in args:
-            e = args.map_fn(e)
-            print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
+    if 'map_fn' in args:
+        e = args.map_fn(e)
+        print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
 
 def snapshot_delete(args):
     e = args.endpoint.delete_snapsot(args.vmuuid, args.snapuuid)

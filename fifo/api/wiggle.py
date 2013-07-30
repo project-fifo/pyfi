@@ -193,6 +193,7 @@ class Entity:
     def get(self, uuid):
         uuid = self.uuid_by_name(uuid)
         return self._wiggle.get(self._resource, uuid)
+
     def delete(self, uuid):
         uuid = self.uuid_by_name(uuid)
         return self._wiggle.delete(self._resource, uuid)

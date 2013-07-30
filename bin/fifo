@@ -8,7 +8,6 @@ import argparse
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-
 from fifo.api.wiggle import Wiggle
 from fifo.api.hypervisor import Hypervisor
 from fifo.api.vm import VM
@@ -23,8 +22,6 @@ from fifo.api.group import Group
 
 from pprint import pprint
 import json
-
-
 
 #First we initialize our configuration read the data and generate a default if needed
 
@@ -44,7 +41,6 @@ if not config.has_section('GENERAL'):
     with open(config_file, 'w') as configfile:
         config.write(configfile)
         exit(1)
-
 
 # Now we initialize our wiggle endpoint
 wiggle = Wiggle()
@@ -97,14 +93,12 @@ token = False
 if config.has_option(active_config, 'token'):
     token = config.get(active_config, 'token')
 
-
 wiggle.init(host, user, pw, token)
 #We check if we can get a valid token from wiggle and store it on our config
 if wiggle.get_token():
     config.set(active_config, 'token', wiggle.get_token())
 with open(config_file, 'w') as configfile:
     config.write(configfile)
-
 
 if 'func' in args:
     args.func(args)
