@@ -6,26 +6,12 @@ network_fmt = {
     {'title': 'UUID', 'len': 36, 'fmt': "%36s", 'get': lambda e: d(e, ['uuid'])},
     'name':
     {'title': 'Name', 'len': 10, 'fmt': "%-10s", 'get': lambda e: d(e, ['name'])},
-    'tag':
-    {'title': 'Tag', 'len': 10, 'fmt': "%-10s", 'get': lambda e: d(e, ['tag'])},
-    'network':
-    {'title': 'Network', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['network'])},
-    'first':
-    {'title': 'First', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['first'])},
-    'next':
-    {'title': 'Last', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['current'])},
-    'last':
-    {'title': 'Last', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['last'])},
-    'gateway':
-    {'title': 'Gateway', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['gateway'])},
-    'netmask':
-    {'title': 'Netmask', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['netmask'])},
-}
+ }
 
 class Network(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
-        self._resource = "ipranges"
+        self._resource = "networks"
 
     def make_parser(self, subparsers):
         parser_networks = subparsers.add_parser('networks', help='network related commands')
@@ -33,7 +19,7 @@ class Network(Entity):
         subparsers_networks = parser_networks.add_subparsers(help='network commands')
         parser_networks_list = subparsers_networks.add_parser('list', help='lists networks')
         parser_networks_list.add_argument("--fmt", action=ListAction,
-                                          default=['uuid', 'name', 'tag', 'first', 'last'])
+                                          default=['uuid', 'name'])
         parser_networks_list.add_argument("-H", action='store_false')
         parser_networks_list.add_argument("-p", action='store_true')
         parser_networks_list.set_defaults(func=show_list,
