@@ -74,7 +74,7 @@ class User(Entity):
         parser_users_create.add_argument("--organization", "-o",
                                          help="Organization of the user.")
         parser_users_create.set_defaults(func=user_create)
-        parser_users_delete = subparsers_users.add_parser('delete', help='deletes a VM')
+        parser_users_delete = subparsers_users.add_parser('delete', help='deletes a user')
         parser_users_delete.add_argument("uuid",
                                          help="uuid of VM to show")
         parser_users_delete.set_defaults(func=user_delete)

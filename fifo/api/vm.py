@@ -183,7 +183,7 @@ class VM(Entity):
         return self._delete_attr(uuid, "snapshots/" + snapid)
 
     def rollback_snapsot(self, uuid, snapid):
-        return self._put_attr(uuid, "snapshots/" + snapid)
+        return self._put_attr(uuid, "snapshots/" + snapid, {"action":"rollback"})
 
     def make_parser(self, subparsers):
         parser_vms = subparsers.add_parser('vms', help='vm related commands')
