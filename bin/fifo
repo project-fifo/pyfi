@@ -52,7 +52,7 @@ wiggle = Wiggle()
 parser = argparse.ArgumentParser(description='FiFo API client.')
 parser.add_argument("--config", "-c",
                     default=config.get('GENERAL', 'active'),
-                    help="Selectios the network config to use")
+                    help="Selects the network config to use")
 parser.add_argument("--host",
                     help="The host to use (dns or ip no https://)")
 parser.add_argument("--user", '-u',
