@@ -26,7 +26,14 @@ def vm_action(args):
             args.endpoint.reboot(args.uuid)
 
 def snapshot_create(args):
-    res = args.endpoint.make_snapsot(args.vmuuid, args.comment)
+    res = args.endpoint.make_snapshot(args.vmuuid, args.comment)
+    if res:
+        print "Snapshot successfully created!"
+    else:
+        print "Snapshot creation failed!"
+
+def backup_create(args):
+    res = args.endpoint.make_backup(args.vmuuid, args.comment, args.d, args.parent)
     if res:
         print "Snapshot successfully created!"
     else:
@@ -69,9 +76,26 @@ snapshot_fmt = {
     'timestamp':
     {'title': 'Timestamp', 'len': 20, 'fmt': "%-20s",
      'get': lambda e: datetime.fromtimestamp(d(e, ['timestamp'])/1000000).isoformat()},
+    'size':
+    {'title': 'Size', 'len': 5, 'fmt': "%5d", 'get': lambda e: d(e, ['size'])},
     'comment':
     {'title': 'Comment', 'len': 30, 'fmt': "%-30s", 'get': lambda e: d(e, ['comment'])},
+}
 
+backup_fmt = {
+    'uuid':
+    {'title': 'UUID', 'len': 36, 'fmt': "%36s", 'get': lambda e: d(e, ['uuid'])},
+    'parent':
+    {'title': 'Parent', 'len': 36, 'fmt': "%36s", 'get': lambda e: d(e, ['parent'])},
+    'local':
+    {'title': 'Local', 'len': 5, 'fmt': "%5s", 'get': lambda e: "Yes" if d(e, ['local']) else "No"},
+    'size':
+    {'title': 'Size', 'len': 5, 'fmt': "%5d", 'get': lambda e: d(e, ['size'])},
+    'timestamp':
+    {'title': 'Timestamp', 'len': 20, 'fmt': "%-20s",
+     'get': lambda e: datetime.fromtimestamp(d(e, ['timestamp'])/1000000).isoformat()},
+    'comment':
+    {'title': 'Comment', 'len': 30, 'fmt': "%-30s", 'get': lambda e: d(e, ['comment'])},
 }
 
 def vm_delete(args):
@@ -105,7 +129,7 @@ def vm_create(args):
 
 # Shows the data when list was selected.
 def snapshots_list(args):
-    l = args.endpoint.list_snapsots(args.vmuuid)
+    l = args.endpoint.list_snapshots(args.vmuuid)
     if args.H:
         header(args)
         fmt = mk_fmt_str(args)
@@ -119,24 +143,64 @@ def snapshots_list(args):
             else:
                 print(fmt%tuple(l))
 
+def backups_list(args):
+    l = args.endpoint.list_backups(args.vmuuid)
+    l = sorted(l, key=lambda e: e['timestamp'])
+    if args.H:
+        header(args)
+        fmt = mk_fmt_str(args)
+        for e in l:
+            if not e:
+                print("error!")
+                exit(1)
+            l = mk_fmt_line(args, e)
+            if args.p:
+                print(":".join(l))
+            else:
+                print(fmt%tuple(l))
+
+
 def snapshot_get(args):
-    e = args.endpoint.get_snapsot(args.vmuuid, args.snapuuid)
+    e = args.endpoint.get_snapshot(args.vmuuid, args.snapuuid)
     if not e:
         print("error!")
         exit(1)
     if 'map_fn' in args:
         e = args.map_fn(e)
-        print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
+    print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
 
 def snapshot_delete(args):
-    e = args.endpoint.delete_snapsot(args.vmuuid, args.snapuuid)
+    e = args.endpoint.delete_snapshot(args.vmuuid, args.snapuuid)
     if not e:
         print("error!")
         exit(1)
         print "Snapshot deleted successfully."
 
 def snapshot_rollback(args):
-    e = args.endpoint.rollback_snapsot(args.vmuuid, args.snapuuid)
+    e = args.endpoint.rollback_snapshot(args.vmuuid, args.snapuuid)
+    if not e:
+        print("error!")
+        exit(1)
+        print "Snapshot deleted successfully."
+
+def backup_get(args):
+    e = args.endpoint.get_backup(args.vmuuid, args.snapuuid)
+    if not e:
+        print("error!")
+        exit(1)
+    if 'map_fn' in args:
+        e = args.map_fn(e)
+    print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
+
+def backup_delete(args):
+    e = args.endpoint.delete_backup(args.vmuuid, args.snapuuid)
+    if not e:
+        print("error!")
+        exit(1)
+        print "Snapshot deleted successfully."
+
+def backup_restore(args):
+    e = args.endpoint.restore_backup(args.vmuuid, args.snapuuid)
     if not e:
         print("error!")
         exit(1)
@@ -170,20 +234,44 @@ class VM(Entity):
     def force_reboot(self, uuid):
         return self._put(uuid, {"action": "reboot", "force": True})
 
-    def list_snapsots(self, uuid):
+    def list_snapshots(self, uuid):
         return self._wiggle.get_attr(self._resource, uuid, "snapshots")
 
-    def make_snapsot(self, uuid, comment):
+    def make_snapshot(self, uuid, comment):
         return self._post_attr(uuid, "snapshots", {"comment": comment})
 
-    def get_snapsot(self, uuid, snapid):
+    def get_snapshot(self, uuid, snapid):
         return self._get_attr(uuid, "snapshots/" + snapid)
 
-    def delete_snapsot(self, uuid, snapid):
+    def delete_snapshot(self, uuid, snapid):
         return self._delete_attr(uuid, "snapshots/" + snapid)
 
-    def rollback_snapsot(self, uuid, snapid):
+    def rollback_snapshot(self, uuid, snapid):
         return self._put_attr(uuid, "snapshots/" + snapid, {"action":"rollback"})
+
+    def list_backups(self, uuid):
+        return self._wiggle.get_attr(self._resource, uuid, "backups")
+
+    def get_backup(self, uuid, snapid):
+        return self._get_attr(uuid, "backups/" + snapid)
+
+    def delete_backup(self, uuid, snapid):
+        return self._delete_attr(uuid, "backups/" + snapid)
+
+    def restore_backup(self, uuid, snapid):
+        return self._put_attr(uuid, "backups/" + snapid, {"action":"rollback"})
+
+    def make_backup(self, uuid, comment, delete, parent):
+        if parent:
+            Arg = {"comment": comment,
+                   "delete": delete,
+                   "parent": parent}
+            return self._post_attr(uuid, "backups", Arg)
+        else:
+            Arg = {"comment": comment,
+                   "delete": delete}
+            return self._post_attr(uuid, "backups", Arg)
+
 
     def make_parser(self, subparsers):
         parser_vms = subparsers.add_parser('vms', help='vm related commands')
@@ -191,7 +279,7 @@ class VM(Entity):
         subparsers_vms = parser_vms.add_subparsers(help='vm commands')
         parser_vms_list = subparsers_vms.add_parser('list', help='lists a vm')
         parser_vms_list.add_argument("--fmt",
-                                     action=ListAction, default=['uuid', 'hypervisor', 'alias', 'state'],
+                                     action=ListAction, default=['uuid', 'state', 'alias'],
                                      help="Rows to show, valid options are: uuid, alias, ip, state, hypervisor")
         parser_vms_list.add_argument("-H", action='store_false',
                                      help="Supress the header.")
@@ -276,3 +364,38 @@ class VM(Entity):
         parser_snapshots_create.add_argument("comment",
                                              help="Comment for the snapshot.")
         parser_snapshots_create.set_defaults(func=snapshot_create)
+        parser_backups = subparsers_vms.add_parser('backups', help='backup related commands')
+        parser_backups.add_argument("vmuuid",
+                                    help="UUID of the VM to work with.")
+        subparsers_backups = parser_backups.add_subparsers(help='backup commands')
+        parser_backups_list = subparsers_backups.add_parser('list', help='lists backups')
+        parser_backups_list.add_argument("--fmt", action=ListAction,
+                                         default=['uuid', 'local', 'timestamp', 'comment'],
+                                         help="Fields to show in the list, valid chances are: uuid, timestamp, comment")
+        parser_backups_list.add_argument("-H", action='store_false',
+                                         help="Supress the header.")
+        parser_backups_list.add_argument("-p", action='store_true',
+                                         help="show in parsable format, rows sepperated by colon.")
+        parser_backups_list.set_defaults(func=backups_list,
+                                         fmt_def=backup_fmt)
+        parser_backups_get = subparsers_backups.add_parser('get', help='gets backups')
+        parser_backups_get.add_argument("snapuuid",
+                                        help="UUID if the backup")
+        parser_backups_get.set_defaults(func=backup_get)
+        parser_backups_delete = subparsers_backups.add_parser('delete', help='deletes backups')
+        parser_backups_delete.add_argument("snapuuid",
+                                           help="UUID if the backup")
+        parser_backups_delete.set_defaults(func=backup_delete)
+        parser_backups_restore = subparsers_backups.add_parser('restore', help='rolls back a backup')
+        parser_backups_restore.add_argument("snapuuid",
+                                             help="UUID if the backup")
+        parser_backups_restore.set_defaults(func=backup_restore)
+        parser_backups_create = subparsers_backups.add_parser('create', help='gets backups')
+        parser_backups_create.add_argument("--parent", default=False,
+                                           help="The parent of the backup.")
+        parser_backups_create.add_argument("comment",
+                                           help="Comment for the backup.")
+        parser_backups_create.add_argument("-d", action='store_true', default=False,
+                                           help="Delete the backup (or parent) after uploading.")
+
+        parser_backups_create.set_defaults(func=backup_create)

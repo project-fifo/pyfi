@@ -170,6 +170,10 @@ class Entity:
         uuid = self.uuid_by_name(uuid)
         return self._wiggle.put_attr(self._resource, uuid, entity, body)
 
+    def _delete_attr(self, uuid, entity):
+        uuid = self.uuid_by_name(uuid)
+        return self._wiggle.delete_attr(self._resource, uuid, entity)
+
     def _get_attr(self, uuid, attr):
         uuid = self.uuid_by_name(uuid)
         return self._wiggle.get_attr(self._resource, uuid, attr)
@@ -206,6 +210,6 @@ class Entity:
         uuid = self.uuid_by_name(uuid)
         return self._wiggle.put(self._resource, uuid, "metadata" + path , {k: v})
 
-    def delete_metadata(self, uuid, path, k):
+    def delete_metadata(self, uuid, path):
         uuid = self.uuid_by_name(uuid)
-        return self._wiggle.put(self._resource, uuid, "metadata" + path, {k: v})
+        return self._wiggle.delete(self._resource, uuid, "metadata" + path)
