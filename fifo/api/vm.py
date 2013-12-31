@@ -132,32 +132,32 @@ def snapshots_list(args):
     l = args.endpoint.list_snapshots(args.vmuuid)
     if args.H:
         header(args)
-        fmt = mk_fmt_str(args)
-        for e in l:
-            if not e:
-                print("error!")
-                exit(1)
-            l = mk_fmt_line(args, e)
-            if args.p:
-                print(":".join(l))
-            else:
-                print(fmt%tuple(l))
+    fmt = mk_fmt_str(args)
+    for e in l:
+        if not e:
+            print("error!")
+            exit(1)
+        l = mk_fmt_line(args, e)
+        if args.p:
+            print(":".join(l))
+        else:
+            print(fmt%tuple(l))
 
 def backups_list(args):
     l = args.endpoint.list_backups(args.vmuuid)
     l = sorted(l, key=lambda e: e['timestamp'])
     if args.H:
         header(args)
-        fmt = mk_fmt_str(args)
-        for e in l:
-            if not e:
-                print("error!")
-                exit(1)
-            l = mk_fmt_line(args, e)
-            if args.p:
-                print(":".join(l))
-            else:
-                print(fmt%tuple(l))
+    fmt = mk_fmt_str(args)
+    for e in l:
+        if not e:
+            print("error!")
+            exit(1)
+        l = mk_fmt_line(args, e)
+        if args.p:
+            print(":".join(l))
+        else:
+            print(fmt%tuple(l))
 
 
 def snapshot_get(args):
