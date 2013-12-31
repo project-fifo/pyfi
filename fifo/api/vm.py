@@ -130,6 +130,7 @@ def vm_create(args):
 # Shows the data when list was selected.
 def snapshots_list(args):
     l = args.endpoint.list_snapshots(args.vmuuid)
+    print(l)
     if args.H:
         header(args)
     fmt = mk_fmt_str(args)
@@ -193,7 +194,7 @@ def backup_get(args):
     print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
 
 def backup_delete(args):
-    e = args.endpoint.delete_backup(args.vmuuid, args.snapuuid)
+    e = args.endpoint.delete_backup(args.vmuuid, args.snapuuid, args.l)
     if not e:
         print("error!")
         exit(1)
@@ -235,7 +236,7 @@ class VM(Entity):
         return self._put(uuid, {"action": "reboot", "force": True})
 
     def list_snapshots(self, uuid):
-        return self._wiggle.get_attr(self._resource, uuid, "snapshots")
+        return self._get_attr(uuid, "snapshots")
 
     def make_snapshot(self, uuid, comment):
         return self._post_attr(uuid, "snapshots", {"comment": comment})
@@ -255,8 +256,11 @@ class VM(Entity):
     def get_backup(self, uuid, snapid):
         return self._get_attr(uuid, "backups/" + snapid)
 
-    def delete_backup(self, uuid, snapid):
-        return self._delete_attr(uuid, "backups/" + snapid)
+    def delete_backup(self, uuid, snapid, local):
+        if local:
+            return self._delete_attr_body(uuid, "backups/" + snapid, {'location':'hypervisor'})
+        else:
+            return self._delete_attr(uuid, "backups/" + snapid)
 
     def restore_backup(self, uuid, snapid):
         return self._put_attr(uuid, "backups/" + snapid, {"action":"rollback"})
@@ -385,6 +389,9 @@ class VM(Entity):
         parser_backups_delete = subparsers_backups.add_parser('delete', help='deletes backups')
         parser_backups_delete.add_argument("snapuuid",
                                            help="UUID if the backup")
+        parser_backups_delete.add_argument("-l", action='store_true', default=False,
+                                           help="Delete only local version of the VM.")
+
         parser_backups_delete.set_defaults(func=backup_delete)
         parser_backups_restore = subparsers_backups.add_parser('restore', help='rolls back a backup')
         parser_backups_restore.add_argument("snapuuid",
@@ -397,5 +404,7 @@ class VM(Entity):
                                            help="Comment for the backup.")
         parser_backups_create.add_argument("-d", action='store_true', default=False,
                                            help="Delete the backup (or parent) after uploading.")
+        parser_backups_create.add_argument("-x", action='store_true', default=False,
+                                           help="Save the VM's .xml for restoring.")
 
         parser_backups_create.set_defaults(func=backup_create)

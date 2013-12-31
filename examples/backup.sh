@@ -10,6 +10,9 @@ case $1 in
         uuid=$(echo $last_backup | cut -d: -f1)
         type=$(echo $last_backup | cut -d: -f2)
         $fifo vms backups $vm create --parent $uuid -d weekly
+        last_daily=$($fifo vms backups $vm list -pH --fmt uuid,comment | grep 'daily' | tail -1)
+        daily_uuid=$(echo $last_daily | cut -d: -f1)
+        $fifo vms backups $vm delete -l $daily_uuid
         ;;
     daily)
         last_backup=$($fifo vms backups $vm list -pH --fmt uuid,comment | grep 'daily\|weekly' | tail -1)
