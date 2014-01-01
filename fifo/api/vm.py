@@ -398,13 +398,13 @@ class VM(Entity):
                                              help="UUID if the backup")
         parser_backups_restore.set_defaults(func=backup_restore)
         parser_backups_create = subparsers_backups.add_parser('create', help='gets backups')
-        parser_backups_create.add_argument("--parent", default=False,
+        parser_backups_create.add_argument("--parent", "-p", default=False,
                                            help="The parent of the backup.")
         parser_backups_create.add_argument("comment",
                                            help="Comment for the backup.")
         parser_backups_create.add_argument("-d", action='store_true', default=False,
                                            help="Delete the backup (or parent) after uploading.")
-        parser_backups_create.add_argument("-x", action='store_true', default=False,
+        parser_backups_create.add_argument("--xml", "-x", action='store_true', default=False,
                                            help="Save the VM's .xml for restoring.")
 
         parser_backups_create.set_defaults(func=backup_create)

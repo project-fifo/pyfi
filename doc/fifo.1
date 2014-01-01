@@ -1,11 +1,11 @@
-.TH fifo 1  "April 21, 2013" "version 0.1.8" "USER COMMANDS"
+.TH fifo 1  "Jan 1, 2014" "version 0.1.12" "USER COMMANDS"
 .SH NAME
 fifo \- Project FiFo console API client
 .SH SYNOPSIS
 .B fifo
 [\-h|\-\-help] [\-v|\-\-version] [\-c|\-\-config config] [\-\-host host]
 [\-u|\-\-user user] [\-P|\-\-password password] {datasets, dtrace, groups,
-hypervisors, networks, packages, users, vms} <command>
+hypervisors, ipranges, networks, orgs, packages, users, vms} <command>
 .SH DESCRIPTION
 This program allows to use the HTTP/REST API provided by Project FiFo from
 the console and interact with it in a scripted manner.
@@ -112,6 +112,27 @@ Please mind that users will not be automatically removed from the
 group. While this will not cause problems it might end up cluttering
 the data base.
 .TP
+org list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the orgs currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name.
+.TP
+orgs get <uuid|name>
+This command returns the JSON representation of a org object stored
+in the fifo server.
+.TP
+orgs delete <uuid|name>
+Deletes a organisation from the FiFo server.
+.TP
+orgs list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the organisations currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name.
+.TP
 hypervisors list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the groups currently available on the server.
 
@@ -131,13 +152,27 @@ This command lists the networks currently available on the server.
 
 Valid choices for
 .B FMT
-are: uuid, name, tag, network, first, next, last, gateway and netmask.
+are: uuid, name.
 .TP
 network get <uuid|name>
 This command returns the JSON representation of a network object stored
 in the fifo server.
 .TP
-networks delete <uuid|name>
+ipranges delete <uuid|name>
+Deletes a network from the FiFo server.
+.TP
+ipranges list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the networks currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name, tag, network, first, next, last, gateway and netmask.
+.TP
+ipranges get <uuid|name>
+This command returns the JSON representation of a network object stored
+in the fifo server.
+.TP
+ipranges delete <uuid|name>
 Deletes a network from the FiFo server.
 .TP
 packages list [\-p] [\-H] [\-\-fmt FMT]
@@ -239,7 +274,7 @@ are: uuid, timestamp and comment.
 .TP
 vms snapshots <vm uuid> get <uuid|name>
 This command returns the JSON representation of a snapshot configuration
-as stored in teh Fifo server.
+as stored in teh FiFo server.
 .TP
 vms snapshots <vm uuid|alias> create "<comment>"
 Creates a new snapshot of the <vm uuid>, it is advised to power down
@@ -253,6 +288,41 @@ vms snapshots <vm uuid|alias> rollback <uuid>
 Rolls back the state of a VM, the VM has to be powered off for this. Be
 aware that all snapshots newer then <uuid> will be deleted as part of
 this process.
+.TP
+vms backups <vm uuid|alias> list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the backups for for the given <vm uuid>.
+
+Valid choices for
+.B FMT
+are: uuid, timestamp, parent, local, size and comment.
+.TP
+vms backups <vm uuid> get <uuid|name>
+This command returns the JSON representation of a backup configuration
+as stored in teh FiFo server.
+.TP
+vms backup <vm uuid|alias> create [\-d] [\-\-parent parent] [\-x] "<comment>"
+Creates a new backup of the <vm uuid>, it is advised to power down
+the VM for this action even so it is technically working on running VM's
+but might leave applications in a broken state. By default a full backup
+will be created this can be changed by passing the \-\-parent option with
+the
+.B uuid
+of the parent snapshot.
+
+If \-d is passed no local copy will be left on the hypervisor unless
+\-\-parent is passed then the new snapshot is keeped but the parent is
+deleted.
+
+The \-x option will also upload the VM's .xml config file, this will
+be used to recreate snapshots after total node failure.
+.TP
+vms backup <vm uuid|alias> delete [\-l] <uuid|name>
+Removes the backup, if \-l is passed it will stay in the cloud storage
+and only be removed form the hypervisor.
+.TP
+vms backup <vm uuid|alias> restore <uuid>
+Restores the backup, trying to find the quickeset way to restore using
+combinations of local, full an incremental backups.
 .SH EXAMPLES
 .TP
 Lists all VM's in parsable format:
