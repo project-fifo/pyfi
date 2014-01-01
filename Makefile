@@ -9,3 +9,7 @@ clean:
 
 man:
 	nroff -man doc/fifo.1 | less
+
+
+rel:
+	python setup.py bdist upload
