@@ -99,7 +99,10 @@ backup_fmt = {
 }
 
 def vm_delete(args):
-    args.endpoint.delete(args.uuid)
+    if args.l:
+        args.endpoint.delete_body(args.uuid, {"location":"hypervisor"})
+    else:
+        args.endpoint.delete(args.uuid)
 
 def vm_create(args):
     if args.file:
@@ -201,7 +204,7 @@ def backup_delete(args):
         print "Snapshot deleted successfully."
 
 def backup_restore(args):
-    e = args.endpoint.restore_backup(args.vmuuid, args.snapuuid)
+    e = args.endpoint.restore_backup(args.vmuuid, args.snapuuid, args.hypervisor)
     if not e:
         print("error!")
         exit(1)
@@ -262,19 +265,23 @@ class VM(Entity):
         else:
             return self._delete_attr(uuid, "backups/" + snapid)
 
-    def restore_backup(self, uuid, snapid):
-        return self._put_attr(uuid, "backups/" + snapid, {"action":"rollback"})
+    def restore_backup(self, uuid, snapid, hypervisor):
+        if hypervisor:
+            Arg = {"action":"rollback", "hypervisor": hypervisor}
+        else:
+            Arg = {"action":"rollback"}
+        return self._put_attr(uuid, "backups/" + snapid, Arg)
+
 
     def make_backup(self, uuid, comment, delete, parent):
         if parent:
             Arg = {"comment": comment,
                    "delete": delete,
                    "parent": parent}
-            return self._post_attr(uuid, "backups", Arg)
         else:
             Arg = {"comment": comment,
                    "delete": delete}
-            return self._post_attr(uuid, "backups", Arg)
+        return self._post_attr(uuid, "backups", Arg)
 
 
     def make_parser(self, subparsers):
@@ -298,6 +305,8 @@ class VM(Entity):
                                     map_fn=vm_map_fn)
 
         parser_vms_delete = subparsers_vms.add_parser('delete', help='deletes a VM')
+        parser_vms_delete.add_argument("-l", action='store_true', default=False,
+                                       help="Delete the vm only on the hypervisor.")
         parser_vms_delete.add_argument("uuid",
                                        help="uuid of VM to show")
         parser_vms_delete.set_defaults(func=vm_delete)
@@ -391,9 +400,10 @@ class VM(Entity):
                                            help="UUID if the backup")
         parser_backups_delete.add_argument("-l", action='store_true', default=False,
                                            help="Delete only local version of the VM.")
-
         parser_backups_delete.set_defaults(func=backup_delete)
         parser_backups_restore = subparsers_backups.add_parser('restore', help='rolls back a backup')
+        parser_backups_restore.add_argument("--hypervisor", default=False,
+                                            help="Restore to a specific hypervisor.")
         parser_backups_restore.add_argument("snapuuid",
                                              help="UUID if the backup")
         parser_backups_restore.set_defaults(func=backup_restore)

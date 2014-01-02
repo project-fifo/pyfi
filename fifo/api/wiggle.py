@@ -45,6 +45,15 @@ class Wiggle:
         else:
             return False
 
+    def delete_body(self, resource, entity, body):
+        conn = self.conn()
+        conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity, json.dumps(body), self.headers)
+        response = conn.getresponse()
+        if (response.status >= 200 and response.status < 300):
+            return True
+        else:
+            return False
+
     def delete_attr(self, resource, entity, attr):
         conn = self.conn()
         conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity + "/" + attr, "", self.headers)
@@ -215,6 +224,10 @@ class Entity:
     def delete(self, uuid):
         uuid = self.uuid_by_name(uuid)
         return self._wiggle.delete(self._resource, uuid)
+
+    def delete_body(self, uuid, body):
+        uuid = self.uuid_by_name(uuid)
+        return self._wiggle.delete_body(self._resource, uuid, body)
 
     def get_metadata(self, uuid):
         uuid = self.uuid_by_name(uuid)

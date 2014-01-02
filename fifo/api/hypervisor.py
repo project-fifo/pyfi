@@ -2,8 +2,10 @@ from .wiggle import Entity
 from fifo.helper import *
 
 hypervisor_fmt = {
+    'uuid':
+    {'title': 'UUID', 'len': 36, 'fmt': "%36s", 'get': lambda e: d(e, ['uuid'])},
     'name':
-    {'title': 'Name', 'len': 30, 'fmt': "%30s", 'get': lambda e: d(e, ['name'])},
+    {'title': 'Name', 'len': 30, 'fmt': "%30s", 'get': lambda e: d(e, ['alias'])},
     'free':
     {'title': 'Free RAM', 'len': 10, 'fmt': "%10s",
      'get': lambda e: str(d(e, ['resources', 'free-memory'])) + "MB"},
@@ -29,7 +31,7 @@ class Hypervisor(Entity):
         subparsers_hypervisors = parser_hypervisors.add_subparsers(help='hypervisor commands')
         parser_hypervisors_list = subparsers_hypervisors.add_parser('list', help='lists hypervisors')
         parser_hypervisors_list.add_argument("--fmt", action=ListAction,
-                                             default=['name', 'free', 'used'])
+                                             default=['uuid', 'name', 'free', 'used'])
         parser_hypervisors_list.add_argument("-H", action='store_false')
         parser_hypervisors_list.add_argument("-p", action='store_true')
         parser_hypervisors_list.set_defaults(func=show_list,
