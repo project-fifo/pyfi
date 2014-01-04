@@ -5,6 +5,7 @@ from fifo.helper import *
 
 class Wiggle:
     def __init__(self):
+        self._token = False
         self
     def init(self, host, user, pw, token):
 	self.host = host
