@@ -149,6 +149,19 @@ class Wiggle:
         else:
             return json.loads(response.read())
 
+    def full_list(self, resource, fields):
+	conn = self.conn();
+        hdrs = self.headers;
+        hdrs["x-full-list"] = "true";
+        if fields != []:
+            hdrs["x-full-list-fields"] = ",".join(fields);
+        conn.request("GET", "/api/0.1.0/" + resource, "", hdrs)
+        response = conn.getresponse()
+        if (response.status != 200):
+            return False
+        else:
+            return json.loads(response.read())
+
     def connect(self, user, pw):
 	conn = self.conn();
         conn.request("POST", "/api/0.1.0/sessions",  json.dumps({"user":user, "password": pw}), self.headers)
@@ -173,6 +186,7 @@ class Entity:
     def __init__(self, wiggle):
         self._resource = "none"
         self._wiggle = wiggle
+        self._fields = []
 
     def _put(self, uuid, body):
         uuid = self.uuid_by_name(uuid)
@@ -215,8 +229,13 @@ class Entity:
                     return uuid
             return False
 
+    def full_list(self, fields):
+        return self._wiggle.full_list(self._resource, fields)
+
     def list(self):
-        return self._wiggle.list(self._resource)
+        if not hasattr(self, "_fields"):
+            self._fields = []
+        return self._wiggle.full_list(self._resource, self._fields)
 
     def get(self, uuid):
         uuid = self.uuid_by_name(uuid)

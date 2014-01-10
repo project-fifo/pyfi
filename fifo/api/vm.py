@@ -214,6 +214,7 @@ class VM(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
         self._resource = "vms"
+        self._fields = ["uuid", "config", "state", "hypervisor"]
 
     def name_of(self, obj):
         return d(obj, ["config", "alias"])

@@ -66,9 +66,7 @@ def show_list(args):
     if args.H:
         header(args)
     fmt = mk_fmt_str(args)
-    for uuid in l:
-        args.uuid = uuid
-        e = args.endpoint.get(uuid)
+    for e in l:
         if not e:
             print("error!")
             exit(1)
