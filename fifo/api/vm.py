@@ -10,6 +10,28 @@ from datetime import datetime
 import sys
 import json
 
+
+
+def show_services(args):
+    e = args.endpoint.get(args.uuid)
+    if not e or not e['services']:
+        print("error!")
+        exit(1)
+    services = e['services']
+    if args.j:
+        print(json.dumps(services, sort_keys=True, indent=2, separators=(',', ': ')))
+    else:
+        if args.H:
+            print("%-20s %s\n" % ("State", "Service")),
+        for e in services:
+            if args.a or e["state"] != "disabled":
+                if args.p:
+                    print("%s\t%s" % (e["state"], e["service"]))
+                else:
+                    print("%-20s %s" % (e["state"], e["service"]))
+
+
+
 def vm_action(args):
     if args.action == 'start':
         args.endpoint.start(args.uuid)
@@ -304,6 +326,20 @@ class VM(Entity):
                                     help="uuid of VM to show")
         parser_vms_get.set_defaults(func=show_get,
                                     map_fn=vm_map_fn)
+
+        parser_vms_services = subparsers_vms.add_parser('services', help='shows service states on a VM')
+        parser_vms_services.add_argument("-H", action='store_false',
+                                         help="Supress the header.")
+        parser_vms_services.add_argument("-p", action='store_true',
+                                     help="show in parsable format, rows sepperated by tab.")
+        parser_vms_services.add_argument("-j", action='store_true',
+                                     help="show in json.")
+        parser_vms_services.add_argument("-a", action='store_true',
+                                     help="Show disabled services.")
+        parser_vms_services.add_argument("uuid",
+                                         help="uuid of Services on a VM")
+
+        parser_vms_services.set_defaults(func=show_services)
 
         parser_vms_delete = subparsers_vms.add_parser('delete', help='deletes a VM')
         parser_vms_delete.add_argument("-l", action='store_true', default=False,
