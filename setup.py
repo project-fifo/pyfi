@@ -32,7 +32,7 @@ class fifo_install(install):
 
 setup(
     name='PyFi',
-    version='0.1.16',
+    version='0.1.16p1',
     author='Heinz N. Gies',
     author_email='heinz@licenser.net',
     packages=['fifo', 'fifo.api'],
