@@ -14,8 +14,7 @@ import json
 
 def show_services(args):
     e = args.endpoint.get(args.uuid)
-    if not e or not e['services']:
-        print("error!")
+    if not e or not e.has_key('services'):
         exit(1)
     services = e['services']
     if args.j:
