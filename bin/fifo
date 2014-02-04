@@ -63,7 +63,7 @@ parser.add_argument("--user", '-u',
 parser.add_argument("--password", '-P',
                     help="The password to log in with.")
 
-parser.add_argument('--version', action='version', version='%(prog)s 0.1.16p1')
+parser.add_argument('--version', action='version', version='%(prog)s 0.1.17')
 
 subparsers = parser.add_subparsers(help='sub commands')
 

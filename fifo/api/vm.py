@@ -22,13 +22,20 @@ def show_services(args):
     else:
         if args.H:
             print("%-20s %s\n" % ("State", "Service")),
-        for e in services:
-            if args.a or e["state"] != "disabled":
+        for service in services.keys():
+            state = services[service]
+            if args.a or state != "disabled":
                 if args.p:
-                    print("%s\t%s" % (e["state"], e["service"]))
+                    print("%s\t%s" % (state, service))
                 else:
-                    print("%-20s %s" % (e["state"], e["service"]))
+                    print("%-20s %s" % (state, service))
 
+def svcadm_action(args):
+    if args.endpoint.service_action(args.uuid, args.action, args.service):
+        print("Command issued to %s service %s on %s." % (args.action, args.service, args.uuid))
+    else:
+        print("Failed to %s service %s on %s." % (args.action, args.service, args.uuid))
+        exit(1)
 
 
 def vm_action(args):
@@ -266,6 +273,9 @@ class VM(Entity):
     def make_snapshot(self, uuid, comment):
         return self._post_attr(uuid, "snapshots", {"comment": comment})
 
+    def service_action(self, uuid, action, service):
+        return self._put_attr(uuid, "services", {"action": action, "service": service})
+
     def get_snapshot(self, uuid, snapid):
         return self._get_attr(uuid, "snapshots/" + snapid)
 
@@ -326,19 +336,43 @@ class VM(Entity):
         parser_vms_get.set_defaults(func=show_get,
                                     map_fn=vm_map_fn)
 
-        parser_vms_services = subparsers_vms.add_parser('services', help='shows service states on a VM')
-        parser_vms_services.add_argument("-H", action='store_false',
+        parser_vms_svcs = subparsers_vms.add_parser('svcs', help='shows service states on a VM')
+        parser_vms_svcs.add_argument("-H", action='store_false',
                                          help="Supress the header.")
-        parser_vms_services.add_argument("-p", action='store_true',
+        parser_vms_svcs.add_argument("-p", action='store_true',
                                      help="show in parsable format, rows sepperated by tab.")
-        parser_vms_services.add_argument("-j", action='store_true',
+        parser_vms_svcs.add_argument("-j", action='store_true',
                                      help="show in json.")
-        parser_vms_services.add_argument("-a", action='store_true',
+        parser_vms_svcs.add_argument("-a", action='store_true',
                                      help="Show disabled services.")
-        parser_vms_services.add_argument("uuid",
-                                         help="uuid of Services on a VM")
+        parser_vms_svcs.add_argument("uuid",
+                                     help="uuid of Services on a VM")
 
-        parser_vms_services.set_defaults(func=show_services)
+        parser_vms_svcs.set_defaults(func=show_services)
+
+        parser_vms_svcadm = subparsers_vms.add_parser('svcadm', help='service administration tasks')
+        parser_vms_svcadm.add_argument("uuid",
+                                       help="uuid of Services on a VM")
+
+        subparsers_svcadm = parser_vms_svcadm.add_subparsers(help='svcadm commands')
+
+        parser_svcadm_enable = subparsers_svcadm.add_parser('enable', help='enables a service')
+        parser_svcadm_enable.set_defaults(action="enable")
+        parser_svcadm_enable.set_defaults(func=svcadm_action)
+        parser_svcadm_enable.add_argument("service", help="Service to enable")
+
+
+        parser_svcadm_disable = subparsers_svcadm.add_parser('disable', help='enables a service')
+        parser_svcadm_disable.set_defaults(action="disable")
+        parser_svcadm_disable.set_defaults(func=svcadm_action)
+        parser_svcadm_disable.add_argument("service", help="Service to disable")
+
+        parser_svcadm_clear = subparsers_svcadm.add_parser('clear', help='enables a service')
+        parser_svcadm_clear.set_defaults(action="clear")
+        parser_svcadm_clear.set_defaults(func=svcadm_action)
+        parser_svcadm_clear.add_argument("service", help="Service to en or clear")
+
+
 
         parser_vms_delete = subparsers_vms.add_parser('delete', help='deletes a VM')
         parser_vms_delete.add_argument("-l", action='store_true', default=False,

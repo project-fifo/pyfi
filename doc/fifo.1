@@ -1,4 +1,4 @@
-.TH fifo 1  "Jan 1, 2014" "version 0.1.16" "USER COMMANDS"
+.TH fifo 1  "Jan 1, 2014" "version 0.1.17" "USER COMMANDS"
 .SH NAME
 fifo \- Project FiFo console API client
 .SH SYNOPSIS
@@ -239,7 +239,7 @@ all of it's snapshots will be deleted forever!
 If \-l is passed the vm is only deleted
 from the hypervisor but not from the system and goes into a stored state.
 .TP
-vms services [\-a] [\-p] [\-H] [\-j] <uuid|alias>
+vms svcs [\-a] [\-p] [\-H] [\-j] <uuid|alias>
 Returns the status of the SMF services on the zone, only really makes sense for
 SmartOS zones and not for KVM machines since there is no visibility inside
 the KVM.
@@ -251,6 +251,9 @@ the KVM.
 \-H will supress the header being printed.
 
 \-j will print the full JSON.
+.TP
+vms svcadm <uuid|alias> enable|disable|clear <service>
+Changes toe state of <service> on the given vm <uuid>.
 .TP
 vms create \-\-package|\-p <package uuid|name> \-\-dataset|\-d <dataset uuid|name> [\-\-file|\-f <config json file>]
 This commands creates a new VM on the FiFo system. Both <package uuid>
