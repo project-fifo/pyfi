@@ -20,6 +20,8 @@ iprange_fmt = {
     {'title': 'Gateway', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['gateway'])},
     'netmask':
     {'title': 'Netmask', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['netmask'])},
+    'vlan':
+    {'title': 'vlan', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['vlan'])},
 }
 
 class Iprange(Entity):
@@ -33,7 +35,7 @@ class Iprange(Entity):
         subparsers_ipranges = parser_ipranges.add_subparsers(help='iprange commands')
         parser_ipranges_list = subparsers_ipranges.add_parser('list', help='lists ipranges')
         parser_ipranges_list.add_argument("--fmt", action=ListAction,
-                                          default=['uuid', 'name', 'tag', 'first', 'last'])
+                                          default=['uuid', 'name', 'tag', 'first', 'last', 'vlan'])
         parser_ipranges_list.add_argument("-H", action='store_false')
         parser_ipranges_list.add_argument("-p", action='store_true')
         parser_ipranges_list.set_defaults(func=show_list,
