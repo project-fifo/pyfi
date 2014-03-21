@@ -6,6 +6,8 @@ network_fmt = {
     {'title': 'UUID', 'len': 36, 'fmt': "%36s", 'get': lambda e: d(e, ['uuid'])},
     'name':
     {'title': 'Name', 'len': 10, 'fmt': "%-10s", 'get': lambda e: d(e, ['name'])},
+    'ipranges':
+    {'title': 'ipranges', 'len': 36, 'fmt': "%36s", 'get': lambda e: d(e, ['ipranges'])},
  }
 
 class Network(Entity):
@@ -19,7 +21,7 @@ class Network(Entity):
         subparsers_networks = parser_networks.add_subparsers(help='network commands')
         parser_networks_list = subparsers_networks.add_parser('list', help='lists networks')
         parser_networks_list.add_argument("--fmt", action=ListAction,
-                                          default=['uuid', 'name'])
+                                          default=['uuid', 'name','ipranges'])
         parser_networks_list.add_argument("-H", action='store_false')
         parser_networks_list.add_argument("-p", action='store_true')
         parser_networks_list.set_defaults(func=show_list,
