@@ -7,7 +7,7 @@ network_fmt = {
     'name':
     {'title': 'Name', 'len': 10, 'fmt': "%-10s", 'get': lambda e: d(e, ['name'])},
     'ipranges':
-    {'title': 'ipranges', 'len': 36, 'fmt': "%36s", 'get': lambda e: d(e, ['ipranges'])},
+    {'title': 'ipranges', 'len': 36, 'fmt': "%36s", 'get': lambda e: ",".join(d(e, ['ipranges']))},
  }
 
 class Network(Entity):
