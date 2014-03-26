@@ -18,6 +18,9 @@ hypervisor_fmt = {
     'smartos':
     {'title': 'SmartOS Version', 'len': 20, 'fmt': "%-20s",
      'get': lambda e: d(e, ['sysinfo', 'Live Image'])},
+    'ip':
+    {'title': 'IP', 'len': 20, 'fmt': "%20s",
+     'get': lambda e: d(e, ['host'])},
 }
 
 class Hypervisor(Entity):
