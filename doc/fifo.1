@@ -190,6 +190,57 @@ packages delete <uuid|name>
 Deletes a package from the FiFo server. This does not affect VM's
 currently using the package.
 .TP
+packages create <name>
+                \-\-memory|\-m MEMORY[B|KB|MB|GB|TB|PB|EB]
+                \-\-quota|\-q QUOTA[B|KB|MB|GB|TB|PB|EB]
+                \-\-cpu_cap|\-c CAP
+                \-\-requirement|\-r WIGHT ATTR COND VAL
+                \-\-scale|\-s ATTR LOW HIGH
+                \-\-random|\-R LOW HIGH
+Creates a new package, memory, quota, cpu_cap and name are requried. In addition one or more requirement, scale, or random rule can be added.
+
+.B \-\-requirement
+rules are either enforced, forbidden or gives points to a hypervisor, they are used to rate and find the best hypervisor.
+
+.B \-\-scale
+rules help to give points to hypervisor based on their position in a linar scale over a given attirbute
+
+.B \-\-random
+rules just generate a random number of points for each hypervisor.
+
+.B MEMORY
+is given in bytes with optional modifyers of scale, please be aware that the minimal unit is 1MB.
+
+.B QUOTA
+is given in bytes with optional modifyers of scale, please be aware that the minimal unit is 1GB.
+
+.B CAP
+is the percentage of cpu cores, meaning 100 equals 1 core, 200 equals 2 cores, etc.
+
+.B WIGHT
+can be one of
+.B must
+,
+.B cant
+or am
+.B integer
+(either positive or negative).
+
+.B ATTR
+is a json path towards the attribute to look up, something like resources.free-memory
+
+.B COND
+is the compare condition one of >=, |>, =<, <, =:=, =/=, subset, superset, disjoint, element
+
+.B VAL
+is the value to compare against, it can either be a string or a number, currently arrays are not supported
+
+.B LOW
+and
+.B HIGH
+are integers where LOW < HIGH.
+
+.TP
 users list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the users currently available on the server.
 
