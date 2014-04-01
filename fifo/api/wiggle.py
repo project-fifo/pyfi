@@ -57,7 +57,10 @@ class Wiggle:
 
     def delete_attr(self, resource, entity, attr):
         conn = self.conn()
-        conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity + "/" + attr, "", self.headers)
+        if isinstance(attr, str):
+            attr = [attr]
+        url = "/api/0.1.0/" + resource + "/" + entity + "/" + "/".join(attr)
+        conn.request("DELETE", url, "", self.headers)
         response = conn.getresponse()
         if (response.status < 300 and response.status >= 300):
             return False
@@ -66,7 +69,10 @@ class Wiggle:
 
     def delete_attr_body(self, resource, entity, attr, body):
         conn = self.conn()
-        conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity + "/" + attr, json.dumps(body), self.headers)
+        if isinstance(attr, str):
+            attr = [attr]
+        url = "/api/0.1.0/" + resource + "/" + entity + "/" + "/".join(attr)
+        conn.request("DELETE", url, json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status < 300 and response.status >= 300):
             return False
@@ -75,8 +81,10 @@ class Wiggle:
 
     def put_attr(self, resource, entity, attr, body):
         conn = self.conn()
-        conn.request("PUT", "/api/0.1.0/" + resource + "/" + entity + "/" + attr,
-                     json.dumps(body), self.headers)
+        if isinstance(attr, str):
+            attr = [attr]
+        url = "/api/0.1.0/" + resource + "/" + entity + "/" + "/".join(attr)
+        conn.request("PUT", url, json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status < 300 and response.status >= 300):
             return False
@@ -85,8 +93,10 @@ class Wiggle:
 
     def post_attr(self, resource, entity, attr, body):
         conn = self.conn()
-        conn.request("POST", "/api/0.1.0/" + resource + "/" + entity + "/" + attr,
-                     json.dumps(body), self.headers)
+        if isinstance(attr, str):
+            attr = [attr]
+        url = "/api/0.1.0/" + resource + "/" + entity + "/" + "/".join(attr)
+        conn.request("POST", url, json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status == 303):
             newurl = response.getheader('Location')
@@ -104,7 +114,10 @@ class Wiggle:
 
     def get_attr(self, resource, entity, attr):
         conn = self.conn()
-        conn.request("GET", "/api/0.1.0/" + resource + "/" + entity + "/" + attr, "", self.headers)
+        if isinstance(attr, str):
+            attr = [attr]
+        url = "/api/0.1.0/" + resource + "/" + entity + "/" + "/".join(attr)
+        conn.request("GET", url, "", self.headers)
         response = conn.getresponse()
         if (response.status != 200):
             return False
@@ -113,7 +126,10 @@ class Wiggle:
 
     def put(self, resource, entity, body):
         conn = self.conn()
-        conn.request("PUT", "/api/0.1.0/" + resource + "/" + entity, json.dumps(body), self.headers)
+        if isinstance(entity, str):
+            entity = [entity]
+        url = "/api/0.1.0/" + resource + "/" + "/".join(entity)
+        conn.request("PUT", url, json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status != 200):
             return False
@@ -122,7 +138,10 @@ class Wiggle:
 
     def post(self, resource, body):
         conn = self.conn()
-        conn.request("POST", "/api/0.1.0/" + resource,  json.dumps(body), self.headers)
+        if isinstance(resource, str):
+            resource = [resource]
+        url = "/api/0.1.0/" + "/".join(resource)
+        conn.request("POST", url, json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status == 303):
             newurl = response.getheader('Location')

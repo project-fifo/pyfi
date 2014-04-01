@@ -17,19 +17,40 @@ user_fmt = {
 
 def user_create(args):
     if not args.password:
-        print "You have to specify a passwrod"
+        print "You have to specify a passwrd"
         exit(1)
-
     wiggle = args.endpoint._wiggle
-
     reply = args.endpoint.create(args.name, args.password)
-
     if reply:
         if args.organization:
             args.endpoint.join_org(reply["uuid"], args.organization)
-        print "User " + reply["uuid"] + " created successfully."
+        if args.p:
+            if reply:
+                print reply['uuid']
+            else:
+                exit(1)
+        else:
+            if reply:
+                print "User successfully created: %s" % reply['uuid']
+            else:
+                print "User creation failed: %r" % reply
+                exit(1)
     else:
         print "Faied to create VM."
+
+def grant(args):
+    res = args.endpoint.grant(args.uuid, args.permission)
+    if args.p:
+        if res:
+            exit(0)
+        else:
+            exit(1)
+    else:
+        if res:
+            print "Granted %r to %s" % (args.permission, res)
+        else:
+            print "Grant failed: %r" % res
+            exit(1)
 
 def user_delete(args):
     args.endpoint.delete(args.endpoint.uuid_by_name(args.uuid))
@@ -42,6 +63,9 @@ class User(Entity):
     def create(self, name, password):
         return self._post({"user": name,
                            "password": password})
+
+    def grant(self, user, permission):
+        return self._put_attr(user, ["permissions"] + permission, {})
 
     def join_org(self, uuid, org):
         return self._put_attr(uuid, "orgs/" + org, {})
@@ -67,7 +91,8 @@ class User(Entity):
         parser_users_create = subparsers_users.add_parser('create', help='creates a new user')
         parser_users_create.add_argument("name",
                                          help="Name of the user")
-        parser_users_create.add_argument("--password", "-p",
+        parser_users_create.add_argument("-p", action='store_true')
+        parser_users_create.add_argument("--password", "-P",
                                          help="Password of the user.")
         parser_users_create.add_argument("--group", "-g",
                                          help="Group of the user.")
@@ -78,4 +103,8 @@ class User(Entity):
         parser_users_delete.add_argument("uuid",
                                          help="uuid of VM to show")
         parser_users_delete.set_defaults(func=user_delete)
-        
+        parser_users_grant = subparsers_users.add_parser('grant', help='grants a permission to a user')
+        parser_users_grant.add_argument("-p", action='store_true')
+        parser_users_grant.add_argument("uuid")
+        parser_users_grant.add_argument("permission", nargs='*')
+        parser_users_grant.set_defaults(func=grant)

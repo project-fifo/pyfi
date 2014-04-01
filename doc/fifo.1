@@ -112,6 +112,18 @@ Please mind that users will not be automatically removed from the
 group. While this will not cause problems it might end up cluttering
 the data base.
 .TP
+groups create [\-p] NAME
+Creates a new group, if \-p is passed only the uuid is givesn
+.TP
+groups grant GROUP PERM...
+Grants a group a permission where
+
+.B GROUP
+is the uuid of the group and
+
+.B PERM
+is one or more permission elements, i.e. cloud vms create
+.TP
 org list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the orgs currently available on the server.
 
@@ -258,6 +270,18 @@ Deletes a group from the FiFo server.
 Please mind that groups will not be automatically removed from the
 user. While this will not cause problems it might end up cluttering
 the data base.
+.TP
+users create [\-p] [\-\-password|\-P PASS] [\-\-group|\-g GROUP] [\-\-organization|\-o ORG] NAME
+Creates a new user and optionally sets the password, group and orgnaistation. If \-p is passed only the UUID is returned.
+.TP
+users grant USER PERM...
+Grants a user a permission where.
+
+.B USER
+is the uuid of the user.
+
+.B PERM
+is one or more permission elements, i.e. cloud vms create
 .TP
 vms list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the users currently available on the server.
