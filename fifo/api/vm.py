@@ -10,8 +10,6 @@ from datetime import datetime
 import sys
 import json
 
-
-
 def show_services(args):
     e = args.endpoint.get(args.uuid)
     if not e or not e.has_key('services'):

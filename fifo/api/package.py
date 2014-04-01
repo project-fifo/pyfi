@@ -1,6 +1,6 @@
 from .wiggle import Entity
 from fifo.helper import *
-
+import re
 
 pkg_fmt = {
     'uuid':
@@ -16,10 +16,114 @@ pkg_fmt = {
 }
 
 
+def create(args):
+    mb = 1024*1024
+    gb = mb * 1024
+    reqs = []
+    if args.requirement:
+        reqs = map(package_rule, args.requirement)
+    if args.random:
+        reqs += map(package_random, args.random)
+    if args.scale:
+        reqs += map(package_scale, args.scale)
+    if args.memory < mb:
+        msg = "The minimum amount of memory for a package is 1MB but %r byte were reqested" % args.memory
+        raise argparse.ArgumentTypeError(msg)
+    if args.quota < gb:
+        msg = "The minimum amount of quote for a package is 1GB but %r byte were reqested" % args.quota
+        raise argparse.ArgumentTypeError(msg)
+    payload = {
+        "name": args.name,
+        "ram": int(args.memory/mb),
+        "quota": int(args.quota/gb),
+        "cpu_cap": args.cpu_cap
+    }
+    if reqs != []:
+        payload['requirements'] = reqs
+    res = args.endpoint.create(payload)
+    if res:
+        print "Pacakge successfully created!"
+    else:
+        print "Package creation failed!"
+
+
+
+def byte_size(string):
+    scale_map = {
+        'B': 1,
+        'KB': 1024,
+        'MB': 1024*1024,
+        'GB': 1024*1024*1024,
+        'TB': 1024*1024*1024*1024,
+        'EB': 1024*1024*1024*1024*1024,
+        'PB': 1024*1024*1024*1024*1024*1024,
+    }
+    p = re.compile('(\d+)(B|KB|MB|GB|TB|EB|PB)?')
+    m = p.match(string)
+    if not m:
+        msg = "%r is not byte size. Use <number>[B|KB|MB|GB|TB|EB|PB]" % string
+        raise argparse.ArgumentTypeError(msg)
+    value = int(m.group(1))
+    scale = m.group(2) or 'B'
+    return value*scale_map[scale]
+
+def package_rule(rule):
+    weight = mk_weight(rule[0])
+    attr = rule[1]
+    cond = mk_cond(rule[2])
+    val = mk_value(rule[3])
+    return {
+        "weight": weight,
+        "condition": cond,
+        "attribute": attr,
+        "value": val
+    }
+
+
+def package_scale(scale):
+    return {
+        "weight": "scale",
+        "attribute": scale[0],
+        "low": int(scale[1]),
+        "high": int(scale[2])
+    }
+
+def package_random(rand):
+    return {
+        "weight": "random",
+        "low": int(scale[0]),
+        "high": int(scale[1])
+    }
+
+
+def mk_weight(weight):
+    if weight == 'must':
+        return weight
+    elif weight == 'cant':
+        return weight
+    else:
+        return int(weight)
+
+def mk_cond(cond):
+    valid = ['>=', '|>', '=<', '<', '=:=', '=/=', 'subset', 'superset', 'disjoint', 'element']
+    if not cond in valid:
+        msg = "%r is not a valid condition, must be one of %r" % (cond, valid)
+        raise argparse.ArgumentTypeError(msg)
+    return cond;
+
+def mk_value(val):
+    num = re.compile('\d+')
+    if num.match(val):
+        return int(val)
+    return val
+
 class Package(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
         self._resource = "packages"
+
+    def create(self, specs):
+        self._post(specs)
 
     def make_parser(self, subparsers):
         parser_pkgs = subparsers.add_parser('packages', help='package related commands')
@@ -37,3 +141,13 @@ class Package(Entity):
         parser_pkgs_delete = subparsers_pkgs.add_parser('delete', help='deletes a package')
         parser_pkgs_delete.add_argument("uuid")
         parser_pkgs_delete.set_defaults(func=show_get)
+        parser_pkgs_create = subparsers_pkgs.add_parser('create', help='creates a new package')
+        parser_pkgs_create.add_argument("--memory", "-m", required=True, type=byte_size)
+        parser_pkgs_create.add_argument("--quota", "-q", required=True, type=byte_size)
+        parser_pkgs_create.add_argument("--cpu_cap", "-c", required=True, type=int)
+        parser_pkgs_create.add_argument("--requirement", "-r", action='append', nargs=4)
+        parser_pkgs_create.add_argument("--scale", "-s", action='append', nargs=3)
+        parser_pkgs_create.add_argument("--random", "-R", action='append', nargs=2)
+
+        parser_pkgs_create.add_argument("name")
+        parser_pkgs_create.set_defaults(func=create)
