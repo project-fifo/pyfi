@@ -8,10 +8,27 @@ org_fmt = {
     {'title': 'Name', 'len': 10, 'fmt': "%-10s", 'get': lambda e: d(e, ['name'])},
  }
 
+def create(args):
+    res = args.endpoint.create(args.name)
+    if args.p:
+        if res:
+            print res['uuid']
+        else:
+            exit(1)
+    else:
+        if res:
+            print "Org successfully created: %s" % res['uuid']
+        else:
+            print "Org creation failed: %r" % res
+            exit(1)
+
 class Org(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
         self._resource = "orgs"
+
+    def create(self, name):
+        return self._post({"name": name})
 
     def make_parser(self, subparsers):
         parser_orgs = subparsers.add_parser('orgs', help='org related commands')
@@ -30,3 +47,7 @@ class Org(Entity):
         parser_orgs_delete = subparsers_orgs.add_parser('delete', help='gets a org')
         parser_orgs_delete.add_argument("uuid")
         parser_orgs_delete.set_defaults(func=show_delete)
+        parser_orgs_create = subparsers_orgs.add_parser('create', help='creates a Org')
+        parser_orgs_create.add_argument("-p", action='store_true')
+        parser_orgs_create.add_argument("name")
+        parser_orgs_create.set_defaults(func=create)

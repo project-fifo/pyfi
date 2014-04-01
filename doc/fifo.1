@@ -113,7 +113,7 @@ group. While this will not cause problems it might end up cluttering
 the data base.
 .TP
 groups create [\-p] NAME
-Creates a new group, if \-p is passed only the uuid is givesn
+Creates a new group, if \-p is passed only the uuid is returned.
 .TP
 groups grant GROUP PERM...
 Grants a group a permission where
@@ -144,6 +144,9 @@ This command lists the organisations currently available on the server.
 Valid choices for
 .B FMT
 are: uuid, name.
+.TP
+orgs create [\-p] NAME
+Creates a new Org, if \-p is passed only the uuid is returned.
 .TP
 hypervisors list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the groups currently available on the server.
