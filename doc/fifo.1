@@ -75,6 +75,23 @@ No VM's running the dataset will be affected and the dataset will
 .B NOT
 be removed from the hypervisors.
 .TP
+datasets metadata <uuid> get
+Reads the metadata.
+.TP
+datasets metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+datasets metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+.TP
 dtrace list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the dtrace scripts currently available on the
 server.
@@ -91,6 +108,25 @@ dtrace delete <uuid|name>
 Deletes a dtrace script from the FiFo server.
 .B Be careful
 this can't be undone!
+
+.TP
+dtrace metadata <uuid> get
+Reads the metadata.
+.TP
+dtrace metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+dtrace metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+
 .TP
 roles list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the roles currently available on the server.
@@ -124,6 +160,23 @@ is the uuid of the role and
 .B PERM
 is one or more permission elements, i.e. cloud vms create
 .TP
+roles metadata <uuid> get
+Reads the metadata.
+.TP
+roles metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+roles metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+.TP
 org list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the orgs currently available on the server.
 
@@ -148,6 +201,23 @@ are: uuid, name.
 orgs create [\-p] NAME
 Creates a new Org, if \-p is passed only the uuid is returned.
 .TP
+orgs metadata <uuid> get
+Reads the metadata.
+.TP
+orgs metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+orgs metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+.TP
 hypervisors list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the roles currently available on the server.
 
@@ -162,6 +232,23 @@ hypervisors get <uuid|name>
 This command returns the JSON representation of a hypervisor object
 stored in the fifo server.
 .TP
+hypervisors metadata <uuid> get
+Reads the metadata.
+.TP
+hypervisors metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+hypervisors metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+.TP
 networks list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the networks currently available on the server.
 
@@ -169,9 +256,26 @@ Valid choices for
 .B FMT
 are: uuid, name, ipranges.
 .TP
-network get <uuid|name>
+networks get <uuid|name>
 This command returns the JSON representation of a network object stored
 in the fifo server.
+.TP
+networks metadata <uuid> get
+Reads the metadata.
+.TP
+networks metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+networks metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
 .TP
 ipranges delete <uuid|name>
 Deletes a network from the FiFo server.
@@ -181,7 +285,7 @@ This command lists the networks currently available on the server.
 
 Valid choices for
 .B FMT
-are: uuid, name, tag, network, first, next, last, gateway and netmask.
+are: uuid, name, tag, network, first, next, last, gateway, returned and netmask.
 .TP
 ipranges get <uuid|name>
 This command returns the JSON representation of a network object stored
@@ -189,6 +293,23 @@ in the fifo server.
 .TP
 ipranges delete <uuid|name>
 Deletes a network from the FiFo server.
+.TP
+ipranges metadata <uuid> get
+Reads the metadata.
+.TP
+ipranges metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+ipranges metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
 .TP
 packages list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the packages currently available on the server.
@@ -256,6 +377,23 @@ and
 are integers where LOW < HIGH.
 
 .TP
+packages metadata <uuid> get
+Reads the metadata.
+.TP
+packages metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+packages metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+.TP
 users list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the users currently available on the server.
 
@@ -286,6 +424,23 @@ is the uuid of the user.
 .B PERM
 is one or more permission elements, i.e. cloud vms create
 .TP
+users metadata <uuid> get
+Reads the metadata.
+.TP
+users metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+users metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+.TP
 vms list [\-p] [\-H] [\-\-fmt FMT]
 This command lists the users currently available on the server.
 
@@ -304,9 +459,6 @@ vms info <uuid|alias>
 This command gets the info section of the VM containing for example
 VNC information (only applicable for KVM VMs).
 .TP
-vms metadata <uuid|alias>
-Retrieves the FiFo metadata associated with the VM.
-.TP
 vms delete <uuid|alias> [\-l]
 Deletes a vm.
 
@@ -316,6 +468,23 @@ all of it's snapshots will be deleted forever!
 
 If \-l is passed the vm is only deleted
 from the hypervisor but not from the system and goes into a stored state.
+.TP
+vms metadata <uuid> get
+Reads the metadata.
+.TP
+vms metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+vms metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
 .TP
 vms svcs [\-a] [\-p] [\-H] [\-j] <uuid|alias>
 Returns the status of the SMF services on the zone, only really makes sense for
