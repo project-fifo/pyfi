@@ -135,6 +135,7 @@ class Package(Entity):
         parser_pkgs = subparsers.add_parser('packages', help='package related commands')
         parser_pkgs.set_defaults(endpoint=self)
         subparsers_pkgs = parser_pkgs.add_subparsers(help='package commands')
+        self.add_metadata_parser(subparsers_pkgs)
         parser_pkgs_list = subparsers_pkgs.add_parser('list', help='lists packages')
         parser_pkgs_list.add_argument("--fmt", action=ListAction, default=['uuid', 'name', 'ram', 'cpu_cap', 'quota'])
         parser_pkgs_list.add_argument("-H", action='store_false')

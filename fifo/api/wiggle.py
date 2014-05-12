@@ -274,8 +274,64 @@ class Entity:
 
     def set_metadata(self, uuid, path, k, v):
         uuid = self.uuid_by_name(uuid)
-        return self._wiggle.put(self._resource, uuid, "metadata" + path , {k: v})
+        path.insert(0, "metadata")
+        return self._wiggle.put_attr(self._resource, uuid, path, {k: v})
 
     def delete_metadata(self, uuid, path):
         uuid = self.uuid_by_name(uuid)
-        return self._wiggle.delete(self._resource, uuid, "metadata" + path)
+        path.insert(0, "metadata")
+        return self._wiggle.delete_attr(self._resource, uuid, path)
+
+    def add_metadata_parser(self, subparsers):
+        parser_metadata = subparsers.add_parser('metadata', help='Metadata commands')
+        parser_metadata.add_argument("uuid", help="uuid of the element to look at")
+        subparsers_metadata = parser_metadata.add_subparsers(help='Metadata commands')
+
+        parser_mdata_get = subparsers_metadata.add_parser('get', help='get metadata')
+        parser_mdata_get.set_defaults(func=mdata_get)
+
+        parser_mdata_set = subparsers_metadata.add_parser('set', help='set metadata')
+        parser_mdata_set.set_defaults(func=mdata_set)
+        parser_mdata_set.add_argument("key", help="key of the metadata")
+        group = parser_mdata_set.add_mutually_exclusive_group()
+        group.add_argument("--integer", "-i", help="value is integer ", action='store_true')
+        group.add_argument("--float", "-f", help="value is float", action='store_true')
+        group.add_argument("--string", "-s", help="value is string", action='store_true')
+        group.add_argument("--json", "-j", help="value is json", action='store_true')
+        parser_mdata_set.add_argument("value", help="value to be set")
+        parser_mdata_del = subparsers_metadata.add_parser('delete', help='deletes metadata')
+        parser_mdata_del.set_defaults(func=mdata_delete)
+        parser_mdata_del.add_argument("key", help="key of the metadata")
+
+
+
+def mdata_get(args):
+    e = args.endpoint.get(args.uuid)
+    if not e or not e.has_key('metadata'):
+        exit(1)
+    services = e['metadata']
+    print(json.dumps(services, sort_keys=True, indent=2, separators=(',', ': ')))
+
+def mdata_set(args):
+    keys = args.key.split(".")
+    k = keys.pop()
+    value = args.value
+    if args.integer:
+        value = int(args.value)
+    elif args.float:
+        value = float(args.value)
+    elif args.json:
+        value = json.loads(args.value)
+    if args.endpoint.set_metadata(args.uuid, keys, k, value):
+        print "Metadata successfully updated!"
+    else:
+        print "Failed to update metadata!"
+        exit(1)
+
+def mdata_delete(args):
+    keys = args.key.split(".")
+    if args.endpoint.delete_metadata(args.uuid, keys):
+        print "Metadata successfully updated!"
+    else:
+        print "Failed to update metadata!"
+        exit(1)

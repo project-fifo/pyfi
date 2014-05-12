@@ -74,6 +74,7 @@ class User(Entity):
         parser_users = subparsers.add_parser('users', help='user related commands')
         parser_users.set_defaults(endpoint=self)
         subparsers_users = parser_users.add_subparsers(help='user commands')
+        self.add_metadata_parser(subparsers_users)
         parser_users_list = subparsers_users.add_parser('list', help='lists users')
         parser_users_list.add_argument("--fmt", action=ListAction,
                                        default=['uuid', 'name'])

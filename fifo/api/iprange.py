@@ -5,7 +5,7 @@ iprange_fmt = {
     'uuid':
     {'title': 'UUID', 'len': 36, 'fmt': "%36s", 'get': lambda e: d(e, ['uuid'])},
     'name':
-    {'title': 'Name', 'len': 10, 'fmt': "%-10s", 'get': lambda e: d(e, ['name'])},
+    {'title': 'Name', 'len': 20, 'fmt': "%-20s", 'get': lambda e: d(e, ['name'])},
     'tag':
     {'title': 'Tag', 'len': 10, 'fmt': "%-10s", 'get': lambda e: d(e, ['tag'])},
     'iprange':
@@ -21,7 +21,7 @@ iprange_fmt = {
     'netmask':
     {'title': 'Netmask', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['netmask'])},
     'vlan':
-    {'title': 'vlan', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['vlan'])},
+    {'title': 'vlan', 'len': 5, 'fmt': "%5s", 'get': lambda e: d(e, ['vlan'])},
 }
 
 class Iprange(Entity):
@@ -33,6 +33,7 @@ class Iprange(Entity):
         parser_ipranges = subparsers.add_parser('ipranges', help='iprange related commands')
         parser_ipranges.set_defaults(endpoint=self)
         subparsers_ipranges = parser_ipranges.add_subparsers(help='iprange commands')
+        self.add_metadata_parser(subparsers_ipranges)
         parser_ipranges_list = subparsers_ipranges.add_parser('list', help='lists ipranges')
         parser_ipranges_list.add_argument("--fmt", action=ListAction,
                                           default=['uuid', 'name', 'tag', 'first', 'last', 'vlan'])

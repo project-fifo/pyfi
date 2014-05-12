@@ -318,6 +318,7 @@ class VM(Entity):
         parser_vms = subparsers.add_parser('vms', help='vm related commands')
         parser_vms.set_defaults(endpoint=self)
         subparsers_vms = parser_vms.add_subparsers(help='vm commands')
+        self.add_metadata_parser(subparsers_vms)
         parser_vms_list = subparsers_vms.add_parser('list', help='lists a vm')
         parser_vms_list.add_argument("--fmt",
                                      action=ListAction, default=['uuid', 'state', 'alias'],
@@ -388,11 +389,6 @@ class VM(Entity):
                                        help="Filename of config.json, not not present will be read from STDIN.")
         parser_vms_create.set_defaults(func=vm_create)
 
-        parser_vms_get = subparsers_vms.add_parser('metadata', help='gets a vms metadata')
-        parser_vms_get.add_argument("uuid",
-                                    help="uuid of VM to show")
-        parser_vms_get.set_defaults(func=show_get,
-                                    map_fn=vm_metadata_map_fn)
         parser_vms_info = subparsers_vms.add_parser('info', help='gets a vm info')
         parser_vms_info.add_argument("uuid",
                                      help="uuid of VM to show")

@@ -28,6 +28,7 @@ class Dataset(Entity):
         parser_datasets = subparsers.add_parser('datasets', help='dataset related commands')
         parser_datasets.set_defaults(endpoint=self)
         subparsers_datasets = parser_datasets.add_subparsers(help='dataset commands')
+        self.add_metadata_parser(subparsers_datasets)
         parser_datasets_list = subparsers_datasets.add_parser('list', help='lists datasets')
         parser_datasets_list.add_argument("--fmt", action=ListAction,
                                           default=['uuid', 'name', 'version', 'type', 'description'])

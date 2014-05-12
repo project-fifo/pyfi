@@ -34,6 +34,7 @@ class Org(Entity):
         parser_orgs = subparsers.add_parser('orgs', help='org related commands')
         parser_orgs.set_defaults(endpoint=self)
         subparsers_orgs = parser_orgs.add_subparsers(help='org commands')
+        self.add_metadata_parser(subparsers_orgs)
         parser_orgs_list = subparsers_orgs.add_parser('list', help='lists orgs')
         parser_orgs_list.add_argument("--fmt", action=ListAction,
                                           default=['uuid', 'name'])

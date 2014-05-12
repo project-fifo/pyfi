@@ -32,6 +32,7 @@ class Hypervisor(Entity):
         parser_hypervisors = subparsers.add_parser('hypervisors', help='hypervisor related commands')
         parser_hypervisors.set_defaults(endpoint=self)
         subparsers_hypervisors = parser_hypervisors.add_subparsers(help='hypervisor commands')
+        self.add_metadata_parser(subparsers_hypervisors)
         parser_hypervisors_list = subparsers_hypervisors.add_parser('list', help='lists hypervisors')
         parser_hypervisors_list.add_argument("--fmt", action=ListAction,
                                              default=['uuid', 'name', 'free', 'used'])

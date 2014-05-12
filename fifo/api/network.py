@@ -19,6 +19,7 @@ class Network(Entity):
         parser_networks = subparsers.add_parser('networks', help='network related commands')
         parser_networks.set_defaults(endpoint=self)
         subparsers_networks = parser_networks.add_subparsers(help='network commands')
+        self.add_metadata_parser(subparsers_networks)
         parser_networks_list = subparsers_networks.add_parser('list', help='lists networks')
         parser_networks_list.add_argument("--fmt", action=ListAction,
                                           default=['uuid', 'name','ipranges'])

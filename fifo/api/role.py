@@ -51,6 +51,7 @@ class Role(Entity):
         parser_roles = subparsers.add_parser('roles', help='role related commands')
         parser_roles.set_defaults(endpoint=self)
         subparsers_roles = parser_roles.add_subparsers(help='role commands')
+        self.add_metadata_parser(subparsers_roles)
         parser_roles_list = subparsers_roles.add_parser('list', help='lists roles')
         parser_roles_list.add_argument("--fmt", action=ListAction,
                                           default=['uuid', 'name'])

@@ -19,6 +19,7 @@ class Dtrace(Entity):
         parser_dtraces = subparsers.add_parser('dtrace', help='dtrace related commands')
         parser_dtraces.set_defaults(endpoint=self)
         subparsers_dtraces = parser_dtraces.add_subparsers(help='dtrace commands')
+        self.add_metadata_parser(subparsers_dtraces)
         parser_dtraces_list = subparsers_dtraces.add_parser('list', help='lists dtraces')
         parser_dtraces_list.add_argument("--fmt", action=ListAction,
                                           default=['uuid', 'name'])
