@@ -13,9 +13,11 @@ iprange_fmt = {
     'first':
     {'title': 'First', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['first'])},
     'next':
-    {'title': 'Last', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['current'])},
+    {'title': 'Next', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['current'])},
     'last':
     {'title': 'Last', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['last'])},
+    'returned':
+    {'title': 'Returned', 'len': 15, 'fmt': "%15s", 'get': lambda e: len(d(e, ['free'], []))},
     'gateway':
     {'title': 'Gateway', 'len': 15, 'fmt': "%15s", 'get': lambda e: d(e, ['gateway'])},
     'netmask':
