@@ -20,7 +20,7 @@ from fifo.api.iprange import Iprange
 from fifo.api.dtrace import Dtrace
 
 from fifo.api.user import User
-from fifo.api.group import Group
+from fifo.api.role import Role
 from fifo.api.org import Org
 
 from pprint import pprint
@@ -77,7 +77,7 @@ Iprange(wiggle).make_parser(subparsers)
 Dtrace(wiggle).make_parser(subparsers)
 
 User(wiggle).make_parser(subparsers)
-Group(wiggle).make_parser(subparsers)
+Role(wiggle).make_parser(subparsers)
 Org(wiggle).make_parser(subparsers)
 
 args = parser.parse_args(sys.argv[1:])

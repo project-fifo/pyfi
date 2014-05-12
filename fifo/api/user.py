@@ -7,8 +7,8 @@ user_fmt = {
     {'title': 'UUID', 'len': 36, 'fmt': "%36s", 'get': lambda e: d(e, ['uuid'])},
     'name':
     {'title': 'Name', 'len': 10, 'fmt': "%-10s", 'get': lambda e: d(e, ['name'])},
-    'groups':
-    {'title': 'Groups', 'len': 10, 'fmt': "%-10s", 'get': lambda e: str(d(e, ['groups']))},
+    'roles':
+    {'title': 'Roles', 'len': 10, 'fmt': "%-10s", 'get': lambda e: str(d(e, ['roles']))},
     'orgs':
     {'title': 'Orgs', 'len': 10, 'fmt': "%-10s", 'get': lambda e: str(d(e, ['orgs']))},
 }
@@ -87,15 +87,15 @@ class User(Entity):
         parser_users_delete = subparsers_users.add_parser('delete', help='gets a user')
         parser_users_delete.add_argument("uuid")
         parser_users_delete.set_defaults(func=show_delete)
-        # fifo users create bill -p pass -g group -o org
+        # fifo users create bill -p pass -g role -o org
         parser_users_create = subparsers_users.add_parser('create', help='creates a new user')
         parser_users_create.add_argument("name",
                                          help="Name of the user")
         parser_users_create.add_argument("-p", action='store_true')
         parser_users_create.add_argument("--password", "-P",
                                          help="Password of the user.")
-        parser_users_create.add_argument("--group", "-g",
-                                         help="Group of the user.")
+        parser_users_create.add_argument("--role", "-g",
+                                         help="Role of the user.")
         parser_users_create.add_argument("--organization", "-o",
                                          help="Organization of the user.")
         parser_users_create.set_defaults(func=user_create)

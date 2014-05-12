@@ -4,7 +4,7 @@ fifo \- Project FiFo console API client
 .SH SYNOPSIS
 .B fifo
 [\-h|\-\-help] [\-v|\-\-version] [\-c|\-\-config config] [\-\-host host]
-[\-u|\-\-user user] [\-P|\-\-password password] {datasets, dtrace, groups,
+[\-u|\-\-user user] [\-P|\-\-password password] {datasets, dtrace, roles,
 hypervisors, ipranges, networks, orgs, packages, users, vms} <command>
 .SH DESCRIPTION
 This program allows to use the HTTP/REST API provided by Project FiFo from
@@ -92,34 +92,34 @@ Deletes a dtrace script from the FiFo server.
 .B Be careful
 this can't be undone!
 .TP
-groups list [\-p] [\-H] [\-\-fmt FMT]
-This command lists the groups currently available on the server.
+roles list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the roles currently available on the server.
 
 Valid choices for
 .B FMT
 are: uuid and name.
 .TP
-groups get <uuid|name>
-This command returns the JSON representation of a group object stored
+roles get <uuid|name>
+This command returns the JSON representation of a role object stored
 in the fifo server.
 .TP
-groups delete <uuid|name>
-Deletes a group from the FiFo server.
+roles delete <uuid|name>
+Deletes a role from the FiFo server.
 .B Be careful
 this can't be undone!
 
 Please mind that users will not be automatically removed from the
-group. While this will not cause problems it might end up cluttering
+role. While this will not cause problems it might end up cluttering
 the data base.
 .TP
-groups create [\-p] NAME
-Creates a new group, if \-p is passed only the uuid is returned.
+roles create [\-p] NAME
+Creates a new role, if \-p is passed only the uuid is returned.
 .TP
-groups grant GROUP PERM...
-Grants a group a permission where
+roles grant ROLE PERM...
+Grants a role a permission where
 
-.B GROUP
-is the uuid of the group and
+.B ROLE
+is the uuid of the role and
 
 .B PERM
 is one or more permission elements, i.e. cloud vms create
@@ -149,7 +149,7 @@ orgs create [\-p] NAME
 Creates a new Org, if \-p is passed only the uuid is returned.
 .TP
 hypervisors list [\-p] [\-H] [\-\-fmt FMT]
-This command lists the groups currently available on the server.
+This command lists the roles currently available on the server.
 
 Valid choices for
 .B FMT
@@ -261,21 +261,21 @@ This command lists the users currently available on the server.
 
 Valid choices for
 .B FMT
-are: uuid, name, groups.
+are: uuid, name, roles.
 .TP
 users get <uuid|name>
 This command returns the JSON representation of a user object stored
 in the fifo server.
 .TP
 user delete <uuid|name>
-Deletes a group from the FiFo server.
+Deletes a user from the FiFo server.
 
-Please mind that groups will not be automatically removed from the
+Please mind that roles will not be automatically removed from the
 user. While this will not cause problems it might end up cluttering
 the data base.
 .TP
-users create [\-p] [\-\-password|\-P PASS] [\-\-group|\-g GROUP] [\-\-organization|\-o ORG] NAME
-Creates a new user and optionally sets the password, group and orgnaistation. If \-p is passed only the UUID is returned.
+users create [\-p] [\-\-password|\-P PASS] [\-\-role|\-g ROLE] [\-\-organization|\-o ORG] NAME
+Creates a new user and optionally sets the password, role and orgnaistation. If \-p is passed only the UUID is returned.
 .TP
 users grant USER PERM...
 Grants a user a permission where.
@@ -308,7 +308,7 @@ vms metadata <uuid|alias>
 Retrieves the FiFo metadata associated with the VM.
 .TP
 vms delete <uuid|alias> [\-l]
-Deletes a group from the FiFo server.
+Deletes a vm.
 
 .B Beware
 this can't be undone all data associated with this VM, along with
