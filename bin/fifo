@@ -18,6 +18,7 @@ from fifo.api.dataset import Dataset
 from fifo.api.network import Network
 from fifo.api.iprange import Iprange
 from fifo.api.dtrace import Dtrace
+from fifo.api.groupings import Grouping
 
 from fifo.api.user import User
 from fifo.api.role import Role
@@ -75,6 +76,7 @@ Dataset(wiggle).make_parser(subparsers)
 Network(wiggle).make_parser(subparsers)
 Iprange(wiggle).make_parser(subparsers)
 Dtrace(wiggle).make_parser(subparsers)
+Grouping(wiggle).make_parser(subparsers)
 
 User(wiggle).make_parser(subparsers)
 Role(wiggle).make_parser(subparsers)

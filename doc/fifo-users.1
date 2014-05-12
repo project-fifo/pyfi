@@ -1,0 +1,67 @@
+.TH fifo-users 1  "Jan 1, 2014" "version 0.1.19" "USER COMMANDS"
+.SH NAME
+fifo-users \- User related commnads for the FiFo API
+.SH SYNOPSIS
+.B fifo users
+[\-h] {metadata,list,get,delete,create,grant}
+
+.SH DESCRIPTION
+This programm allows modifying, creating and creating XXX.
+
+.SH OPTIONS
+.TP
+\-h
+displays a inline help.
+
+.SH COMMANDS
+.TP
+users list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the users currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name, roles.
+.TP
+users get <uuid|name>
+This command returns the JSON representation of a user object stored
+in the fifo server.
+.TP
+user delete <uuid|name>
+Deletes a user from the FiFo server.
+
+Please mind that roles will not be automatically removed from the
+user. While this will not cause problems it might end up cluttering
+the data base.
+.TP
+users create [\-p] [\-\-password|\-P PASS] [\-\-role|\-g ROLE] [\-\-organization|\-o ORG] NAME
+Creates a new user and optionally sets the password, role and orgnaistation. If \-p is passed only the UUID is returned.
+.TP
+users grant USER PERM...
+Grants a user a permission where.
+
+.B USER
+is the uuid of the user.
+
+.B PERM
+is one or more permission elements, i.e. cloud vms create
+.TP
+users metadata <uuid> get
+Reads the metadata.
+.TP
+users metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+users metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+.SH AUTHOR
+Heinz N. 'Licenser' Gies (heinz (at) licenser.net)
+.SH SEE ALSO
+fifo(1), fifo-orgs(1), fifo-roles(1)

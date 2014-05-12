@@ -1,0 +1,56 @@
+.TH fifo-dtrace 1  "Jan 1, 2014" "version 0.1.19" "USER COMMANDS"
+.SH NAME
+fifo-dtrace \- Dtrace related commnads for the FiFo API
+.SH SYNOPSIS
+.B fifo dtrace
+[\-h] {metadata,list,get,delete,create,add,remove}
+
+.SH DESCRIPTION
+This programm allows modifying, creating and creating dtrace.
+
+.SH OPTIONS
+.TP
+\-h
+displays a inline help.
+
+.SH COMMANDS
+.TP
+dtrace list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the dtrace scripts currently available on the
+server.
+
+Valid choices for
+.B FMT
+are: uuid and name.
+.TP
+dtrace get <uuid|name>
+This command returns the JSON representation of a dtrace script
+object stored in the fifo server.
+.TP
+dtrace delete <uuid|name>
+Deletes a dtrace script from the FiFo server.
+.B Be careful
+this can't be undone!
+.TP
+dtrace metadata <uuid> get
+Reads the metadata.
+.TP
+dtrace metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+dtrace metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+
+.SH AUTHOR
+Heinz N. 'Licenser' Gies (heinz (at) licenser.net)
+
+.SH SEE ALSO
+fifo(1)

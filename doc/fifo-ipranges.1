@@ -1,0 +1,53 @@
+.TH fifo-ipranges 1  "Jan 1, 2014" "version 0.1.19" "USER COMMANDS"
+.SH NAME
+fifo-ipranges \- IP Range related commnads for the FiFo API
+.SH SYNOPSIS
+.B fifo ipranges
+[\-h] {metadata,list,get,delete}
+
+.SH DESCRIPTION
+This programm allows modifying, creating and creating ipranges.
+
+.SH OPTIONS
+.TP
+\-h
+displays a inline help.
+
+.SH COMMANDS
+.TP
+ipranges list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the networks currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name, tag, network, first, next, last, gateway, returned and netmask.
+.TP
+ipranges get <uuid|name>
+This command returns the JSON representation of a network object stored
+in the fifo server.
+.TP
+ipranges delete <uuid|name>
+Deletes a network from the FiFo server.
+.TP
+ipranges metadata <uuid> get
+Reads the metadata.
+.TP
+ipranges metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+ipranges metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+
+.SH AUTHOR
+Heinz N. 'Licenser' Gies (heinz (at) licenser.net)
+
+.SH SEE ALSO
+fifo(1), fifo-networks(1)

@@ -1,0 +1,62 @@
+.TH fifo-datasets 1  "Jan 1, 2014" "version 0.1.19" "USER COMMANDS"
+.SH NAME
+fifo-datasets \- datasets related commnads for the FiFo API
+.SH SYNOPSIS
+.B fifo datasets
+[\-h] {metadata,list,get,delete,create,add,remove}
+
+.SH DESCRIPTION
+This programm allows modifying, creating and creating datasets.
+
+.SH OPTIONS
+.TP
+\-h
+displays a inline help.
+
+.SH COMMANDS
+.TP
+datasets list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the datasets currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name, version, type and description.
+.TP
+datasets get <uuid|name>
+This command returns the JSON representation of a dataset object
+stored in the fifo server.
+
+Where the name is combined from name-version (i.e. base64-1.9.1)
+.TP
+datasets delete <uuid|name>
+Deletes a dataset from the FiFo server, also the linked image will
+be removed from the database.
+.B Be careful
+this can't be undone!
+
+No VM's running the dataset will be affected and the dataset will
+.B NOT
+be removed from the hypervisors.
+.TP
+datasets metadata <uuid> get
+Reads the metadata.
+.TP
+datasets metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+datasets metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+
+.SH AUTHOR
+Heinz N. 'Licenser' Gies (heinz (at) licenser.net)
+
+.SH SEE ALSO
+fifo(1)

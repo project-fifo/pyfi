@@ -1,0 +1,186 @@
+.TH fifo-vms 1  "Jan 1, 2014" "version 0.1.19" "USER COMMANDS"
+.SH NAME
+fifo-vms \- VM related commnads for the FiFo API
+.SH SYNOPSIS
+.B fifo vms
+[\-h] {metadata,list,get,svcs,svcadm,delete,create,info,start,stop,reboot,snapshots,backups}
+
+.SH DESCRIPTION
+This program allows to mange, create and destroy FiFo VMs.
+
+.SH OPTIONS
+.TP
+\-h
+displays a inline help.
+
+.SH COMMANDS
+.TP
+vms list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the users currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, alias, ip, state and hypervisor.
+.TP
+vms get <uuid|alias>
+This command returns the JSON representation of a vm's configuration
+as stored in teh Fifo server.
+
+If multiple VM's with the same alias exist the first one found will
+be returned, since there is no guaranteed order the result may vary.
+.TP
+vms info <uuid|alias>
+This command gets the info section of the VM containing for example
+VNC information (only applicable for KVM VMs).
+.TP
+vms delete <uuid|alias> [\-l]
+Deletes a vm.
+
+.B Beware
+this can't be undone all data associated with this VM, along with
+all of it's snapshots will be deleted forever!
+
+If \-l is passed the vm is only deleted
+from the hypervisor but not from the system and goes into a stored state.
+.TP
+vms metadata <uuid> get
+Reads the metadata.
+.TP
+vms metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+vms metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+.TP
+vms svcs [\-a] [\-p] [\-H] [\-j] <uuid|alias>
+Returns the status of the SMF services on the zone, only really makes sense for
+SmartOS zones and not for KVM machines since there is no visibility inside
+the KVM.
+
+\-a will list all servies even disabled ones.
+
+\-p will print in a consumable tab seperated format.
+
+\-H will supress the header being printed.
+
+\-j will print the full JSON.
+.TP
+vms svcadm <uuid|alias> enable|disable|clear <service>
+Changes toe state of <service> on the given vm <uuid>.
+.TP
+vms create \-\-package|\-p <package uuid|name> \-\-dataset|\-d <dataset uuid|name> [\-\-file|\-f <config json file>]
+This commands creates a new VM on the FiFo system. Both <package uuid>
+and <dataset uuid> have to be valid uuid's or names. If uuid's are passed
+no checks are done on the client side.
+
+If no config.json file is given as argument it is read from the
+STDIN. Please see fifo-vmconfig(5) for details on the structure of
+the file.
+.TP
+vms start <uuid|alias>
+Starts the VM on the server, this will do no harm when the VM is
+already in a running or booting state.
+.TP
+vms stop [\-f] <uuid|alias>
+Stops a VM on the server, if the \-f option is given this is forced.
+The command does no harm to already stopped VM's. Non the less the
+\-f option can be
+.B harmful
+to programs running in the VM.
+.TP
+vm reboot [\-f] <uuid|alias>
+.TP
+Set the maximum speed to 8 speed cdrom:
+Reboots a VM on the server, if the \-f option is given this is
+forced. The command does no harm to already stopped VM's. Non the
+less the \-f option can be
+.B harmful
+to programs running in the VM.
+.TP
+vms snapshots <vm uuid|alias> list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the snapshots registered for the given <vm uuid>.
+
+Valid choices for
+.B FMT
+are: uuid, timestamp and comment.
+.TP
+vms snapshots <vm uuid> get <uuid|name>
+This command returns the JSON representation of a snapshot configuration
+as stored in teh FiFo server.
+.TP
+vms snapshots <vm uuid|alias> create "<comment>"
+Creates a new snapshot of the <vm uuid>, it is advised to power down
+the VM for this action even so it is technically working on running VM's
+but might leave applications in a broken state.
+.TP
+vms snapshots <vm uuid|alias> delete <uuid|name>
+Removes a snapshot from the hypervisor.
+.TP
+vms snapshots <vm uuid|alias> rollback <uuid>
+Rolls back the state of a VM, the VM has to be powered off for this. Be
+aware that all snapshots newer then <uuid> will be deleted as part of
+this process.
+.TP
+vms backups <vm uuid|alias> list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the backups for for the given <vm uuid>.
+
+Valid choices for
+.B FMT
+are: uuid, timestamp, parent, local, size and comment.
+.TP
+vms backups <vm uuid> get <uuid|name>
+This command returns the JSON representation of a backup configuration
+as stored in teh FiFo server.
+.TP
+vms backup <vm uuid|alias> create [\-d] [\-\-parent parent] [\-x] "<comment>"
+Creates a new backup of the <vm uuid>, it is advised to power down
+the VM for this action even so it is technically working on running VM's
+but might leave applications in a broken state. By default a full backup
+will be created this can be changed by passing the \-\-parent option with
+the
+.B uuid
+of the parent snapshot.
+
+If \-d is passed no local copy will be left on the hypervisor unless
+\-\-parent is passed then the new snapshot is keeped but the parent is
+deleted.
+
+The \-x option will also upload the VM's .xml config file, this will
+be used to recreate snapshots after total node failure.
+.TP
+vms backup <vm uuid|alias> delete [\-l] <uuid|name>
+Removes the backup, if \-l is passed it will stay in the cloud storage
+and only be removed form the hypervisor.
+.TP
+vms backup <vm uuid|alias> restore [\-\-hypervisor <hypervisor>] <uuid>
+Restores the backup, trying to find the quickeset way to restore using
+combinations of local, full an incremental backups.
+
+If \-\-hypervisor is passed the VM is restored onto a specific hypervisor.
+
+.SH EXAMPLES
+.TP
+Lists all VM's in parsable format:
+.B fifo
+vms list \-p \-H
+.PP
+.TP
+Restore maximum speed:
+.B fifo
+vms create
+\-\-package 6fbe6997-e662-4235-b878-3bea5d05d9f5
+\-\-dataset cf7e2f40-9276-11e2-af9a-0bad2233fb0b
+\-\-config example.json
+.PP
+.SH AUTHOR
+Heinz N. 'Licenser' Gies (heinz (at) licenser.net)
+.SH SEE ALSO
+fifo(1), fifo-vmconfig(5)

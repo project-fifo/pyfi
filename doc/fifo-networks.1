@@ -1,0 +1,53 @@
+.TH fifo-networks 1  "Jan 1, 2014" "version 0.1.19" "USER COMMANDS"
+.SH NAME
+fifo-networks \- Network related commnads for the FiFo API
+.SH SYNOPSIS
+.B fifo networks
+[\-h] {metadata,list,get,delete}
+
+.SH DESCRIPTION
+This programm allows modifying, creating and creating networks.
+
+.SH OPTIONS
+.TP
+\-h
+displays a inline help.
+
+.SH COMMANDS
+.TP
+networks list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the networks currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name, ipranges.
+.TP
+networks get <uuid|name>
+This command returns the JSON representation of a network object stored
+in the fifo server.
+.TP
+networks delete <uuid|name>
+Deletes a network from the FiFo server.
+.TP
+networks metadata <uuid> get
+Reads the metadata.
+.TP
+networks metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+networks metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+
+.SH AUTHOR
+Heinz N. 'Licenser' Gies (heinz (at) licenser.net)
+
+.SH SEE ALSO
+fifo(1), fifo-ipranges(1)

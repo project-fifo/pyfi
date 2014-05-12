@@ -1,0 +1,53 @@
+.TH fifo-hypervisors 1  "Jan 1, 2014" "version 0.1.19" "USER COMMANDS"
+.SH NAME
+fifo-hypervisors \- Hypervisor related commnads for the FiFo API
+.SH SYNOPSIS
+.B fifo hypervisors
+[\-h] {metadata,list,get}
+
+.SH DESCRIPTION
+This programm allows modifying, creating and creating hypervisors.
+
+.SH OPTIONS
+.TP
+\-h
+displays a inline help.
+
+.SH COMMANDS
+.TP
+hypervisors list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the roles currently available on the server.
+
+Valid choices for
+.B FMT
+are: name, free, used, reserved, total, smartos, ip.
+
+Where free, used, reserved and total stand for memory usage and smartos
+represents the current SmartOS version running on the hypervisor.
+.TP
+hypervisors get <uuid|name>
+This command returns the JSON representation of a hypervisor object
+stored in the fifo server.
+.TP
+hypervisors metadata <uuid> get
+Reads the metadata.
+.TP
+hypervisors metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+hypervisors metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+
+.SH AUTHOR
+Heinz N. 'Licenser' Gies (heinz (at) licenser.net)
+
+.SH SEE ALSO
+fifo(1)

@@ -1,0 +1,80 @@
+.TH fifo-groupings 1  "Jan 1, 2014" "version 0.1.19" "USER COMMANDS"
+.SH NAME
+fifo-groupings \- Grouping related commnads for the FiFo API
+.SH SYNOPSIS
+.B fifo groupings
+[\-h] {metadata,list,get,delete,create,add,remove}
+
+.SH DESCRIPTION
+This program allows to manipulate, create and destroy groupings.
+
+.SH OPTIONS
+.TP
+\-h
+displays a inline help.
+
+.SH COMMANDS
+.TP
+list [\-p] [\-H] [\-\-fmt FMT]
+This command lists all groupings.
+
+Valid choices for
+.B FMT
+are: uuid, name, type, elements and groupings.
+.TP
+get UUID
+Reads the grouping with the given
+.B UUID
+from the database.
+.TP
+delete UUID
+Deletes the grouping with the given
+.B UUID
+from the database.
+.TP
+create --type {stack,cluster} NAME
+Creates a new grouping with
+.B NAME
+and marks it as a stack or cluster.
+.TP
+add STACK cluster CLUSTER
+Adds a existing
+.B CLUSTER
+to the
+.B STACK
+given as first argument.
+.TP
+remove STACK cluster CLUSTER
+Removes a
+.B CLUSTER
+to the
+.B STACK
+given as first argument.
+.TP
+remove CLUSTER vm VM
+Removes a
+.B VM
+to the
+.B CLUSTER
+given as first argument.
+.TP
+groupings metadata <uuid> get
+Reads the metadata.
+.TP
+groupings metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+groupings metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+.SH AUTHOR
+Heinz N. 'Licenser' Gies (heinz (at) licenser.net)
+.SH SEE ALSO
+fifo(1), fifo-vms(1)

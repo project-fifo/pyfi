@@ -1,0 +1,104 @@
+.TH fifo-packages 1  "Jan 1, 2014" "version 0.1.19" "USER COMMANDS"
+.SH NAME
+fifo-packages \- Package related commnads for the FiFo API
+.SH SYNOPSIS
+.B fifo packages
+[\-h] {metadata,list,get,delete,create}
+
+.SH DESCRIPTION
+This programm allows modifying, creating and creating packages.
+
+.SH OPTIONS
+.TP
+\-h
+displays a inline help.
+
+.SH COMMANDS
+.TP
+packages list [\-p] [\-H] [\-\-fmt FMT]
+This command lists the packages currently available on the server.
+
+Valid choices for
+.B FMT
+are: uuid, name, title, quota and ram.
+.TP
+packages get <uuid|name>
+This command returns the JSON representation of a package object stored
+in the fifo server.
+.TP
+packages delete <uuid|name>
+Deletes a package from the FiFo server. This does not affect VM's
+currently using the package.
+.TP
+packages create <name>
+                \-\-memory|\-m MEMORY[B|KB|MB|GB|TB|PB|EB]
+                \-\-quota|\-q QUOTA[B|KB|MB|GB|TB|PB|EB]
+                \-\-cpu_cap|\-c CAP
+                \-\-requirement|\-r WIGHT ATTR COND VAL
+                \-\-scale|\-s ATTR LOW HIGH
+                \-\-random|\-R LOW HIGH
+Creates a new package, memory, quota, cpu_cap and name are requried. In addition one or more requirement, scale, or random rule can be added.
+
+.B \-\-requirement
+rules are either enforced, forbidden or gives points to a hypervisor, they are used to rate and find the best hypervisor.
+
+.B \-\-scale
+rules help to give points to hypervisor based on their position in a linar scale over a given attirbute
+
+.B \-\-random
+rules just generate a random number of points for each hypervisor.
+
+.B MEMORY
+is given in bytes with optional modifyers of scale, please be aware that the minimal unit is 1MB.
+
+.B QUOTA
+is given in bytes with optional modifyers of scale, please be aware that the minimal unit is 1GB.
+
+.B CAP
+is the percentage of cpu cores, meaning 100 equals 1 core, 200 equals 2 cores, etc.
+
+.B WIGHT
+can be one of
+.B must
+,
+.B cant
+or am
+.B integer
+(either positive or negative).
+
+.B ATTR
+is a json path towards the attribute to look up, something like resources.free-memory
+
+.B COND
+is the compare condition one of >=, |>, =<, <, =:=, =/=, subset, superset, disjoint, element
+
+.B VAL
+is the value to compare against, it can either be a string or a number, currently arrays are not supported
+
+.B LOW
+and
+.B HIGH
+are integers where LOW < HIGH.
+
+.TP
+packages metadata <uuid> get
+Reads the metadata.
+.TP
+packages metadata <uuid> set <key> [\-\-json|\-j|\-\-integer|\-i|
+\-\-float|\-f|\-\-string|\-s] <value>
+Sets the metadata where
+.B <key>
+can be a nested period seperated JSON path. If no type is
+specified the value will be treated as string.
+.TP
+packages metadata <uuid> delete <key>
+Deletes the
+.B <key>
+in the metadata. The
+.B <key>
+can be a nested period seperated JSON path.
+
+.SH AUTHOR
+Heinz N. 'Licenser' Gies (heinz (at) licenser.net)
+.SH SEE ALSO
+fifo(1)

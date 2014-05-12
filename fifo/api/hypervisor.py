@@ -12,6 +12,9 @@ hypervisor_fmt = {
     'used':
     {'title': 'Used RAM', 'len': 10, 'fmt': "%10s",
      'get': lambda e: str(d(e, ['resources', 'provisioned-memory'])) + "MB"},
+    'reserved':
+    {'title': 'Reserved RAM', 'len': 10, 'fmt': "%10s",
+     'get': lambda e: str(d(e, ['resources', 'reserved-memory'])) + "MB"},
     'total':
     {'title': 'Total RAM', 'len': 10, 'fmt': "%10s",
      'get': lambda e: str(d(e, ['resources', 'total-memory'])) + "MB"},
