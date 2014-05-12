@@ -12,4 +12,4 @@ man:
 
 
 rel:
-	python setup.py bdist upload
+	python setup.py bdist sdist upload -s
