@@ -1,3 +1,5 @@
+LAST_VER=0.1.19
+NEXT_VER=0.1.20
 .phony: package clean
 
 package:
@@ -13,3 +15,6 @@ man:
 
 rel:
 	python setup.py bdist sdist upload -s
+
+update-ver:
+	for i in doc/*{1,5} setup.py bin/fifo; do sed -e 's/${LAST_VER}/${NEXT_VER}/' -i '' $$i; done
