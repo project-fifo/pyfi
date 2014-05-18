@@ -8,9 +8,9 @@ class Wiggle:
         self._token = False
         self
     def init(self, host, user, pw, token):
-	self.host = host
+        self.host = host
         self.headers = {"Content-type": "application/json;charset=UTF-8",
-                        "Accept": "application/json"}
+                "Accept": "application/json"}
         if token:
             if not self.set_token(token):
                 self.connect(user, pw)
@@ -18,7 +18,7 @@ class Wiggle:
             self.connect(user, pw)
 
     def conn(self):
-	return httplib.HTTPSConnection(self.host)
+        return httplib.HTTPSConnection(self.host)
 
     def get_token(self):
         return self._token
@@ -30,7 +30,7 @@ class Wiggle:
 
     def get(self, resource, entity):
         conn = self.conn()
-	conn.request("GET", "/api/0.1.0/" + resource + "/" + entity, "", self.headers)
+        conn.request("GET", "/api/0.1.0/" + resource + "/" + entity, "", self.headers)
         response = conn.getresponse()
         if (response.status != 200):
             return False
@@ -160,7 +160,7 @@ class Wiggle:
             return False
 
     def list(self, resource):
-	conn = self.conn();
+        conn = self.conn()
         conn.request("GET", "/api/0.1.0/" + resource, "", self.headers)
         response = conn.getresponse()
         if (response.status != 200):
@@ -169,11 +169,11 @@ class Wiggle:
             return json.loads(response.read())
 
     def full_list(self, resource, fields):
-	conn = self.conn();
-        hdrs = self.headers;
-        hdrs["x-full-list"] = "true";
+        conn = self.conn()
+        hdrs = self.headers
+        hdrs["x-full-list"] = "true"
         if fields != []:
-            hdrs["x-full-list-fields"] = ",".join(fields);
+            hdrs["x-full-list-fields"] = ",".join(fields)
         conn.request("GET", "/api/0.1.0/" + resource, "", hdrs)
         response = conn.getresponse()
         if (response.status != 200):
@@ -182,7 +182,7 @@ class Wiggle:
             return json.loads(response.read())
 
     def connect(self, user, pw):
-	conn = self.conn();
+        conn = self.conn()
         conn.request("POST", "/api/0.1.0/sessions",  json.dumps({"user":user, "password": pw}), self.headers)
         response = conn.getresponse()
         if (response.status == 303):
@@ -191,7 +191,6 @@ class Wiggle:
             return self._token
         else:
             return False
-
 
 class Cloud:
     def __init__(self, wiggle):
@@ -225,7 +224,6 @@ class Entity:
     def _delete_attr(self, uuid, entity):
         uuid = self.uuid_by_name(uuid)
         return self._wiggle.delete_attr(self._resource, uuid, entity)
-
 
     def _delete_attr_body(self, uuid, entity, body):
         uuid = self.uuid_by_name(uuid)
@@ -302,7 +300,6 @@ class Entity:
         parser_mdata_del = subparsers_metadata.add_parser('delete', help='deletes metadata')
         parser_mdata_del.set_defaults(func=mdata_delete)
         parser_mdata_del.add_argument("key", help="key of the metadata")
-
 
 
 def mdata_get(args):
