@@ -6,7 +6,8 @@ from fifo.helper import *
 class Wiggle:
     def __init__(self):
         self._token = False
-        self
+        self._apiEndpoint = "/api/0.4.4/"
+
     def init(self, host, user, pw, token):
         self.host = host
         self.headers = {"Content-type": "application/json;charset=UTF-8",
@@ -30,7 +31,7 @@ class Wiggle:
 
     def get(self, resource, entity):
         conn = self.conn()
-        conn.request("GET", "/api/0.1.0/" + resource + "/" + entity, "", self.headers)
+        conn.request("GET", self._apiEndpoint + resource + "/" + entity, "", self.headers)
         response = conn.getresponse()
         if (response.status != 200):
             return False
@@ -39,7 +40,7 @@ class Wiggle:
 
     def delete(self, resource, entity):
         conn = self.conn()
-        conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity, "", self.headers)
+        conn.request("DELETE", self._apiEndpoint + resource + "/" + entity, "", self.headers)
         response = conn.getresponse()
         if (response.status >= 200 and response.status < 300):
             return True
@@ -48,7 +49,7 @@ class Wiggle:
 
     def delete_body(self, resource, entity, body):
         conn = self.conn()
-        conn.request("DELETE", "/api/0.1.0/" + resource + "/" + entity, json.dumps(body), self.headers)
+        conn.request("DELETE", self._apiEndpoint + resource + "/" + entity, json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status >= 200 and response.status < 300):
             return True
@@ -59,7 +60,7 @@ class Wiggle:
         conn = self.conn()
         if isinstance(attr, str):
             attr = [attr]
-        url = "/api/0.1.0/" + resource + "/" + entity + "/" + "/".join(attr)
+        url = self._apiEndpoint + resource + "/" + entity + "/" + "/".join(attr)
         conn.request("DELETE", url, "", self.headers)
         response = conn.getresponse()
         if (response.status < 300 and response.status >= 300):
@@ -71,7 +72,7 @@ class Wiggle:
         conn = self.conn()
         if isinstance(attr, str):
             attr = [attr]
-        url = "/api/0.1.0/" + resource + "/" + entity + "/" + "/".join(attr)
+        url = self._apiEndpoint + resource + "/" + entity + "/" + "/".join(attr)
         conn.request("DELETE", url, json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status < 300 and response.status >= 300):
@@ -83,7 +84,7 @@ class Wiggle:
         conn = self.conn()
         if isinstance(attr, str):
             attr = [attr]
-        url = "/api/0.1.0/" + resource + "/" + entity + "/" + "/".join(attr)
+        url = self._apiEndpoint + resource + "/" + entity + "/" + "/".join(attr)
         conn.request("PUT", url, json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status < 300 and response.status >= 300):
@@ -95,7 +96,7 @@ class Wiggle:
         conn = self.conn()
         if isinstance(attr, str):
             attr = [attr]
-        url = "/api/0.1.0/" + resource + "/" + entity + "/" + "/".join(attr)
+        url = self._apiEndpoint + resource + "/" + entity + "/" + "/".join(attr)
         conn.request("POST", url, json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status == 303):
@@ -116,7 +117,7 @@ class Wiggle:
         conn = self.conn()
         if isinstance(attr, str):
             attr = [attr]
-        url = "/api/0.1.0/" + resource + "/" + entity + "/" + "/".join(attr)
+        url = self._apiEndpoint + resource + "/" + entity + "/" + "/".join(attr)
         conn.request("GET", url, "", self.headers)
         response = conn.getresponse()
         if (response.status != 200):
@@ -128,7 +129,7 @@ class Wiggle:
         conn = self.conn()
         if isinstance(entity, str):
             entity = [entity]
-        url = "/api/0.1.0/" + resource + "/" + "/".join(entity)
+        url = self._apiEndpoint + resource + "/" + "/".join(entity)
         conn.request("PUT", url, json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status != 200):
@@ -140,7 +141,7 @@ class Wiggle:
         conn = self.conn()
         if isinstance(resource, str):
             resource = [resource]
-        url = "/api/0.1.0/" + "/".join(resource)
+        url = self._apiEndpoint + "/".join(resource)
         conn.request("POST", url, json.dumps(body), self.headers)
         response = conn.getresponse()
         if (response.status == 303):
@@ -161,7 +162,7 @@ class Wiggle:
 
     def list(self, resource):
         conn = self.conn()
-        conn.request("GET", "/api/0.1.0/" + resource, "", self.headers)
+        conn.request("GET", self._apiEndpoint + resource, "", self.headers)
         response = conn.getresponse()
         if (response.status != 200):
             return False
@@ -174,7 +175,7 @@ class Wiggle:
         hdrs["x-full-list"] = "true"
         if fields != []:
             hdrs["x-full-list-fields"] = ",".join(fields)
-        conn.request("GET", "/api/0.1.0/" + resource, "", hdrs)
+        conn.request("GET", self._apiEndpoint + resource, "", hdrs)
         response = conn.getresponse()
         if (response.status != 200):
             return False
@@ -183,7 +184,7 @@ class Wiggle:
 
     def connect(self, user, pw):
         conn = self.conn()
-        conn.request("POST", "/api/0.1.0/sessions",  json.dumps({"user":user, "password": pw}), self.headers)
+        conn.request("POST", self._apiEndpoint + "sessions",  json.dumps({"user":user, "password": pw}), self.headers)
         response = conn.getresponse()
         if (response.status == 303):
             self._token = response.getheader("X-Snarl-Token")
