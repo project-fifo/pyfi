@@ -1,3 +1,5 @@
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+
 import httplib
 import json
 from pprint import pprint
