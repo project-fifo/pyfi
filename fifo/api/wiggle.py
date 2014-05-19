@@ -8,9 +8,9 @@ from fifo.helper import *
 class Wiggle:
     def __init__(self):
         self._token = False
-        self._apiEndpoint = "/api/0.4.4/"
+        self._apiEndpoint = "/api/0.1.0/"
 
-    def init(self, host, user, pw, token):
+    def init(self, host, user, pw, token, apiVersion):
         self.host = host
         self.headers = {"Content-type": "application/json;charset=UTF-8",
                 "Accept": "application/json"}
@@ -19,6 +19,8 @@ class Wiggle:
                 self.connect(user, pw)
         else:
             self.connect(user, pw)
+        if apiVersion:
+            self._apiEndpoint = "/api/" + apiVersion + "/"
 
     def conn(self):
         return httplib.HTTPSConnection(self.host)
