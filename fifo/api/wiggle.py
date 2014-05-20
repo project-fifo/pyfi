@@ -5,9 +5,12 @@ import json
 from pprint import pprint
 from fifo.helper import *
 
+_conn = None;
+
 class Wiggle:
     def __init__(self):
         self._token = False
+        self._conn = None
         self._apiEndpoint = "/api/0.1.0/"
 
     def init(self, host, user, pw, token, apiVersion):
@@ -23,8 +26,13 @@ class Wiggle:
             self._apiEndpoint = "/api/" + apiVersion + "/"
 
     def conn(self):
-        vprint("> Will connect to: ", self.host)
-        return httplib.HTTPSConnection(self.host)
+        global _conn
+        if _conn:
+            pass
+        else:
+            vprint("> Will connect to: ", self.host)
+            _conn = httplib.HTTPSConnection(self.host)
+        return _conn
 
     def get_token(self):
         return self._token
@@ -34,9 +42,9 @@ class Wiggle:
         self.headers["X-Snarl-Token"] = self._token
         return self.get("sessions", token)
 
-    def get(self, resource, entity, rawResponse=False):
+    def get(self, resource, entity, suffix="", rawResponse=False):
         conn = self.conn()
-        vprint("> Will request: GET", self._apiEndpoint + resource + "/" + entity, "", self.headers)
+        vprint("> Will request: GET", self._apiEndpoint + resource + "/" + entity + suffix, "", self.headers)
         conn.request("GET", self._apiEndpoint + resource + "/" + entity, "", self.headers)
         response = conn.getresponse()
         vprint("> Got response with status: ", response.status)
@@ -276,6 +284,10 @@ class Entity:
     def delete_body(self, uuid, body):
         uuid = self.uuid_by_name(uuid)
         return self._wiggle.delete_body(self._resource, uuid, body)
+
+    def get_bindata(self, uuid, target):
+        uuid = self.uuid_by_name(uuid)
+        return self._wiggle.get(self._resource, uuid, suffix=target, rawResponse=True)
 
     def get_metadata(self, uuid):
         uuid = self.uuid_by_name(uuid)
