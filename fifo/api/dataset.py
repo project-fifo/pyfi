@@ -1,8 +1,10 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
+import sys
 from .wiggle import Entity
 from fifo.helper import *
-
+import httplib
+import json
 
 dataset_fmt = {
     'uuid':
@@ -17,15 +19,57 @@ dataset_fmt = {
     {'title': 'Description', 'len': 10, 'fmt': "%-30s", 'get': lambda e: d(e, ['description'])},
 }
 
+def _write_bindata(response):
+    amt = 4096
+    try:
+        data = response.read(amt)
+    except httplib.IncompleteRead, e:
+        data = e.partial
+        sys.stdout.write(data)
+        sys.stdout.flush()
+        return
+
+    while data:
+        sys.stdout.write(data)
+        sys.stdout.flush()
+        try:
+            data = response.read(amt)
+        except httplib.IncompleteRead, e:
+            vprint("Incomplete read captured")
+            data = e.partial
 
 def dataset_get(args):
-    pass
+    response = args.endpoint.get_bindata(args.uuid, "/dataset.gz")
+    if response:
+        vprint("Headers:", response.getheaders())
+        _write_bindata(response)
 
 def dataset_put(args):
-    pass
+    try:
+        f = open(args.upload, "r")
+    except:
+        print "Can not open upload file: %s" % args.upload
+        exit(1)
+    response = args.endpoint._put_file(args.uuid,  "/dataset.gz", f)
+    if response:
+        if response == 204:
+            print "Imported!"
+        else:
+            print response
 
 def datasets_post(args):
-    pass
+    try:
+        f = open(args.upload, "r")
+    except:
+        print "Can not open upload file: %s" % args.upload
+        exit(1)
+    response = args.endpoint._post_file(args.uuid, f)
+    f.close()
+    if response:
+        if response == 201:
+            print "Created!"
+        else:
+            print response
 
 class Dataset(Entity):
     def __init__(self, wiggle):
@@ -65,5 +109,6 @@ class Dataset(Entity):
         parser_datasets_delete.add_argument("uuid")
         parser_datasets_delete.set_defaults(func=show_delete)
         parser_datasets_post = subparsers_datasets.add_parser('post', help='imports a dataset manifest')
+        parser_datasets_post.add_argument("uuid")
         parser_datasets_post.add_argument('--upload', '-u', help="the dataset's manifest file to be uploaded")
         parser_datasets_post.set_defaults(func=datasets_post)

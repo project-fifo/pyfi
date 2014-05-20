@@ -65,16 +65,15 @@ class Grouping(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
         self._resource = "groupings"
+
     def create(self, name, type):
-        return self._post({"name": name,
-                           "type": type})
+        return self._post({"name": name, "type": type})
 
     def add_element(self, uuid, element):
         return self._put_attr(uuid, ['elements', element], {})
 
     def delete_element(self, uuid, element):
         return self._delete_attr(uuid, ['elements', element])
-
 
     def make_parser(self, subparsers):
         parser_groupings = subparsers.add_parser('groupings', help='grouping related commands')
@@ -111,6 +110,3 @@ class Grouping(Entity):
         parser_groupings_remove.add_argument("type", type=str, choices=["vm", "cluster"])
         parser_groupings_remove.add_argument("target")
         parser_groupings_remove.set_defaults(func=grouping_remove)
-
-
-

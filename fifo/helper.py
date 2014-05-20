@@ -5,6 +5,7 @@ import argparse
 import json
 import re
 from pprint import pprint
+import sys
 
 # Verbose print support
 # http://stackoverflow.com/questions/5980042/how-to-implement-the-verbose-or-v-option-into-a-script
@@ -12,11 +13,42 @@ from pprint import pprint
 _vprint = lambda *a, **k: None
 
 def vprint(*args):
-    _vprint(*args)
+    _vprint("> ", end="", file=sys.stderr)
+    _vprint(*args, file=sys.stderr)
 
 def init_vprint(verbose):
     global _vprint
     _vprint = print if verbose else lambda *a, **k: None
+
+# curl print support
+_curlprintSwitch = False
+
+def curlprint(host, method, path, headers, data=None, upload=None, file=None, fileMode="ascii"):
+    if _curlprintSwitch:
+        print("> [curl] ", end="", file=sys.stderr)
+        headersp = ' '.join(map(lambda x: '-H "' + x +':' + headers[x] + '"', headers))
+        datap = ''
+        if data:
+            datap = '-d ' + json.dumps(data)
+        filep = ''
+        if file:
+            filep = '--data-' + fileMode + ' @' + file
+        uploadp = ''
+        if upload:
+            uploadp = '-T ' + upload
+        print("curl -X {method} http://{host}{path} {headers_params} {data_params} {upload_params} {file_params}".format(
+            method=method,
+            host=host,
+            path=path,
+            headers_params=headersp,
+            data_params=datap,
+            upload_params=uploadp,
+            file_params=filep
+        ), file=sys.stderr)
+
+def init_curlprint(curl):
+    global _curlprintSwitch
+    _curlprintSwitch = curl
 
 # We need to add a own action for lists as arguments
 class ListAction(argparse.Action):
@@ -108,5 +140,4 @@ def show_delete(args):
         print("Failed to delete " + args.uuid)
         exit(1)
     print(args.uuid + " deleted successful.")
-
 
