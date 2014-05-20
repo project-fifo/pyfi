@@ -23,6 +23,7 @@ class Wiggle:
             self._apiEndpoint = "/api/" + apiVersion + "/"
 
     def conn(self):
+        vprint("> Will connect to: ", self.host)
         return httplib.HTTPSConnection(self.host)
 
     def get_token(self):
@@ -33,14 +34,19 @@ class Wiggle:
         self.headers["X-Snarl-Token"] = self._token
         return self.get("sessions", token)
 
-    def get(self, resource, entity):
+    def get(self, resource, entity, rawResponse=False):
         conn = self.conn()
+        vprint("> Will request: GET", self._apiEndpoint + resource + "/" + entity, "", self.headers)
         conn.request("GET", self._apiEndpoint + resource + "/" + entity, "", self.headers)
         response = conn.getresponse()
+        vprint("> Got response with status: ", response.status)
         if (response.status != 200):
             return False
         else:
-            return json.loads(response.read())
+            if rawResponse:
+                return response
+            else:
+                return json.loads(response.read())
 
     def delete(self, resource, entity):
         conn = self.conn()

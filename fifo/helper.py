@@ -1,9 +1,22 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
+from __future__ import print_function
 import argparse
 import json
 import re
 from pprint import pprint
+
+# Verbose print support
+# http://stackoverflow.com/questions/5980042/how-to-implement-the-verbose-or-v-option-into-a-script
+# below is the 2.x version, may be change in for 3.x version python
+_vprint = lambda *a, **k: None
+
+def vprint(*args):
+    _vprint(*args)
+
+def init_vprint(verbose):
+    global _vprint
+    _vprint = print if verbose else lambda *a, **k: None
 
 # We need to add a own action for lists as arguments
 class ListAction(argparse.Action):
