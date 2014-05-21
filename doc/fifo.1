@@ -3,9 +3,10 @@
 fifo \- Project FiFo console API client
 .SH SYNOPSIS
 .B fifo
-[\-h|\-\-help] [\-v|\-\-version] [\-c|\-\-config config] [\-\-host host]
-[\-u|\-\-user user] [\-P|\-\-password password] {datasets, dtrace, roles,
-hypervisors, ipranges, networks, orgs, packages, users, vms} <command>
+[\-h|\-\-help] [\-V|\-\-version] [\-c|\-\-config config] [\-\-host host]
+[\-u|\-\-user user] [\-P|\-\-password password] [\-v|\-\-verbose] [\-\-curl]
+[\-\-api-version] {datasets, dtrace, roles, hypervisors, ipranges, networks,
+orgs, packages, users, vms} <command>
 .SH DESCRIPTION
 This program allows to use the HTTP/REST API provided by Project FiFo from
 the console and interact with it in a scripted manner.
@@ -17,8 +18,17 @@ arguments or via the config file located (~/.fifo).
 \-h|\-\-help
 display a short help text, can be used for all sub commands
 .TP
-\-v|\-\-version
+\-\-curl
+Turn on print curl synopsis
+.TP
+\-V|\-\-version
 shows the current version
+.TP
+\-v|\-\-verbose
+Enables verbose debugging output
+.TP
+\-\-api-version
+forces the API version, please use carefully.
 .TP
 \-c|\-\-config
 select which section of the config file to use

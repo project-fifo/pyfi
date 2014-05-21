@@ -54,6 +54,20 @@ Deletes the
 in the metadata. The
 .B <key>
 can be a nested period seperated JSON path.
+.TP
+datasets dataset <uuid> get [\-\-out|\-o <file>]
+Downloads the dataset
+.B <uuid>
+and writes it to
+.B <file>.
+If no file is given it will be written to
+.B STDOUT
+.TP
+datasets import \-\-manifest|\-m MANIFEST \-\-dataset|\-d DATASET
+Imports an dataset with a given
+.B MANIFEST
+and
+.B DATASET
 
 .SH AUTHOR
 Heinz N. 'Licenser' Gies (heinz (at) licenser.net)

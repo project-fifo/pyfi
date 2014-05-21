@@ -150,6 +150,8 @@ class Wiggle:
                 return False
             else:
                 return json.loads(response.read())
+        elif (response.status == 201):
+            return 201
         elif (response.status == 200):
             return json.loads(response.read())
         else:

@@ -64,18 +64,13 @@ parser = argparse.ArgumentParser(description='FiFo API client.')
 parser.add_argument("--config", "-c",
                     default=config.get('GENERAL', 'active'),
                     help="Selects the network config to use")
-parser.add_argument("--apiVersion",
-                    help="The api version to use (e.g., " + DEFAULT_APIVERSION + ")")
-parser.add_argument("--host",
-                    help="The host to use (dns or ip no https://)")
-parser.add_argument("--user", '-u',
-                    help="The user to log in with.")
-parser.add_argument("--password", '-P',
-                    help="The password to log in with.")
-parser.add_argument("-v", action='store_true', default=False, help="Turn on verbose mode")
+parser.add_argument("--api-version", help="The api version to use (e.g., " + DEFAULT_APIVERSION + ")")
+parser.add_argument("--host", help="The host to use (dns or ip no https://)")
+parser.add_argument("--user", '-u', help="The user to log in with.")
+parser.add_argument("--password", '-P', help="The password to log in with.")
+parser.add_argument("--verbose", "-v", action='store_true', default=False, help="Turn on verbose mode")
 parser.add_argument("--curl", action='store_true', default=False, help="Turn on print curl synopsis")
-
-parser.add_argument('--version', action='version', version='%(prog)s 0.1.20')
+parser.add_argument('--version', '-V', action='version', version='%(prog)s 0.1.20')
 
 subparsers = parser.add_subparsers(help='sub commands')
 
@@ -101,10 +96,10 @@ if not config.has_section(active_config):
     print("Active configuration " + active_config + " does not exist")
     exit(1)
 
-init_vprint(args.v)
+init_vprint(args.verbose)
 init_curlprint(args.curl)
 
-apiVersion = args.apiVersion or config.get(active_config, 'apiVersion')
+apiVersion = args.api_version or config.get(active_config, 'apiVersion')
 host = args.host or config.get(active_config, 'host')
 user = args.user or config.get(active_config, 'user')
 pw = args.password or config.get(active_config, 'pass')
