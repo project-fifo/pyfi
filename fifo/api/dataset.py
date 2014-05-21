@@ -46,11 +46,8 @@ def dataset_get(args):
         _write_bindata(response, args.out or sys.stdout)
 
 def import_dataset(args):
-    print args
     j = json.load(args.manifest)
-    print j
     uuid = j['uuid']
-    print uuid
     response = args.endpoint._post_attr(uuid, [], j)
     if response == 201:
         print "Manifest imported, uploading dataset now ..."

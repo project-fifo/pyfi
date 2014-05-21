@@ -191,6 +191,8 @@ class Wiggle:
         conn.request("PUT", url, file, hdrs)
         response = conn.getresponse()
         vprint("Status: ", response.status)
+        if (response.status > 200 and response.status > 200):
+            return response.status
         if (response.status != 200):
             return False
         else:
