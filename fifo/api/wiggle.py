@@ -5,12 +5,9 @@ import json
 from pprint import pprint
 from fifo.helper import *
 
-_conn = None;
-
 class Wiggle:
     def __init__(self):
         self._token = False
-        self._conn = None
         self._apiEndpoint = "/api/0.1.0/"
 
     def init(self, host, user, pw, token, apiVersion):
@@ -26,13 +23,7 @@ class Wiggle:
             self.connect(user, pw)
 
     def conn(self):
-        global _conn
-        if _conn:
-            pass
-        else:
-            vprint("Connect to: ", self.host)
-            _conn = httplib.HTTPSConnection(self.host)
-        return _conn
+        return httplib.HTTPSConnection(self.host)
 
     def get_token(self):
         return self._token
