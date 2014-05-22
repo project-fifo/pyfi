@@ -67,20 +67,12 @@ class Dataset(Entity):
     def name_of(self, obj):
         return obj["name"] + "-" + obj["version"]
 
-    def add_dataset_parser(self, subparsers):
-        parser_dataset = subparsers.add_parser('dataset', help='dataset commands')
-        parser_dataset.add_argument('uuid', help='uuid of the element to look at')
-        subparsers_dataset = parser_dataset.add_subparsers(help='dataset commands')
-        parser_dataset_get = subparsers_dataset.add_parser('get', help='Exports the binary dataset')
-        parser_dataset_get.add_argument('--out-', '-o', help="File to write to", type=argparse.FileType('w'))
-        parser_dataset_get.set_defaults(func=dataset_get)
 
     def make_parser(self, subparsers):
         parser_datasets = subparsers.add_parser('datasets', help='dataset related commands')
         parser_datasets.set_defaults(endpoint=self)
         subparsers_datasets = parser_datasets.add_subparsers(help='dataset commands')
         self.add_metadata_parser(subparsers_datasets)
-        self.add_dataset_parser(subparsers_datasets)
         parser_datasets_list = subparsers_datasets.add_parser('list', help='lists datasets')
         parser_datasets_list.add_argument("--fmt", action=ListAction,
                                           default=['uuid', 'name', 'version', 'type', 'description'])
@@ -100,3 +92,8 @@ class Dataset(Entity):
         parser_dataset_import.add_argument('--dataset', '-d', help="dataset to upload",
                                            type=argparse.FileType('r'))
         parser_dataset_import.set_defaults(func=import_dataset)
+        parser_dataset_export = subparsers_datasets.add_parser('export', help='Exports the dataset binary')
+        parser_dataset_export.add_argument('uuid', help='uuid of the element to look at')
+        parser_dataset_export.add_argument('--out', '-o', help="File to write to", type=argparse.FileType('w'))
+        parser_dataset_export.set_defaults(func=dataset_get)
+

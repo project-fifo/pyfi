@@ -70,7 +70,7 @@ parser.add_argument("--user", '-u', help="The user to log in with.")
 parser.add_argument("--password", '-P', help="The password to log in with.")
 parser.add_argument("--verbose", "-v", action='store_true', default=False, help="Turn on verbose mode")
 parser.add_argument("--curl", action='store_true', default=False, help="Turn on print curl synopsis")
-parser.add_argument('--version', '-V', action='version', version='%(prog)s 0.1.21')
+parser.add_argument('--version', '-V', action='version', version='%(prog)s 0.1.22')
 
 subparsers = parser.add_subparsers(help='sub commands')
 
