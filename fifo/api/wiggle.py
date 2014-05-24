@@ -8,14 +8,14 @@ from fifo.helper import *
 class Wiggle:
     def __init__(self):
         self._token = False
-        self._apiEndpoint = "/api/0.1.0/"
+        self._apiEndpoint = '/api/0.1.0/'
 
     def init(self, host, user, pw, token, apiVersion):
         self.host = host
-        self.headers = {"Content-type": "application/json;charset=UTF-8",
-                "Accept": "application/json"}
+        self.headers = {'Content-type': 'application/json;charset=UTF-8',
+                'Accept': 'application/json'}
         if apiVersion:
-            self._apiEndpoint = "/api/" + apiVersion + "/"
+            self._apiEndpoint = '/api/' + apiVersion + '/'
         if token:
             if not self.set_token(token):
                 self.connect(user, pw)
@@ -30,17 +30,17 @@ class Wiggle:
 
     def set_token(self, token):
         self._token = token
-        self.headers["X-Snarl-Token"] = self._token
-        return self.get("sessions", token)
+        self.headers['X-Snarl-Token'] = self._token
+        return self.get('sessions', token)
 
-    def get(self, resource, entity, suffix="", rawResponse=False, headers=None):
+    def get(self, resource, entity, suffix='', rawResponse=False, headers=None):
         conn = self.conn()
         hdrs = headers or self.headers
-        vprint("GET", self._apiEndpoint + resource + "/" + entity + suffix, "", hdrs)
-        curlprint(self.host, "GET", self._apiEndpoint + resource + "/" + entity + suffix, hdrs)
-        conn.request("GET", self._apiEndpoint + resource + "/" + entity + suffix, "", hdrs)
+        vprint('GET', self._apiEndpoint + resource + '/' + entity + suffix, '', hdrs)
+        curlprint(self.host, 'GET', self._apiEndpoint + resource + '/' + entity + suffix, hdrs)
+        conn.request('GET', self._apiEndpoint + resource + '/' + entity + suffix, '', hdrs)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status != 200):
             return False
         else:
@@ -51,11 +51,11 @@ class Wiggle:
 
     def delete(self, resource, entity):
         conn = self.conn()
-        vprint("DELETE", self._apiEndpoint + resource + "/" + entity, "", self.headers)
-        curlprint(self.host, "DELETE", self._apiEndpoint + resource + "/" + entity, self.headers)
-        conn.request("DELETE", self._apiEndpoint + resource + "/" + entity, "", self.headers)
+        vprint('DELETE', self._apiEndpoint + resource + '/' + entity, '', self.headers)
+        curlprint(self.host, 'DELETE', self._apiEndpoint + resource + '/' + entity, self.headers)
+        conn.request('DELETE', self._apiEndpoint + resource + '/' + entity, '', self.headers)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status >= 200 and response.status < 300):
             return True
         else:
@@ -64,11 +64,11 @@ class Wiggle:
     def delete_body(self, resource, entity, body):
         conn = self.conn()
         jbody = json.dumps(body)
-        vprint("DELETE", self._apiEndpoint + resource + "/" + entity, jbody, self.headers)
-        curlprint(self.host, "DELETE", self._apiEndpoint + resource + "/" + entity, headers=self.headers, data=jbody)
-        conn.request("DELETE", self._apiEndpoint + resource + "/" + entity, jbody, self.headers)
+        vprint('DELETE', self._apiEndpoint + resource + '/' + entity, jbody, self.headers)
+        curlprint(self.host, 'DELETE', self._apiEndpoint + resource + '/' + entity, headers=self.headers, data=jbody)
+        conn.request('DELETE', self._apiEndpoint + resource + '/' + entity, jbody, self.headers)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status >= 200 and response.status < 300):
             return True
         else:
@@ -78,12 +78,12 @@ class Wiggle:
         conn = self.conn()
         if isinstance(attr, str):
             attr = [attr]
-        url = self._apiEndpoint + resource + "/" + entity + "/" + "/".join(attr)
-        vprint("DELETE", url, "", self.headers)
-        curlprint(self.host, "DELETE", url, headers=self.headers)
-        conn.request("DELETE", url, "", self.headers)
+        url = self._apiEndpoint + resource + '/' + entity + '/' + '/'.join(attr)
+        vprint('DELETE', url, '', self.headers)
+        curlprint(self.host, 'DELETE', url, headers=self.headers)
+        conn.request('DELETE', url, '', self.headers)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status < 300 and response.status >= 300):
             return False
         else:
@@ -93,13 +93,13 @@ class Wiggle:
         conn = self.conn()
         if isinstance(attr, str):
             attr = [attr]
-        url = self._apiEndpoint + resource + "/" + entity + "/" + "/".join(attr)
+        url = self._apiEndpoint + resource + '/' + entity + '/' + '/'.join(attr)
         jbody = json.dumps(body)
-        vprint("DELETE", url, jbody, self.headers)
-        curlprint(self.host, "DELETE", url, headers=self.headers, data=jbody)
-        conn.request("DELETE", url, jbody, self.headers)
+        vprint('DELETE', url, jbody, self.headers)
+        curlprint(self.host, 'DELETE', url, headers=self.headers, data=jbody)
+        conn.request('DELETE', url, jbody, self.headers)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status < 300 and response.status >= 300):
             return False
         else:
@@ -110,12 +110,12 @@ class Wiggle:
         if isinstance(attr, str):
             attr = [attr]
         jbody = json.dumps(body)
-        vprint("PUT", url, jbody, self.headers)
-        curlprint(self.host, "PUT", url, headers=self.headers, data=jbody)
-        url = self._apiEndpoint + resource + "/" + entity + "/" + "/".join(attr)
-        conn.request("PUT", url, jbody, self.headers)
+        vprint('PUT', url, jbody, self.headers)
+        curlprint(self.host, 'PUT', url, headers=self.headers, data=jbody)
+        url = self._apiEndpoint + resource + '/' + entity + '/' + '/'.join(attr)
+        conn.request('PUT', url, jbody, self.headers)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status < 300 and response.status >= 300):
             return False
         else:
@@ -125,17 +125,17 @@ class Wiggle:
         conn = self.conn()
         if isinstance(attr, str):
             attr = [attr]
-        url = self._apiEndpoint + resource + "/" + entity + "/" + "/".join(attr)
+        url = self._apiEndpoint + resource + '/' + entity + '/' + '/'.join(attr)
         jbody = json.dumps(body)
-        vprint("POST", url, jbody, self.headers)
-        curlprint(self.host, "POST", url, headers=self.headers, data=jbody)
-        conn.request("POST", url, jbody, self.headers)
+        vprint('POST', url, jbody, self.headers)
+        curlprint(self.host, 'POST', url, headers=self.headers, data=jbody)
+        conn.request('POST', url, jbody, self.headers)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status == 303):
             newurl = response.getheader('Location')
             conn = self.conn()
-            conn.request("GET", newurl, "", self.headers)
+            conn.request('GET', newurl, '', self.headers)
             response = conn.getresponse()
             if (response.status != 200):
                 return False
@@ -152,13 +152,13 @@ class Wiggle:
         conn = self.conn()
         if isinstance(attr, str):
             attr = [attr]
-        url = self._apiEndpoint + resource + "/" + entity + "/" + "/".join(attr)
+        url = self._apiEndpoint + resource + '/' + entity + '/' + '/'.join(attr)
         jbody = json.dumps(body)
-        vprint("GET", url, "", self.headers)
-        curlprint(self.host, "GET", url, headers=self.headers)
-        conn.request("GET", url, "", self.headers)
+        vprint('GET', url, '', self.headers)
+        curlprint(self.host, 'GET', url, headers=self.headers)
+        conn.request('GET', url, '', self.headers)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status != 200):
             return False
         else:
@@ -168,29 +168,29 @@ class Wiggle:
         conn = self.conn()
         if isinstance(entity, str):
             entity = [entity]
-        url = self._apiEndpoint + resource + "/" + "/".join(entity)
+        url = self._apiEndpoint + resource + '/' + '/'.join(entity)
         jbody = json.dumps(body)
-        vprint("PUT", url, jbody, self.headers)
-        curlprint(self.host, "PUT", url, headers=self.headers, data=jbody)
-        conn.request("PUT", url, jbody, self.headers)
+        vprint('PUT', url, jbody, self.headers)
+        curlprint(self.host, 'PUT', url, headers=self.headers, data=jbody)
+        conn.request('PUT', url, jbody, self.headers)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status != 200):
             return False
         else:
             return json.loads(response.read())
 
-    def put_bindata(self, resource, entity, file, suffix="", headers=None):
+    def put_bindata(self, resource, entity, file, suffix='', headers=None):
         conn = self.conn()
         if isinstance(entity, str):
             entity = [entity]
-        url = self._apiEndpoint + resource + "/" + "/".join(entity) + suffix
+        url = self._apiEndpoint + resource + '/' + '/'.join(entity) + suffix
         hdrs = headers or self.headers
-        vprint("PUT", url, "@" + file.name, hdrs)
-        curlprint(self.host, "PUT", url, headers=hdrs, upload=file.name)
-        conn.request("PUT", url, file, hdrs)
+        vprint('PUT', url, '@' + file.name, hdrs)
+        curlprint(self.host, 'PUT', url, headers=hdrs, upload=file.name)
+        conn.request('PUT', url, file, hdrs)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status > 200 and response.status > 200):
             return response.status
         if (response.status != 200):
@@ -202,17 +202,17 @@ class Wiggle:
         conn = self.conn()
         if isinstance(resource, str):
             resource = [resource]
-        url = self._apiEndpoint + "/".join(resource)
+        url = self._apiEndpoint + '/'.join(resource)
         jbody = json.dumps(body)
-        vprint("POST", url, jbody, self.headers)
-        curlprint(self.host, "POST", url, headers=self.headers, data=jbody)
-        conn.request("POST", url, jbody, self.headers)
+        vprint('POST', url, jbody, self.headers)
+        curlprint(self.host, 'POST', url, headers=self.headers, data=jbody)
+        conn.request('POST', url, jbody, self.headers)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status == 303):
             newurl = response.getheader('Location')
             conn = self.conn()
-            conn.request("GET", newurl, "", self.headers)
+            conn.request('GET', newurl, '', self.headers)
             response = conn.getresponse()
             if (response.status != 200):
                 print response.status
@@ -229,17 +229,17 @@ class Wiggle:
         conn = self.conn()
         if isinstance(resource, str):
             resource = [resource]
-        url = self._apiEndpoint + "/".join(resource) + "/" + entity
+        url = self._apiEndpoint + '/'.join(resource) + '/' + entity
         hdrs = headers or self.headers
-        vprint("POST", url, "@" + file.name, hdrs)
-        curlprint(self.host, "POST", url, headers=hdrs, file=file.name, fileMode="binary")
-        conn.request("POST", url, file, hdrs)
+        vprint('POST', url, '@' + file.name, hdrs)
+        curlprint(self.host, 'POST', url, headers=hdrs, file=file.name, fileMode='binary')
+        conn.request('POST', url, file, hdrs)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status == 303):
             newurl = response.getheader('Location')
             conn = self.conn()
-            conn.request("GET", newurl, "", self.headers)
+            conn.request('GET', newurl, '', self.headers)
             response = conn.getresponse()
             if (response.status != 200):
                 print response.status
@@ -254,11 +254,11 @@ class Wiggle:
 
     def list(self, resource):
         conn = self.conn()
-        vprint("GET", self._apiEndpoint + resource, "", self.headers)
-        curlprint(self.host, "GET", self._apiEndpoint + resource, headers=self.headers)
-        conn.request("GET", self._apiEndpoint + resource, "", self.headers)
+        vprint('GET', self._apiEndpoint + resource, '', self.headers)
+        curlprint(self.host, 'GET', self._apiEndpoint + resource, headers=self.headers)
+        conn.request('GET', self._apiEndpoint + resource, '', self.headers)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status != 200):
             return False
         else:
@@ -267,14 +267,14 @@ class Wiggle:
     def full_list(self, resource, fields):
         conn = self.conn()
         hdrs = self.headers
-        hdrs["x-full-list"] = "true"
+        hdrs['x-full-list'] = 'true'
         if fields != []:
-            hdrs["x-full-list-fields"] = ",".join(fields)
-        vprint("GET", self._apiEndpoint + resource, "", hdrs)
-        curlprint(self.host, "GET", self._apiEndpoint + resource, headers=hdrs)
-        conn.request("GET", self._apiEndpoint + resource, "", hdrs)
+            hdrs['x-full-list-fields'] = ','.join(fields)
+        vprint('GET', self._apiEndpoint + resource, '', hdrs)
+        curlprint(self.host, 'GET', self._apiEndpoint + resource, headers=hdrs)
+        conn.request('GET', self._apiEndpoint + resource, '', hdrs)
         response = conn.getresponse()
-        vprint("Status: ", response.status)
+        vprint('Status: ', response.status)
         if (response.status != 200):
             return False
         else:
@@ -282,15 +282,15 @@ class Wiggle:
 
     def connect(self, user, pw):
         conn = self.conn()
-        jbody = json.dumps({"user":user, "password": pw})
-        vprint("POST", self._apiEndpoint + "sessions",  jbody, self.headers)
-        curlprint(self.host, "POST", self._apiEndpoint + "sessions", headers=self.headers, data=jbody)
-        conn.request("POST", self._apiEndpoint + "sessions",  jbody, self.headers)
+        jbody = json.dumps({'user':user, 'password': pw})
+        vprint('POST', self._apiEndpoint + 'sessions',  jbody, self.headers)
+        curlprint(self.host, 'POST', self._apiEndpoint + 'sessions', headers=self.headers, data=jbody)
+        conn.request('POST', self._apiEndpoint + 'sessions',  jbody, self.headers)
         response = conn.getresponse()
-        vprint("Status:", response.status)
+        vprint('Status:', response.status)
         if (response.status == 303):
-            self._token = response.getheader("X-Snarl-Token")
-            self.headers["X-Snarl-Token"] = self._token
+            self._token = response.getheader('X-Snarl-Token')
+            self.headers['X-Snarl-Token'] = self._token
             return self._token
         else:
             return False
@@ -299,13 +299,13 @@ class Cloud:
     def __init__(self, wiggle):
         self._wiggle = wiggle
     def status(self):
-        return self._wiggle.list("cloud")
+        return self._wiggle.list('cloud')
     def connection(self):
-        return self._wiggle.get("cloud", "connection")
+        return self._wiggle.get('cloud', 'connection')
 
 class Entity:
     def __init__(self, wiggle):
-        self._resource = "none"
+        self._resource = 'none'
         self._wiggle = wiggle
         self._fields = []
 
@@ -318,7 +318,7 @@ class Entity:
 
     def _put_file(self, entity, target, file):
         hdrs = dict(self._wiggle.headers)
-        hdrs["Content-Type"] = "application/x-gzip"
+        hdrs['Content-Type'] = 'application/x-gzip'
         return self._wiggle.put_bindata(self._resource, entity, headers=hdrs, suffix=target, file=file)
 
     def _post_file(self, entity, file):
@@ -345,7 +345,7 @@ class Entity:
         return self._wiggle.get_attr(self._resource, uuid, attr)
 
     def name_of(self, obj):
-        return obj["name"]
+        return obj['name']
 
     def uuid_by_name(self, name):
         if is_uuid(name):
@@ -361,7 +361,7 @@ class Entity:
         return self._wiggle.full_list(self._resource, fields)
 
     def list(self):
-        if not hasattr(self, "_fields"):
+        if not hasattr(self, '_fields'):
             self._fields = []
         return self._wiggle.full_list(self._resource, self._fields)
 
@@ -377,32 +377,32 @@ class Entity:
         uuid = self.uuid_by_name(uuid)
         return self._wiggle.delete_body(self._resource, uuid, body)
 
-    def get_bindata(self, uuid, target, accept=""):
+    def get_bindata(self, uuid, target, accept=''):
         uuid = self.uuid_by_name(uuid)
         binHeaders = dict(self._wiggle.headers)
         if accept:
-            binHeaders["Accept"] = accept
+            binHeaders['Accept'] = accept
         else:
-            del binHeaders["Accept"]
+            del binHeaders['Accept']
         return self._wiggle.get(self._resource, uuid, suffix=target, rawResponse=True, headers=binHeaders)
 
     def get_metadata(self, uuid):
         uuid = self.uuid_by_name(uuid)
-        return self._wiggle.get_attr(self._resource, uuid, "metadata")
+        return self._wiggle.get_attr(self._resource, uuid, 'metadata')
 
     def set_metadata(self, uuid, path, k, v):
         uuid = self.uuid_by_name(uuid)
-        path.insert(0, "metadata")
+        path.insert(0, 'metadata')
         return self._wiggle.put_attr(self._resource, uuid, path, {k: v})
 
     def delete_metadata(self, uuid, path):
         uuid = self.uuid_by_name(uuid)
-        path.insert(0, "metadata")
+        path.insert(0, 'metadata')
         return self._wiggle.delete_attr(self._resource, uuid, path)
 
     def add_metadata_parser(self, subparsers):
         parser_metadata = subparsers.add_parser('metadata', help='Metadata commands')
-        parser_metadata.add_argument("uuid", help="uuid of the element to look at")
+        parser_metadata.add_argument('uuid', help='uuid of the element to look at')
         subparsers_metadata = parser_metadata.add_subparsers(help='Metadata commands')
 
         parser_mdata_get = subparsers_metadata.add_parser('get', help='get metadata')
@@ -410,16 +410,16 @@ class Entity:
 
         parser_mdata_set = subparsers_metadata.add_parser('set', help='set metadata')
         parser_mdata_set.set_defaults(func=mdata_set)
-        parser_mdata_set.add_argument("key", help="key of the metadata")
+        parser_mdata_set.add_argument('key', help='key of the metadata')
         group = parser_mdata_set.add_mutually_exclusive_group()
-        group.add_argument("--integer", "-i", help="value is integer ", action='store_true')
-        group.add_argument("--float", "-f", help="value is float", action='store_true')
-        group.add_argument("--string", "-s", help="value is string", action='store_true')
-        group.add_argument("--json", "-j", help="value is json", action='store_true')
-        parser_mdata_set.add_argument("value", help="value to be set")
+        group.add_argument('--integer', '-i', help='value is integer ', action='store_true')
+        group.add_argument('--float', '-f', help='value is float', action='store_true')
+        group.add_argument('--string', '-s', help='value is string', action='store_true')
+        group.add_argument('--json', '-j', help='value is json', action='store_true')
+        parser_mdata_set.add_argument('value', help='value to be set')
         parser_mdata_del = subparsers_metadata.add_parser('delete', help='deletes metadata')
         parser_mdata_del.set_defaults(func=mdata_delete)
-        parser_mdata_del.add_argument("key", help="key of the metadata")
+        parser_mdata_del.add_argument('key', help='key of the metadata')
 
 
 def mdata_get(args):
@@ -430,7 +430,7 @@ def mdata_get(args):
     print(json.dumps(services, sort_keys=True, indent=2, separators=(',', ': ')))
 
 def mdata_set(args):
-    keys = args.key.split(".")
+    keys = args.key.split('.')
     k = keys.pop()
     value = args.value
     if args.integer:
@@ -440,15 +440,15 @@ def mdata_set(args):
     elif args.json:
         value = json.loads(args.value)
     if args.endpoint.set_metadata(args.uuid, keys, k, value):
-        print "Metadata successfully updated!"
+        print 'Metadata successfully updated!'
     else:
-        print "Failed to update metadata!"
+        print 'Failed to update metadata!'
         exit(1)
 
 def mdata_delete(args):
-    keys = args.key.split(".")
+    keys = args.key.split('.')
     if args.endpoint.delete_metadata(args.uuid, keys):
-        print "Metadata successfully updated!"
+        print 'Metadata successfully updated!'
     else:
-        print "Failed to update metadata!"
+        print 'Failed to update metadata!'
         exit(1)
