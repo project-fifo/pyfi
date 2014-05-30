@@ -2,9 +2,8 @@ import os
 import shutil
 import subprocess
 import sys
-from distutils.core import setup
-from distutils.command.install import install
-
+from setuptools import setup
+from setuptools.command.install import install
 
 ## manpage install code taken from https://github.com/novel/lc-tools
 def abspath(path):
