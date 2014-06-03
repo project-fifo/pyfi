@@ -110,16 +110,16 @@ class Wiggle:
         if isinstance(attr, str):
             attr = [attr]
         jbody = json.dumps(body)
+        url = self._apiEndpoint + resource + '/' + entity + '/' + '/'.join(attr)
         vprint('PUT', url, jbody, self.headers)
         curlprint(self.host, 'PUT', url, headers=self.headers, data=jbody)
-        url = self._apiEndpoint + resource + '/' + entity + '/' + '/'.join(attr)
         conn.request('PUT', url, jbody, self.headers)
         response = conn.getresponse()
         vprint('Status: ', response.status)
-        if (response.status < 300 and response.status >= 300):
-            return False
-        else:
+        if (response.status > 200 and response.status <= 400):
             return True
+        else:
+            return False
 
     def post_attr(self, resource, entity, attr, body):
         conn = self.conn()

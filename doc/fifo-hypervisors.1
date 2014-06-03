@@ -29,6 +29,12 @@ hypervisors get <uuid|name>
 This command returns the JSON representation of a hypervisor object
 stored in the fifo server.
 .TP
+hypervisors delete <uuid>
+Deletes the hypervisor from FiFo.
+.TP
+hypervisors path <uuid> [<name>:<cost> ...]
+This sets the path of a hypervisor, it can have multiople name, cost pairs.
+.TP
 hypervisors metadata <uuid> get
 Reads the metadata.
 .TP

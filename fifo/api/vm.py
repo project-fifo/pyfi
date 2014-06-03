@@ -362,7 +362,6 @@ class VM(Entity):
         parser_svcadm_enable.set_defaults(func=svcadm_action)
         parser_svcadm_enable.add_argument('service', help='Service to enable')
 
-
         parser_svcadm_disable = subparsers_svcadm.add_parser('disable', help='enables a service')
         parser_svcadm_disable.set_defaults(action='disable')
         parser_svcadm_disable.set_defaults(func=svcadm_action)
@@ -372,8 +371,6 @@ class VM(Entity):
         parser_svcadm_clear.set_defaults(action='clear')
         parser_svcadm_clear.set_defaults(func=svcadm_action)
         parser_svcadm_clear.add_argument('service', help='Service to en or clear')
-
-
 
         parser_vms_delete = subparsers_vms.add_parser('delete', help='deletes a VM')
         parser_vms_delete.add_argument('-l', action='store_true', default=False,
