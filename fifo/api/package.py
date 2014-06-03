@@ -149,7 +149,7 @@ class Package(Entity):
         parser_pkgs_get.set_defaults(func=show_get)
         parser_pkgs_delete = subparsers_pkgs.add_parser('delete', help='deletes a package')
         parser_pkgs_delete.add_argument('uuid')
-        parser_pkgs_delete.set_defaults(func=show_get)
+        parser_pkgs_delete.set_defaults(func=show_delete)
         parser_pkgs_create = subparsers_pkgs.add_parser('create', help='creates a new package')
         parser_pkgs_create.add_argument('-p', action='store_true',
                                         help='Output only shows the UUID no additional comments.')

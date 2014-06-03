@@ -48,3 +48,6 @@ class Hypervisor(Entity):
         parser_hypervisors_get = subparsers_hypervisors.add_parser('get', help='gets a hypervisor')
         parser_hypervisors_get.add_argument('uuid')
         parser_hypervisors_get.set_defaults(func=show_get)
+        parser_hypervisors_delete = subparsers_hypervisors.add_parser('delete', help='deletes a hypervisor')
+        parser_hypervisors_delete.add_argument('uuid')
+        parser_hypervisors_delete.set_defaults(func=show_delete)
