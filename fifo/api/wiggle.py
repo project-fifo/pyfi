@@ -153,7 +153,6 @@ class Wiggle:
         if isinstance(attr, str):
             attr = [attr]
         url = self._apiEndpoint + resource + '/' + entity + '/' + '/'.join(attr)
-        jbody = json.dumps(body)
         vprint('GET', url, '', self.headers)
         curlprint(self.host, 'GET', url, headers=self.headers)
         conn.request('GET', url, '', self.headers)
