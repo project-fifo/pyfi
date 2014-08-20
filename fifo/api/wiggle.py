@@ -140,7 +140,7 @@ class Wiggle:
             response = conn.getresponse()
             vprint('Status (after redirect): ', response.status)
             if (response.status == 404):
-                timer.sleep(5)
+                time.sleep(5)
                 conn = self.conn()
                 conn.request('GET', newurl, '', self.headers)
                 response = conn.getresponse()
