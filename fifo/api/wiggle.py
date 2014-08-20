@@ -2,6 +2,7 @@
 
 import httplib
 import json
+import time
 from pprint import pprint
 from fifo.helper import *
 
@@ -137,7 +138,18 @@ class Wiggle:
             conn = self.conn()
             conn.request('GET', newurl, '', self.headers)
             response = conn.getresponse()
-            if (response.status != 200):
+            vprint('Status (after redirect): ', response.status)
+            if (response.status == 404):
+                timer.sleep(5)
+                conn = self.conn()
+                conn.request('GET', newurl, '', self.headers)
+                response = conn.getresponse()
+                vprint('Status (after reload): ', response.status)
+                if (response.status != 200):
+                    return False
+                else:
+                    return json.loads(response.read())
+            elif (response.status != 200):
                 return False
             else:
                 return json.loads(response.read())
