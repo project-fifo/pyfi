@@ -91,7 +91,7 @@ def mk_fmt_line(args, e):
 # Prints the header for a list opperation based on the selected format
 def header(args):
     fmt = mk_fmt_str(args)
-    hfmt = fmt.replace('[a-rt-z]', 's')
+    hfmt = fmt.replace('d', 's')
     r = []
     for k in args.fmt:
         r.append(args.fmt_def[k]['title'])
