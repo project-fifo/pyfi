@@ -91,18 +91,19 @@ def mk_fmt_line(args, e):
 # Prints the header for a list opperation based on the selected format
 def header(args):
     fmt = mk_fmt_str(args)
+    hfmt = fmt.replace('[a-rt-z]', 's')
     r = []
     for k in args.fmt:
         r.append(args.fmt_def[k]['title'])
     if args.p:
         print(":".join(r))
     else:
-        print(fmt % tuple(r))
+        print(hfmt % tuple(r))
     r = []
     if not args.p:
         for k in args.fmt:
             r.append("-" * args.fmt_def[k]['len'])
-        print(fmt % tuple(r))
+        print(hfmt % tuple(r))
 
 # Shows the data when list was selected.
 def show_list(args):
