@@ -119,6 +119,8 @@ backup_fmt = {
     {'title': 'Local', 'len': 5, 'fmt': '%5s', 'get': lambda e: 'Yes' if d(e, ['local']) else 'No'},
     'size':
     {'title': 'Size', 'len': 15, 'fmt': '%5d', 'get': lambda e: d(e, ['size'], 0)},
+    'state':
+    {'title': 'State', 'len': 10, 'fmt': '%10s', 'get': lambda e: d(e, ['state'])},
     'timestamp':
     {'title': 'Timestamp', 'len': 20, 'fmt': '%-20s',
      'get': lambda e: datetime.fromtimestamp(d(e, ['timestamp'])/1000000).isoformat()},
