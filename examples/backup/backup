@@ -1,0 +1,147 @@
+#!/usr/bin/env bash
+# -*- bash -*-
+
+# This script is the general backup management scrip that can
+# get data, list status, enable or disable backups and rn them on all
+
+
+if [ ! -f ~/.fifo ]
+then
+    HOME=/home/backup
+fi
+
+#set -x
+
+# Absolute path for executables
+fifo=/opt/local/bin/fifo
+echo=/opt/local/gnu/bin/echo
+printf=/opt/local/gnu/bin/printf
+fifobackup=/opt/local/sbin/fifo-backup
+
+#additional file settings
+log_file=/var/log/backup
+
+#Configuration settings
+beckup_field=fifo.backup
+parallelism=3
+
+# Fetches the state of a VM's backup
+get_state() {
+    local uuid=$1
+    local state=""
+    for s in $(fifo vms backups $uuid list --fmt state -Hp)
+    do
+        if [[ "$s" == "pending" ]]
+        then
+            echo "running"
+            return
+        else
+            state=$s
+        fi
+    done
+    echo $state
+}
+
+list_vms() {
+    $fifo vms list --fmt uuid -pH | sort
+}
+
+vms=
+
+# Counts the total amount of backups not in completed state
+max_running_backups() {
+    local max=$1
+    local running=0
+    local uuid=""
+    for uuid in $vms
+    do
+        if $fifo vms backups $uuid list --fmt state -Hp | grep -v completed > /dev/null
+        then
+            running=$(($running + 1))
+            if [ $running -ge $max ]
+            then
+                return 0
+            fi
+        fi
+    done
+    return 1
+}
+
+# Throtel the maximum number of prarallel backups
+throttle_backups() {
+    while max_running_backups $parallelism
+    do
+        $echo -n -e "\033[0;33m*\033[0m"
+        sleep 5
+    done
+}
+
+
+case $1 in
+    run)
+        type=$2
+        case $type in
+            daily)
+                echo "Running daily incremental backups"
+                ;;
+            weekly)
+                echo "Running weekly differential backups"
+                ;;
+            monthly)
+                echo "Running montly full backups"
+                ;;
+            *)
+                echo "'$type' is not a valid type of backup please pass either daily, weekly or monthly"
+                exit 1
+                ;;
+        esac
+        vms=$(list_vms)
+        for uuid in $vms
+        do
+            if [ "$($fifo vms metadata $uuid get | json $beckup_field)x" == "1x" ]
+            then
+                throttle_backups
+                $fifobackup $2 $uuid > $log_file
+                $echo -n -e "\033[0;32m!\033[0m"
+            else
+                $echo -n -e "\033[0;31m.\033[0m"
+            fi
+        done
+        echo
+        echo done
+        ;;
+    enable)
+        uuid=$2
+        $fifo vms metadata $uuid set $beckup_field 1
+        ;;
+    disable)
+        uuid=$2
+        $fifo vms metadata $uuid delete $beckup_field
+        ;;
+    list)
+        $echo "VM UUID                              Backup     State            Size            "
+        $echo "------------------------------------ ---------- ---------------- ----------------"
+        vms=$(list_vms)
+        for uuid in $vms
+        do
+            size=$($fifo vms backups $uuid list --fmt size -H | awk '{s+=$1} END {print s}')
+            state=$(get_state $uuid)
+            if [ "$($fifo vms metadata $uuid get | json $beckup_field)x" == "1x" ]
+            then
+                $printf "%s \033[0;32mEnabled\033[0m    %-16s %16s\n" $uuid $state $size
+            else
+                $printf "%s \033[0;31mDisabled\033[0m   %-16s %16s\n" $uuid $state $size
+            fi
+        done
+        ;;
+    *)
+        $echo "FiFo backuping system."
+        $echo
+        $echo "usage: "
+        $echo
+        $echo "backup list                      - lists all VM's and weather backup is enabled or not."
+        $echo "backup enable <vm uuid>          - enables backups for a VM."
+        $echo "backup disable <vm uuid>         - disables backups for a VM."
+        $echo "backup run daily|weekly|monthly  - runs daily, weekly or montly backups."
+        ;;
+esac

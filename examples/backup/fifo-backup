@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
-fifo=fifo
+# -*- bash -*-
+
+# This cript is used to run backupos on a single machine,
+# determin the correct parent and possibly deleting it if needed
+
+fifo=/opt/local/bin/fifo
 vm="$2"
+
 case $1 in
     monthly)
         $fifo vms backups $vm create monthly

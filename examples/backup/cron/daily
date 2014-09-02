@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# -*- bash -*-
+
+# This script is run daily except the first of each month:
+
+# minute hour mday month wday command
+# 1      0    2-31 *     *    /home/backup/daily_backup.sh
+
+
+log_file=/var/log/fifo-backup
+backup=/opt/local/sbin/backup
+
+## Run weekly only on sudays (weekday 7)
+if [ $(/opt/local/gnu/bin/date +%u) -eq 7 ]
+then
+    $backup run weekly >> $log_file
+else
+    $backup run daily >> $log_file
+fi

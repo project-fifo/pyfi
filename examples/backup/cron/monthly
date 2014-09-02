@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# -*- bash -*-
+
+# Script to be run on every first of the month
+
+# minute hour mday month wday command
+# 1      0    1    *     *    /home/backup/monthly
+
+log_file=/var/log/fifo-backup
+backup=/opt/local/sbin/backup
+
+$backup run monthly >> $log_file
