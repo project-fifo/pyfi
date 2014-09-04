@@ -101,7 +101,7 @@ case $1 in
             if [ "$($fifo vms metadata $uuid get | json $beckup_field)x" == "1x" ]
             then
                 throttle_backups
-                $fifobackup $2 $uuid > $log_file
+                $fifobackup $type $uuid >> $log_file
                 $echo -n -e "\033[0;32m!\033[0m"
             else
                 $echo -n -e "\033[0;31m.\033[0m"
@@ -112,6 +112,7 @@ case $1 in
         ;;
     enable)
         uuid=$2
+		$fifobackup monthly $uuid >> $log_file
         $fifo vms metadata $uuid set $beckup_field 1
         ;;
     disable)

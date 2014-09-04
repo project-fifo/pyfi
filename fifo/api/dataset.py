@@ -9,7 +9,7 @@ import argparse
 
 dataset_fmt = {
     'uuid':
-    {'title': 'UUID', 'len': 36, 'fmt': '%36s', 'get': lambda e: d(e, ['dataset'])},
+    {'title': 'UUID', 'len': 36, 'fmt': '%36s', 'get': lambda e: d(e, ['uuid'])},
     'name':
     {'title': 'Name', 'len': 10, 'fmt': '%-10s', 'get': lambda e: d(e, ['name'])},
     'version':
