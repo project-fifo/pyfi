@@ -36,11 +36,11 @@ case $1 in
         fi
         ;;
     daily)
-        last_backup=$($fifo vms backups $vm list -pH --fmt uuid,comment,local | grep 'daily\|weekly' | grep 'Yes' | tail -1)
+        last_backup=$($fifo vms backups $vm list -pH --fmt uuid,comment,local | grep 'daily\|weekly\|monthly' | grep 'Yes' | tail -1)
         uuid=$(echo $last_backup | cut -d: -f1)
         type=$(echo $last_backup | cut -d: -f2)
         case $type in
-            weekly)
+            weekly|monthly)
                 $fifo vms backups $vm create --parent $uuid daily
                 ;;
             daily)
