@@ -11,8 +11,9 @@ class Wiggle:
         self._token = False
         self._apiEndpoint = '/api/0.1.0/'
 
-    def init(self, host, user, pw, token, apiVersion):
+    def init(self, host, user, pw, token, apiVersion, unsafe):
         self.host = host
+        self.unsafe = unsafe
         self.headers = {'Content-type': 'application/json;charset=UTF-8',
                 'Accept': 'application/json'}
         if apiVersion:
@@ -24,7 +25,10 @@ class Wiggle:
             self.connect(user, pw)
 
     def conn(self):
-        return httplib.HTTPSConnection(self.host)
+        if self.unsafe:
+            return httplib.HTTPConnection(self.host)
+        else:
+            return httplib.HTTPSConnection(self.host)
 
     def get_token(self):
         return self._token
