@@ -96,6 +96,10 @@ vm_fmt = {
     {'title': 'state', 'len': 15, 'fmt': '%-15s', 'get': lambda e: d(e, ['state'])},
     'hypervisor':
     {'title': 'hypervisor', 'len': 20, 'fmt': '%-20s', 'get': lambda e: d(e, ['hypervisor'])},
+    'package':
+    {'title': 'package', 'len': 36, 'fmt': '%36s', 'get': lambda e: d(e, ['package'])},
+    'dataset':
+    {'title': 'dataset', 'len': 36, 'fmt': '%36s', 'get': lambda e: d(e, ['dataset'])},
 }
 
 snapshot_fmt = {
@@ -419,7 +423,7 @@ class VM(Entity):
         parser_snapshots_list = subparsers_snapshots.add_parser('list', help='lists snapshots')
         parser_snapshots_list.add_argument('--fmt', action=ListAction,
                                            default=['uuid', 'timestamp', 'comment'],
-                                           help='Fields to show in the list, valid chances are: uuid, timestamp, comment')
+                                           help='Fields to show in the list, valid chances are: uuid, timestamp, comment, hypervisor, dataset and package')
         parser_snapshots_list.add_argument('-H', action='store_false',
                                            help='Supress the header.')
         parser_snapshots_list.add_argument('-p', action='store_true',

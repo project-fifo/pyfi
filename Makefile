@@ -1,8 +1,9 @@
-LAST_VER=0.1.24
-NEXT_VER=0.1.25
+LAST_VER=0.1.26
+NEXT_VER=0.1.27
 .phony: package clean
 
 package:
+	-rm doc/*~
 	python setup.py sdist
 
 clean:

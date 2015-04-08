@@ -1,5 +1,3 @@
 include *.txt
 include *.md
-include doc
-recursive-include docs *.txt
-recursive-include docs *.md
+recursive-include doc *.1
