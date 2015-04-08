@@ -99,7 +99,7 @@ vm_fmt = {
     'package':
     {'title': 'package', 'len': 36, 'fmt': '%36s', 'get': lambda e: d(e, ['package'])},
     'dataset':
-    {'title': 'dataset', 'len': 36, 'fmt': '%36s', 'get': lambda e: d(e, ['dataset'])},
+    {'title': 'dataset', 'len': 36, 'fmt': '%36s', 'get': lambda e: d(e, ['config', 'dataset'])},
 }
 
 snapshot_fmt = {
@@ -248,7 +248,7 @@ class VM(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
         self._resource = 'vms'
-        self._fields = ['uuid', 'config', 'state', 'hypervisor', 'dataset', 'package']
+        self._fields = ['uuid', 'config', 'state', 'hypervisor', 'package']
 
     def name_of(self, obj):
         return d(obj, ['config', 'alias'])
