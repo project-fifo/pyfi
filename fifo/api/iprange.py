@@ -28,10 +28,39 @@ iprange_fmt = {
     {'title': 'vlan', 'len': 5, 'fmt': '%5s', 'get': lambda e: d(e, ['vlan'])},
 }
 
+def create(args):
+
+    if args.vlan:
+        res = args.endpoint.create(args.name, args.network, args.netmask, args.gateway,
+                                args.first, args.last, args.tag, int(args.vlan))
+    else:
+        res = args.endpoint.create(args.name, args.network, args.netmask, args.gateway, 
+                                args.first, args.last, args.tag)
+    if res:
+        print 'IP range successfully created: %s' % res['uuid']
+    else:
+        print 'IP range creation failed: %r' % res
+        exit(1)
+
 class Iprange(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
         self._resource = 'ipranges'
+
+    def create(self, name, network, netmask, gateway, first, last, nic_tag, vlan=None):
+        specs = {
+            'name': name,
+            'network': network,
+            'netmask': netmask,
+            'gateway': gateway,
+            'first': first,
+            'last': last,
+            'tag': nic_tag,
+        }
+        if vlan > 0:
+            specs['vlan'] = vlan
+
+        return self._post(specs)
 
     def make_parser(self, subparsers):
         parser_ipranges = subparsers.add_parser('ipranges', help='iprange related commands')
@@ -45,9 +74,20 @@ class Iprange(Entity):
         parser_ipranges_list.add_argument('-p', action='store_true')
         parser_ipranges_list.set_defaults(func=show_list,
                                           fmt_def=iprange_fmt)
-        parser_ipranges_get = subparsers_ipranges.add_parser('get', help='gets a iprange')
+        parser_ipranges_get = subparsers_ipranges.add_parser('get', help='gets an iprange')
         parser_ipranges_get.add_argument('uuid')
         parser_ipranges_get.set_defaults(func=show_get)
-        parser_ipranges_delete = subparsers_ipranges.add_parser('delete', help='gets a iprange')
+        parser_ipranges_delete = subparsers_ipranges.add_parser('delete', help='deletes an iprange')
         parser_ipranges_delete.add_argument('uuid')
         parser_ipranges_delete.set_defaults(func=show_delete)
+        parser_ipranges_create = subparsers_ipranges.add_parser('create', help='creates an ip range')
+        parser_ipranges_create.add_argument('name')
+        parser_ipranges_create.add_argument('--network', '-n', required=True, help='Network for the iprange.')
+        parser_ipranges_create.add_argument('--netmask', '-m', required=True, help='Netmask for the iprange.')
+        parser_ipranges_create.add_argument('--gateway', '-g', required=True, help='Gateway for the iprange.')
+        parser_ipranges_create.add_argument('--first', '-f', required=True, help='First assignable IP address for the iprange.')
+        parser_ipranges_create.add_argument('--last', '-l', required=True, help='Last assignable IP address for the iprange.')
+        parser_ipranges_create.add_argument('--tag', '-t', required=True,
+                                help='NIC Tag to use for the iprange. This must exist on at least one hypervisor')
+        parser_ipranges_create.add_argument('--vlan', '-v', type=int, help='Vlan for the iprange.')
+        parser_ipranges_create.set_defaults(func=create)

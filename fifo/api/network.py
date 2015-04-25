@@ -12,10 +12,35 @@ network_fmt = {
     {'title': 'ipranges', 'len': 36, 'fmt': '%36s', 'get': lambda e: ','.join(d(e, ['ipranges']))},
  }
 
+def create(args):
+    res = args.endpoint.create(args.name)
+    if res:
+        print 'Network successfully created: %s' % res['uuid']
+    else:
+        print 'Network creation failed: %r' % res
+        exit(1)
+
+def add_range(args):
+    res = args.endpoint.add_range(args.uuid, args.iprange_uuid)
+    if res:
+        print 'Added IP range %s to %s' % (args.iprange_uuid, args.uuid)
+    else:
+        print 'Adding IP range failed: %r' % res
+        exit(1)
+
 class Network(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
         self._resource = 'networks'
+
+    def create(self, name):
+        specs = {
+            'name': name
+        }
+        return self._post(specs)
+
+    def add_range(self, network, iprange):
+        return self._put_attr(network, 'ipranges/' + iprange, {})
 
     def make_parser(self, subparsers):
         parser_networks = subparsers.add_parser('networks', help='network related commands')
@@ -35,3 +60,11 @@ class Network(Entity):
         parser_networks_delete = subparsers_networks.add_parser('delete', help='gets a network')
         parser_networks_delete.add_argument('uuid')
         parser_networks_delete.set_defaults(func=show_delete)
+        parser_networks_create = subparsers_networks.add_parser('create', help='adds a network')
+        parser_networks_create.add_argument('name')
+        parser_networks_create.set_defaults(func=create)
+        parser_networks_addrange = subparsers_networks.add_parser('add-range', 
+                                         help='add an iprange to a network')
+        parser_networks_addrange.add_argument('uuid')
+        parser_networks_addrange.add_argument('iprange_uuid')
+        parser_networks_addrange.set_defaults(func=add_range)
