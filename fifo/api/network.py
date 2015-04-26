@@ -23,7 +23,7 @@ def create(args):
 def add_range(args):
     res = args.endpoint.add_range(args.uuid, args.iprange_uuid)
     if res:
-        print 'Added IP range %s to %s' % (args.iprange_uuid, args.uuid)
+        print 'Successfully added IP range %s to %s' % (args.iprange_uuid, args.uuid)
     else:
         print 'Adding IP range failed: %r' % res
         exit(1)
