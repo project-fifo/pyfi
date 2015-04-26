@@ -33,8 +33,6 @@ import json
 
 DEFAULT_APIVERSION = "0.1.0"
 
-print('this is a modified version')
-
 #First we initialize our configuration read the data and generate a default if needed
 
 config = ConfigParser.ConfigParser()
