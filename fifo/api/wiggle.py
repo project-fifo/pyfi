@@ -3,20 +3,23 @@
 import httplib
 import json
 import time
+import urllib
 from pprint import pprint
 from fifo.helper import *
 
 class Wiggle:
     def __init__(self):
         self._token = False
-        self._apiEndpoint = '/api/0.1.0/'
+        self._apiEndpoint = '/api/2/'
 
     def init(self, host, user, pw, token, apiVersion, unsafe):
         self.host = host
         self.unsafe = unsafe
-        self.headers = {'Content-type': 'application/json;charset=UTF-8',
-                'Accept': 'application/json'}
+        self.headers = {'content-type': 'application/json;charset=UTF-8',
+                        'accept': 'application/json'}
+        self._apiVersion = '0.1.0'
         if apiVersion:
+            self._apiVersion = apiVersion
             self._apiEndpoint = '/api/' + apiVersion + '/'
         if token:
             if not self.set_token(token):
@@ -297,18 +300,38 @@ class Wiggle:
 
     def connect(self, user, pw):
         conn = self.conn()
-        jbody = json.dumps({'user':user, 'password': pw})
-        vprint('POST', self._apiEndpoint + 'sessions',  jbody, self.headers)
-        curlprint(self.host, 'POST', self._apiEndpoint + 'sessions', headers=self.headers, data=jbody)
-        conn.request('POST', self._apiEndpoint + 'sessions',  jbody, self.headers)
-        response = conn.getresponse()
-        vprint('Status:', response.status)
-        if (response.status == 303):
-            self._token = response.getheader('X-Snarl-Token')
-            self.headers['X-Snarl-Token'] = self._token
-            return self._token
+        if self._apiVersion == '0.1.0':
+            vprint("WARNING OLD LOGIN")
+            jbody = json.dumps({'user':user, 'password': pw})
+            vprint('POST', self._apiEndpoint + 'sessions',  jbody, self.headers)
+            curlprint(self.host, 'POST', self._apiEndpoint + 'sessions', headers=self.headers, data=jbody)
+            conn.request('POST', self._apiEndpoint + 'sessions',  jbody, self.headers)
+            response = conn.getresponse()
+            vprint('Status:', response.status)
+            if (response.status == 303):
+                self._token = response.getheader('X-Snarl-Token')
+                self.headers['X-Snarl-Token'] = self._token
+                return self._token
+            else:
+                return False
         else:
-            return False
+            form = urllib.urlencode({'username' :user, 'password': pw, 'scope': '*', 'grant_type': 'password'})
+            url = self._apiEndpoint + 'oauth/token'
+            headers = self.headers
+            headers['content-type'] = 'application/x-www-form-urlencoded'
+            vprint('POST', url, form, self.headers)
+            curlprint(self.host, 'POST', url, headers=self.headers, data=form)
+            conn.request('POST', url, form, self.headers)
+            response = conn.getresponse()
+            vprint('Status:', response.status)
+            if (response.status == 200):
+                resp = json.loads(response.read())
+                self._token = resp['access_token']
+                self.headers['authorization'] = 'Bearer ' + self._token
+                return self._token
+            else:
+                return False
+
 
 class Cloud:
     def __init__(self, wiggle):
