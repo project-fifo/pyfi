@@ -3,6 +3,7 @@
 import httplib
 import json
 import time
+import copy
 import urllib
 from pprint import pprint
 from fifo.helper import *
@@ -317,7 +318,7 @@ class Wiggle:
         else:
             form = urllib.urlencode({'username' :user, 'password': pw, 'scope': '*', 'grant_type': 'password'})
             url = self._apiEndpoint + 'oauth/token'
-            headers = self.headers
+            headers = copy.copy(self.headers)
             headers['content-type'] = 'application/x-www-form-urlencoded'
             vprint('POST', url, form, self.headers)
             curlprint(self.host, 'POST', url, headers=self.headers, data=form)
