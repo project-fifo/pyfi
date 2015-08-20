@@ -167,7 +167,6 @@ def vm_create(args):
 # Shows the data when list was selected.
 def snapshots_list(args):
     l = args.endpoint.list_snapshots(args.vmuuid)
-    print(l)
     if args.H:
         header(args)
     fmt = mk_fmt_str(args)
@@ -274,9 +273,14 @@ class VM(Entity):
         return self._put_attr(uuid, 'state', {'action': 'reboot', 'force': True})
 
     def list_snapshots(self, uuid):
-        r = self._get(uuid)
+        r = self.get(uuid)
         if r:
-            return r['snapshots']
+            if r['snapshots'] != []:
+                # This is fucking ugly!
+                map(lambda e: e[1].update({'uuid': e[0]}), r['snapshots'].items())
+                return r['snapshots'].values()
+            else:
+                return []
         else:
             return r
 
@@ -287,8 +291,8 @@ class VM(Entity):
         return self._put_attr(uuid, 'services', {'action': action, 'service': service})
 
     def get_snapshot(self, uuid, snapid):
-        r = self._get(uuid)
-        if r:
+        r = self.get(uuid)
+        if r and r != []:
             return r['snapshots'][snapid]
         else:
             return r
@@ -300,14 +304,19 @@ class VM(Entity):
         return self._put_attr(uuid, 'snapshots/' + snapid, {'action':'rollback'})
 
     def list_backups(self, uuid):
-        r = self._get(uuid)
+        r = self.get(uuid)
         if r:
-            return r['backups']
+            if r['backups'] != []:
+                # This is fucking ugly!
+                map(lambda e: e[1].update({'uuid': e[0]}), r['backups'].items())
+                return r['backups'].values()
+            else:
+                return []
         else:
             return r
 
     def get_backup(self, uuid, snapid):
-        r = self._get(uuid)
+        r = self.get(uuid)
         if r:
             return r['backups'][snapid]
         else:
