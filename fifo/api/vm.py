@@ -259,22 +259,26 @@ class VM(Entity):
                            'config': config})
 
     def start(self, uuid):
-        return self._put(uuid, {'action': 'start'})
+        return self._put_attr(uuid, 'state', {'action': 'start'})
 
     def stop(self, uuid):
-        return self._put(uuid, {'action': 'stop'})
+        return self._put_attr(uuid, 'state', {'action': 'stop'})
 
     def reboot(self, uuid):
-        return self._put(uuid, {'action': 'reboot'})
+        return self._put_attr(uuid, 'state', {'action': 'reboot'})
 
     def force_stop(self, uuid):
-        return self._put(uuid, {'action': 'stop', 'force': True})
+        return self._put_attr(uuid, 'state', {'action': 'stop', 'force': True})
 
     def force_reboot(self, uuid):
-        return self._put(uuid, {'action': 'reboot', 'force': True})
+        return self._put_attr(uuid, 'state', {'action': 'reboot', 'force': True})
 
     def list_snapshots(self, uuid):
-        return self._get_attr(uuid, 'snapshots')
+        r = self._get(uuid)
+        if r:
+            return r['snapshots']
+        else:
+            return r
 
     def make_snapshot(self, uuid, comment):
         return self._post_attr(uuid, 'snapshots', {'comment': comment})
@@ -283,7 +287,11 @@ class VM(Entity):
         return self._put_attr(uuid, 'services', {'action': action, 'service': service})
 
     def get_snapshot(self, uuid, snapid):
-        return self._get_attr(uuid, 'snapshots/' + snapid)
+        r = self._get(uuid)
+        if r:
+            return r['snapshots'][snapid]
+        else:
+            return r
 
     def delete_snapshot(self, uuid, snapid):
         return self._delete_attr(uuid, 'snapshots/' + snapid)
@@ -292,10 +300,18 @@ class VM(Entity):
         return self._put_attr(uuid, 'snapshots/' + snapid, {'action':'rollback'})
 
     def list_backups(self, uuid):
-        return self._wiggle.get_attr(self._resource, uuid, 'backups')
+        r = self._get(uuid)
+        if r:
+            return r['backups']
+        else:
+            return r
 
     def get_backup(self, uuid, snapid):
-        return self._get_attr(uuid, 'backups/' + snapid)
+        r = self._get(uuid)
+        if r:
+            return r['backups'][snapid]
+        else:
+            return r
 
     def delete_backup(self, uuid, snapid, local):
         if local:
