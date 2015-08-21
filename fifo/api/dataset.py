@@ -49,8 +49,8 @@ def import_dataset(args):
     j = json.load(args.manifest)
     uuid = j['uuid']
     if not args.dataset_only:
-        response = args.endpoint._post_attr(uuid, [], j)
-        if response == 201:
+        response = args.endpoint._put_attr(uuid, [], j)
+        if response:
             print 'Manifest imported'
         else:
             print 'Manifest upload failed.'
