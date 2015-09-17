@@ -1,5 +1,5 @@
-LAST_VER=0.1.28
-NEXT_VER=0.2.0
+LAST_VER=0.1.29
+NEXT_VER=0.2.1
 .phony: package clean
 
 package:
