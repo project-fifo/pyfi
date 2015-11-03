@@ -316,7 +316,7 @@ class Wiggle:
             else:
                 return False
         else:
-            form = urllib.urlencode({'username' :user, 'password': pw, 'scope': '*', 'grant_type': 'password'})
+            form = urllib.urlencode({'username' :user, 'password': pw, 'grant_type': 'password'})
             url = self._apiEndpoint + 'oauth/token'
             headers = copy.copy(self.headers)
             headers['content-type'] = 'application/x-www-form-urlencoded'
