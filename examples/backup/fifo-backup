@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # -*- bash -*-
 
-# This cript is used to run backupos on a single machine,
-# determin the correct parent and possibly deleting it if needed
+# This script is used to run backups on a single machine,
+# determine the correct parent and possibly deleting it if needed
 
 fifo=/opt/local/bin/fifo
 vm="$2"
