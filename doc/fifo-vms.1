@@ -1,4 +1,4 @@
-.TH fifo-vms 1  "Jan 1, 2014" "version 0.2.2" "USER COMMANDS"
+.TH fifo-vms 1  "Jan 1, 2014" "version 0.2.3" "USER COMMANDS"
 .SH NAME
 fifo-vms \- VM related commnads for the FiFo API
 .SH SYNOPSIS
@@ -22,12 +22,15 @@ Valid choices for
 .B FMT
 are: uuid, alias, ip, state and hypervisor.
 .TP
-vms get <uuid|alias>
+vms get [\-\-raw|\-r] <uuid|alias>
 This command returns the JSON representation of a vm's configuration
 as stored in teh Fifo server.
 
 If multiple VM's with the same alias exist the first one found will
 be returned, since there is no guaranteed order the result may vary.
+
+If the \-\-raw flag is given the entire json is printed otherwise
+only the 'config' section.
 .TP
 vms info <uuid|alias>
 This command gets the info section of the VM containing for example

@@ -71,6 +71,9 @@ def backup_create(args):
 def vm_map_fn(vm):
     return(vm['config'])
 
+def vm_raw_map_fn(vm):
+    return(vm)
+
 def vm_info_map_fn(vm):
     return(vm['info'])
 
@@ -363,10 +366,12 @@ class VM(Entity):
         parser_vms_list.set_defaults(func=show_list,
                                      fmt_def=vm_fmt)
         parser_vms_get = subparsers_vms.add_parser('get', help='gets a VM')
+        parser_vms_get.add_argument('--raw', '-r', dest='fmt_def', action='store_const',
+                                    const=vm_raw_map_fn, default=vm_map_fn,
+                                    help='print the raw result not the config version')
         parser_vms_get.add_argument('uuid',
                                     help='uuid of VM to show')
-        parser_vms_get.set_defaults(func=show_get,
-                                    map_fn=vm_map_fn)
+        parser_vms_get.set_defaults(func=show_get)
 
         parser_vms_svcs = subparsers_vms.add_parser('svcs', help='shows service states on a VM')
         parser_vms_svcs.add_argument('-H', action='store_false',
