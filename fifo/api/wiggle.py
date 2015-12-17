@@ -1,5 +1,6 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
+import ssl
 import httplib
 import json
 import time
@@ -32,7 +33,7 @@ class Wiggle:
         if self.unsafe:
             return httplib.HTTPConnection(self.host)
         else:
-            return httplib.HTTPSConnection(self.host)
+            return httplib.HTTPSConnection(self.host, context=ssl.create_default_context())
 
     def get_token(self):
         return self._token
@@ -420,9 +421,9 @@ class Entity:
         uuid = self.uuid_by_name(uuid)
         binHeaders = dict(self._wiggle.headers)
         if accept:
-            binHeaders['Accept'] = accept
+            binHeaders['accept'] = accept
         else:
-            del binHeaders['Accept']
+            del binHeaders['accept']
         return self._wiggle.get(self._resource, uuid, suffix=target, rawResponse=True, headers=binHeaders)
 
     def get_metadata(self, uuid):
