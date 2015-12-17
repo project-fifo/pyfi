@@ -57,6 +57,25 @@ def grant(args):
 def user_delete(args):
     args.endpoint.delete(args.endpoint.uuid_by_name(args.uuid))
 
+def sign_csr(args):
+    if args.csr:
+        f = open(args.csr, 'r')
+        csr = f.read()
+        f.close()
+    else:
+        csr = sys.stdin.read()
+    uuid = args.endpoint.uuid_by_name(args.uuid)
+    comment = args.comment
+    #TODO: make scope configurable?
+    scope = ["*"]
+    r = args.endpoint.sign(uuid, comment, scope, csr)
+    if r:
+        print r["cert"]
+        exit(0)
+    else:
+        print r
+        exit(1)
+
 class User(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
@@ -68,6 +87,14 @@ class User(Entity):
 
     def grant(self, user, permission):
         return self._put_attr(user, ['permissions'] + permission, {})
+
+    def sign(self, uuid, comment, scope, csr):
+        payload = {
+            "scope": ["*"],
+            "comment": comment,
+            "csr": csr
+        }
+        return self._post_attr(uuid, 'tokens', payload)
 
     def join_org(self, uuid, org):
         return self._put_attr(uuid, 'orgs/' + org, {})
@@ -87,6 +114,12 @@ class User(Entity):
         parser_users_get = subparsers_users.add_parser('get', help='gets a user')
         parser_users_get.add_argument('uuid')
         parser_users_get.set_defaults(func=show_get)
+        parser_users_sign = subparsers_users.add_parser('sign', help='sign a CSR and links the certificate.')
+        parser_users_sign.add_argument('uuid', help="UUID of the user")
+        parser_users_sign.add_argument('--csr', help="CSR file from openssl req command")
+        parser_users_sign.add_argument('--comment', help="comment", default="SSL Cert")
+        parser_users_sign.set_defaults(func=sign_csr)
+
         parser_users_delete = subparsers_users.add_parser('delete', help='gets a user')
         parser_users_delete.add_argument('uuid')
         parser_users_delete.set_defaults(func=show_delete)

@@ -1,4 +1,4 @@
-.TH fifo-users 1  "Jan 1, 2014" "version 0.2.3" "USER COMMANDS"
+.TH fifo-users 1  "Jan 1, 2014" "version 0.2.4" "USER COMMANDS"
 .SH NAME
 fifo-users \- User related commnads for the FiFo API
 .SH SYNOPSIS
@@ -35,6 +35,15 @@ the data base.
 .TP
 users create [\-p] [\-\-password|\-P PASS] [\-\-role|\-g ROLE] [\-\-organization|\-o ORG] NAME
 Creates a new user and optionally sets the password, role and orgnaistation. If \-p is passed only the UUID is returned.
+.TP
+users sign USER [\-\-csr CSR] [\-\-comment COMMENT]
+Signs a csr and returns the certificate, printed to STDOUT.
+
+.B CSR
+if privided the csr fill be read from this file, otherwise from STDIN.
+
+.B COMMENT
+an optional comment provided to identify the certificate, otherwise a default name will be used.
 .TP
 users grant USER PERM...
 Grants a user a permission where.
