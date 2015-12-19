@@ -19,7 +19,7 @@ class Wiggle:
         self.unsafe = unsafe
         self.headers = {'content-type': 'application/json;charset=UTF-8',
                         'accept': 'application/json'}
-        self._apiVersion = '0.1.0'
+        self._apiVersion = '2'
         if apiVersion:
             self._apiVersion = apiVersion
             self._apiEndpoint = '/api/' + apiVersion + '/'
@@ -40,7 +40,6 @@ class Wiggle:
 
     def set_token(self, token):
         self._token = token
-        self.headers['X-Snarl-Token'] = self._token
         return self.get('sessions', token)
 
     def get(self, resource, entity, suffix='', rawResponse=False, headers=None):
@@ -287,12 +286,13 @@ class Wiggle:
     def full_list(self, resource, fields):
         conn = self.conn()
         hdrs = self.headers
-        hdrs['x-full-list'] = 'true'
+        params = '?full-list=true'
         if fields != []:
-            hdrs['x-full-list-fields'] = ','.join(fields)
+            params = params + '?full-list-fields=' + ','.join(fields)
         vprint('GET', self._apiEndpoint + resource, '', hdrs)
-        curlprint(self.host, 'GET', self._apiEndpoint + resource, headers=hdrs)
-        conn.request('GET', self._apiEndpoint + resource, '', hdrs)
+        url = self._apiEndpoint + resource + params
+        curlprint(self.host, 'GET', url, headers=hdrs)
+        conn.request('GET', url, '', hdrs)
         response = conn.getresponse()
         vprint('Status: ', response.status)
         if (response.status != 200):
@@ -303,19 +303,8 @@ class Wiggle:
     def connect(self, user, pw):
         conn = self.conn()
         if self._apiVersion == '0.1.0':
-            vprint("WARNING OLD LOGIN")
-            jbody = json.dumps({'user':user, 'password': pw})
-            vprint('POST', self._apiEndpoint + 'sessions',  jbody, self.headers)
-            curlprint(self.host, 'POST', self._apiEndpoint + 'sessions', headers=self.headers, data=jbody)
-            conn.request('POST', self._apiEndpoint + 'sessions',  jbody, self.headers)
-            response = conn.getresponse()
-            vprint('Status:', response.status)
-            if (response.status == 303):
-                self._token = response.getheader('X-Snarl-Token')
-                self.headers['X-Snarl-Token'] = self._token
-                return self._token
-            else:
-                return False
+            print "the 0.1.0 API is no longer supported!"
+            exit(1)
         else:
             form = urllib.urlencode({'username' :user, 'password': pw, 'grant_type': 'password'})
             url = self._apiEndpoint + 'oauth/token'
