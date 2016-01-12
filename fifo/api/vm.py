@@ -426,7 +426,7 @@ class VM(Entity):
         parser_vms_delete.set_defaults(func=vm_delete)
 
         parser_vms_create = subparsers_vms.add_parser('create', help='creates a new VM')
-        parser_vms_create.add_argument('--dryrun', '-d', action='store_true', default=False,
+        parser_vms_create.add_argument('--dryrun', '-D', action='store_true', default=False,
                                        help='Does not create the machine but simulates if it can be created.')
         parser_vms_create.add_argument('--package', '-p',
                                        help='UUID of the package to use.')
