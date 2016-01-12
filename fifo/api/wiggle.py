@@ -288,7 +288,7 @@ class Wiggle:
         hdrs = self.headers
         params = '?full-list=true'
         if fields != []:
-            params = params + '?full-list-fields=' + ','.join(fields)
+            params = params + '&full-list-fields=' + ','.join(fields)
         vprint('GET', self._apiEndpoint + resource, '', hdrs)
         url = self._apiEndpoint + resource + params
         curlprint(self.host, 'GET', url, headers=hdrs)
