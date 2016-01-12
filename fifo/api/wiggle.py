@@ -194,6 +194,8 @@ class Wiggle:
         conn.request('PUT', url, jbody, self.headers)
         response = conn.getresponse()
         vprint('Status: ', response.status)
+        if (response.status == 201): # This was added for dryrun. Add body?
+            return True
         if (response.status != 200):
             return False
         else:
