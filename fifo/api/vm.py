@@ -161,11 +161,15 @@ def vm_create(args):
         print 'Could not find dataset: ' + args.dataset + '.'
         exit(1)
 
-    reply = args.endpoint.create(package, dataset, config)
+    if args.dryrun:
+        reply = args.endpoint.dryrun(package, dataset, config)
+    else:
+        reply = args.endpoint.create(package, dataset, config)
+
     if reply:
         print 'VM ' + reply['uuid'] + ' created successfully.'
     else:
-        print 'Faied to create VM.'
+        print 'Failed to create VM.'
 
 # Shows the data when list was selected.
 def snapshots_list(args):
@@ -259,6 +263,12 @@ class VM(Entity):
         return self._post({'package': package,
                            'dataset': dataset,
                            'config': config})
+
+    def dryrun(self, package, dataset, config):
+        return self._wiggle.post(self._resurce+'/dry_run',
+                                 body={'package': package,
+                                       'dataset': dataset,
+                                       'config': config})
 
     def start(self, uuid):
         return self._put_attr(uuid, 'state', {'action': 'start'})
@@ -416,6 +426,8 @@ class VM(Entity):
         parser_vms_delete.set_defaults(func=vm_delete)
 
         parser_vms_create = subparsers_vms.add_parser('create', help='creates a new VM')
+        parser_vms_create.add_argument('--dryrun', '-d', action='store_true', default=False,
+                                       help='Does not create the machine but simulates if it can be created.')
         parser_vms_create.add_argument('--package', '-p',
                                        help='UUID of the package to use.')
         parser_vms_create.add_argument('--dataset', '-d',
