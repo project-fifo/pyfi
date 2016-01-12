@@ -79,10 +79,12 @@ the KVM.
 vms svcadm <uuid|alias> enable|disable|clear <service>
 Changes toe state of <service> on the given vm <uuid>.
 .TP
-vms create \-\-package|\-p <package uuid|name> \-\-dataset|\-d <dataset uuid|name> [\-\-file|\-f <config json file>]
+vms create \-\-dryrun \-\-package|\-p <package uuid|name> \-\-dataset|\-d <dataset uuid|name> [\-\-file|\-f <config json file>]
 This commands creates a new VM on the FiFo system. Both <package uuid>
 and <dataset uuid> have to be valid uuid's or names. If uuid's are passed
 no checks are done on the client side.
+
+The option \-\-dryrun tests whether the described machine is deployable or not.
 
 If no config.json file is given as argument it is read from the
 STDIN. Please see fifo-vmconfig(5) for details on the structure of
