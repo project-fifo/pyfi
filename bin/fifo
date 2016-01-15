@@ -66,7 +66,8 @@ parser.add_argument("--config", "-c",
                     help="Selects the network config to use")
 parser.add_argument("--api-version", help="The api version to use (e.g., " + DEFAULT_APIVERSION + ")")
 parser.add_argument("--host", help="The host to use (dns or ip, no https://)")
-parser.add_argument("--unsafe", action='store_true', help="disable https connection, use unsafe http instead")
+parser.add_argument("--unsafe", action='store_true', help="disable https connection, use insecure http instead")
+parser.add_argument("--insecure", '-k', action='store_true', help="disable https connection, use insecure http instead")
 parser.add_argument("--user", '-u', help="The user to log in with.")
 parser.add_argument("--password", '-P', help="The password to log in with.")
 parser.add_argument("--verbose", "-v", action='store_true', default=False, help="Turn on verbose mode")
@@ -105,12 +106,14 @@ host = args.host or config.get(active_config, 'host')
 user = args.user or config.get(active_config, 'user')
 pw = args.password or config.get(active_config, 'pass')
 
-unsafe = False
-if config.has_option(active_config, 'unsafe'):
-    if config.get(active_config, 'unsafe').lower() == "true":
-        unsafe = True
-if args.unsafe:
-    unsafe = args.unsafe
+insecure = False
+if config.has_option(active_config, 'insecure'):
+    if config.get(active_config, 'insecure').lower() == "true":
+        insecure = True
+if args.insecure:
+    insecure = args.insecure
+elif args.unsafe:
+    insecure = args.unsafe
 
 
 token = False
@@ -118,7 +121,7 @@ token = False
 if config.has_option(active_config, 'token'):
     token = config.get(active_config, 'token')
 
-wiggle.init(host, user, pw, token, apiVersion, unsafe)
+wiggle.init(host, user, pw, token, apiVersion, insecure)
 #We check if we can get a valid token from wiggle and store it on our config
 if wiggle.get_token():
     config.set(active_config, 'token', wiggle.get_token())
