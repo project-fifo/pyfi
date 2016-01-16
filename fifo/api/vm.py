@@ -375,6 +375,8 @@ class VM(Entity):
                                      help='Supress the header.')
         parser_vms_list.add_argument('-p', action='store_true',
                                      help='show in parsable format, rows sepperated by colon.')
+        parser_vms_list.add_argument('--raw', '-r', action='store_true',
+                                    help='print json array of complete data')
         parser_vms_list.set_defaults(func=show_list,
                                      fmt_def=vm_fmt)
         parser_vms_get = subparsers_vms.add_parser('get', help='gets a VM')

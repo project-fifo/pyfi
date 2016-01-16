@@ -107,22 +107,28 @@ def header(args):
 
 # Shows the data when list was selected.
 def show_list(args):
-    l = args.endpoint.list()
+    if args.raw is True:
+        l = args.endpoint.full_list([])
+    else:
+        l = args.endpoint.list()
     if not l and l != []:
         print("error!")
         exit(1)
-    if args.H:
-        header(args)
-    fmt = mk_fmt_str(args)
-    for e in l:
-        if not e:
-            print("error!")
-            exit(1)
-        l = mk_fmt_line(args, e)
-        if args.p:
-            print(":".join(l))
-        else:
-            print(fmt%tuple(l))
+    if args.raw is True:
+        print(json.dumps(l, sort_keys=True, indent=2, separators=(',', ': ')))
+    else:
+        if args.H:
+            header(args)
+        fmt = mk_fmt_str(args)
+        for e in l:
+            if not e:
+                print("error!")
+                exit(1)
+            l = mk_fmt_line(args, e)
+            if args.p:
+                print(":".join(l))
+            else:
+                print(fmt%tuple(l))
 
 # Shows the data when get was selected, outputs it in JSON
 def show_get(args):

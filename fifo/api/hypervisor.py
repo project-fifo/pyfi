@@ -58,6 +58,8 @@ class Hypervisor(Entity):
                                              default=['uuid', 'name', 'free', 'used', 'reserved'])
         parser_hypervisors_list.add_argument('-H', action='store_false')
         parser_hypervisors_list.add_argument('-p', action='store_true')
+        parser_hypervisors_list.add_argument('--raw', '-r', action='store_true',
+                            help='print json array of complete data')
         parser_hypervisors_list.set_defaults(func=show_list,
                                           fmt_def=hypervisor_fmt)
         parser_hypervisors_get = subparsers_hypervisors.add_parser('get', help='gets a hypervisor')

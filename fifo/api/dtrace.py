@@ -27,6 +27,8 @@ class Dtrace(Entity):
                                           default=['uuid', 'name'])
         parser_dtraces_list.add_argument('-H', action='store_false')
         parser_dtraces_list.add_argument('-p', action='store_true')
+        parser_dtraces_list.add_argument('--raw', '-r', action='store_true',
+                            help='print json array of complete data')
         parser_dtraces_list.set_defaults(func=show_list,
                                           fmt_def=dtrace_fmt)
         parser_dtraces_get = subparsers_dtraces.add_parser('get', help='gets a dtrace')
