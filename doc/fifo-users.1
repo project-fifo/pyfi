@@ -15,12 +15,14 @@ displays a inline help.
 
 .SH COMMANDS
 .TP
-users list [\-p] [\-H] [\-\-fmt FMT]
+users list [\-\-raw|\-r] [\-p] [\-H] [\-\-fmt FMT]
 This command lists the users currently available on the server.
 
 Valid choices for
 .B FMT
 are: uuid, name, roles.
+
+If the \-\-raw flag is used, an array of user json objects is displayed.
 .TP
 users get <uuid|name>
 This command returns the JSON representation of a user object stored

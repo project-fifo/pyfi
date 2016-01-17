@@ -15,43 +15,45 @@ displays a inline help.
 
 .SH COMMANDS
 .TP
-list [\-p] [\-H] [\-\-fmt FMT]
+groupings list [\-\-raw|\-r] [\-p] [\-H] [\-\-fmt FMT]
 This command lists all groupings.
 
 Valid choices for
 .B FMT
 are: uuid, name, type, elements and groupings.
+
+If the \-\-raw flag is used an array of grouping json objects is displayed.
 .TP
-get UUID
+groupings get UUID
 Reads the grouping with the given
 .B UUID
 from the database.
 .TP
-delete UUID
+groupings delete UUID
 Deletes the grouping with the given
 .B UUID
 from the database.
 .TP
-create --type {stack,cluster} NAME
+groupings create --type {stack,cluster} NAME
 Creates a new grouping with
 .B NAME
 and marks it as a stack or cluster.
 .TP
-add STACK cluster CLUSTER
+groupings add STACK cluster CLUSTER
 Adds a existing
 .B CLUSTER
 to the
 .B STACK
 given as first argument.
 .TP
-remove STACK cluster CLUSTER
+groupings remove STACK cluster CLUSTER
 Removes a
 .B CLUSTER
 to the
 .B STACK
 given as first argument.
 .TP
-remove CLUSTER vm VM
+groupings remove CLUSTER vm VM
 Removes a
 .B VM
 to the

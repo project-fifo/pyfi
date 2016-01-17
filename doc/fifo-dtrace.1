@@ -15,13 +15,15 @@ displays a inline help.
 
 .SH COMMANDS
 .TP
-dtrace list [\-p] [\-H] [\-\-fmt FMT]
+dtrace list [\-\-raw|\-r] [\-p] [\-H] [\-\-fmt FMT]
 This command lists the dtrace scripts currently available on the
 server.
 
 Valid choices for
 .B FMT
 are: uuid and name.
+
+If the \-\-raw flag is used an array of dtrace script json objects is displayed.
 .TP
 dtrace get <uuid|name>
 This command returns the JSON representation of a dtrace script

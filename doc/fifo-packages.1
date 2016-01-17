@@ -15,12 +15,14 @@ displays a inline help.
 
 .SH COMMANDS
 .TP
-packages list [\-p] [\-H] [\-\-fmt FMT]
+packages list [\-\-raw|\-r] [\-p] [\-H] [\-\-fmt FMT]
 This command lists the packages currently available on the server.
 
 Valid choices for
 .B FMT
 are: uuid, name, title, quota and ram.
+
+If the \-\-raw flag is used, an array of package json objects is displayed.
 .TP
 packages get <uuid|name>
 This command returns the JSON representation of a package object stored

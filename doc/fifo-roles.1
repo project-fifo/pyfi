@@ -15,12 +15,14 @@ displays a inline help.
 
 .SH COMMANDS
 .TP
-roles list [\-p] [\-H] [\-\-fmt FMT]
+roles list [\-\-raw|\-r] [\-p] [\-H] [\-\-fmt FMT]
 This command lists the roles currently available on the server.
 
 Valid choices for
 .B FMT
 are: uuid and name.
+
+If the \-\-raw flag is used, an array of role json objects is displayed.
 .TP
 roles get <uuid|name>
 This command returns the JSON representation of a role object stored
