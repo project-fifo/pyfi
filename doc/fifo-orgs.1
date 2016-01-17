@@ -1,4 +1,4 @@
-.TH fifo-orgs 1  "Jan 1, 2014" "version 0.2.7" "USER COMMANDS"
+.TH fifo-orgs 1  "Jan 1, 2014" "version 0.2.8" "USER COMMANDS"
 .SH NAME
 fifo-orgs \- Organisation related commnads for the FiFo API
 .SH SYNOPSIS
@@ -15,12 +15,14 @@ displays a inline help.
 
 .SH COMMANDS
 .TP
-org list [\-p] [\-H] [\-\-fmt FMT]
+orgs list [\-\-raw|\-r] [\-p] [\-H] [\-\-fmt FMT]
 This command lists the orgs currently available on the server.
 
 Valid choices for
 .B FMT
 are: uuid, name.
+
+If the \-\-raw flag is used an array of org json objects is displayed.
 .TP
 orgs get <uuid|name>
 This command returns the JSON representation of a org object stored

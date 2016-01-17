@@ -52,6 +52,8 @@ class Network(Entity):
                                           default=['uuid', 'name','ipranges'])
         parser_networks_list.add_argument('-H', action='store_false')
         parser_networks_list.add_argument('-p', action='store_true')
+        parser_networks_list.add_argument('--raw', '-r', action='store_true',
+                            help='print json array of complete data')
         parser_networks_list.set_defaults(func=show_list,
                                           fmt_def=network_fmt)
         parser_networks_get = subparsers_networks.add_parser('get', help='gets a network')

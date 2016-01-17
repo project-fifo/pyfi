@@ -42,6 +42,8 @@ class Org(Entity):
                                           default=['uuid', 'name'])
         parser_orgs_list.add_argument('-H', action='store_false')
         parser_orgs_list.add_argument('-p', action='store_true')
+        parser_orgs_list.add_argument('--raw', '-r', action='store_true',
+                            help='print json array of complete data')
         parser_orgs_list.set_defaults(func=show_list,
                                           fmt_def=org_fmt)
         parser_orgs_get = subparsers_orgs.add_parser('get', help='gets a org')

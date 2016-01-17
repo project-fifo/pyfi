@@ -72,6 +72,8 @@ class Iprange(Entity):
                                           default=['uuid', 'name', 'tag', 'first', 'last', 'vlan'])
         parser_ipranges_list.add_argument('-H', action='store_false')
         parser_ipranges_list.add_argument('-p', action='store_true')
+        parser_ipranges_list.add_argument('--raw', '-r', action='store_true',
+                            help='print json array of complete data')
         parser_ipranges_list.set_defaults(func=show_list,
                                           fmt_def=iprange_fmt)
         parser_ipranges_get = subparsers_ipranges.add_parser('get', help='gets an iprange')
