@@ -82,6 +82,8 @@ class Dataset(Entity):
                                           default=['uuid', 'name', 'version', 'type', 'description'])
         parser_datasets_list.add_argument('-H', action='store_false')
         parser_datasets_list.add_argument('-p', action='store_true')
+        parser_datasets_list.add_argument('--raw', '-r', action='store_true',
+                            help='print json array of complete data')
         parser_datasets_list.set_defaults(func=show_list,
                                           fmt_def=dataset_fmt)
         parser_datasets_get = subparsers_datasets.add_parser('get', help='gets a dataset')

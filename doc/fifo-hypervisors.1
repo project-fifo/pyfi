@@ -15,8 +15,8 @@ displays a inline help.
 
 .SH COMMANDS
 .TP
-hypervisors list [\-p] [\-H] [\-\-fmt FMT]
-This command lists the roles currently available on the server.
+hypervisors list [\-\-raw|\-r] [\-p] [\-H] [\-\-fmt FMT]
+This command lists the hypervisors currently available on the server.
 
 Valid choices for
 .B FMT
@@ -24,6 +24,8 @@ are: name, free, used, reserved, total, smartos, ip.
 
 Where free, used, reserved and total stand for memory usage and smartos
 represents the current SmartOS version running on the hypervisor.
+
+If the \-\-raw flag is used an array of hypervisor json objects is displayed.
 .TP
 hypervisors get <uuid|name>
 This command returns the JSON representation of a hypervisor object

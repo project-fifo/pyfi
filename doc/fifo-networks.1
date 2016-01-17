@@ -15,12 +15,14 @@ displays a inline help.
 
 .SH COMMANDS
 .TP
-networks list [\-p] [\-H] [\-\-fmt FMT]
+networks list [\-\-raw|\-r] [\-p] [\-H] [\-\-fmt FMT]
 This command lists the networks currently available on the server.
 
 Valid choices for
 .B FMT
 are: uuid, name, ipranges.
+
+If the \-\-raw flag is used an array of role network objects is displayed.
 .TP
 networks get <uuid|name>
 This command returns the JSON representation of a network object stored
