@@ -147,6 +147,11 @@ vms backups <vm uuid> get <uuid|name>
 This command returns the JSON representation of a backup configuration
 as stored in teh FiFo server.
 .TP
+vms backups <vm uuid> verify <uuid|name>
+Checks the sha1 checksums on each file and re-computes them to verify
+the integrety of a backup. This command can take sime time since it requires
+reading the entire backup.
+.TP
 vms backup <vm uuid|alias> create [\-d] [\-\-parent parent] [\-x] "<comment>"
 Creates a new backup of the <vm uuid>, it is advised to power down
 the VM for this action even so it is technically working on running VM's
