@@ -36,7 +36,7 @@ setup(
     author_email='heinz@licenser.net',
     packages=['fifo', 'fifo.api'],
     scripts=['bin/fifo'],
-    url='http://project-fifo.net',
+    url='https://project-fifo.net',
     license='CDDL',
     description='Project FiFo API implementation and console client.',
     long_description=open('README.md').read(),
