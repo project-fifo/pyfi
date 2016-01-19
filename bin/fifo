@@ -31,7 +31,7 @@ import json
 
 # constants
 
-DEFAULT_APIVERSION = "2"
+DEFAULT_APIVERSION = "3"
 
 #First we initialize our configuration read the data and generate a default if needed
 
