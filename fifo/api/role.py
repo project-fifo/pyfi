@@ -59,6 +59,8 @@ class Role(Entity):
                                           default=['uuid', 'name'])
         parser_roles_list.add_argument('-H', action='store_false')
         parser_roles_list.add_argument('-p', action='store_true')
+        parser_roles_list.add_argument('--raw', '-r', action='store_true',
+                            help='print json array of complete data')
         parser_roles_list.set_defaults(func=show_list,
                                           fmt_def=role_fmt)
         parser_roles_get = subparsers_roles.add_parser('get', help='gets a role')

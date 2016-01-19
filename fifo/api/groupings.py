@@ -85,6 +85,8 @@ class Grouping(Entity):
                                           default=['uuid', 'name', 'type'])
         parser_groupings_list.add_argument('-H', action='store_false')
         parser_groupings_list.add_argument('-p', action='store_true')
+        parser_groupings_list.add_argument('--raw', '-r', action='store_true',
+                            help='print json array of complete data')
         parser_groupings_list.set_defaults(func=show_list,
                                           fmt_def=grouping_fmt)
         parser_groupings_get = subparsers_groupings.add_parser('get', help='gets a grouping')

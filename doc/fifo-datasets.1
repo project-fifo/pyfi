@@ -1,4 +1,4 @@
-.TH fifo-datasets 1  "Jan 1, 2014" "version 0.2.7" "USER COMMANDS"
+.TH fifo-datasets 1  "Jan 1, 2014" "version 0.2.8" "USER COMMANDS"
 .SH NAME
 fifo-datasets \- datasets related commnads for the FiFo API
 .SH SYNOPSIS
@@ -15,12 +15,14 @@ displays a inline help.
 
 .SH COMMANDS
 .TP
-datasets list [\-p] [\-H] [\-\-fmt FMT]
+datasets list [\-\-raw|\-r] [\-p] [\-H] [\-\-fmt FMT]
 This command lists the datasets currently available on the server.
 
 Valid choices for
 .B FMT
 are: uuid, name, version, type and description.
+
+If the \-\-raw flag is used an array of dataset json objects is displayed.
 .TP
 datasets get <uuid|name>
 This command returns the JSON representation of a dataset object
