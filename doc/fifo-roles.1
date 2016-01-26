@@ -40,7 +40,7 @@ the data base.
 roles create [\-p] NAME
 Creates a new role, if \-p is passed only the uuid is returned.
 .TP
-roles grant ROLE PERM...
+roles grant <uuid> ROLE PERM...
 Grants a role a permission where
 
 .B ROLE
@@ -48,6 +48,9 @@ is the uuid of the role and
 
 .B PERM
 is one or more permission elements, i.e. cloud vms create
+.TP
+roles revoke <uuid> ROLE PERM...
+Revokes a permission from a role (ROLE and PERM as per grant)
 .TP
 roles metadata <uuid> get
 Reads the metadata.
