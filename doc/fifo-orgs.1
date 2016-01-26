@@ -57,6 +57,21 @@ Deletes the
 in the metadata. The
 .B <key>
 can be a nested period seperated JSON path.
+.TP
+orgs accounting [\-\-raw] [-p] [-H] [\-\-fmt FMT] <uuid> <start> <end>
+Will display the accounting information for an organisation
+
+.B <start>
+Timestamp of the start of the accounting period
+
+.B <end>
+Timestamp of the end of the accounting period
+
+If the \-\-raw flag is used an array of org json objects is displayed
+
+Valid choices for
+.B FMT
+are: resource, action, timestamp.
 
 .SH AUTHOR
 Heinz N. 'Licenser' Gies (heinz (at) licenser.net)

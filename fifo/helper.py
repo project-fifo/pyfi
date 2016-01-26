@@ -6,6 +6,7 @@ import json
 import re
 from pprint import pprint
 import sys
+import datetime
 
 # Verbose print support
 # http://stackoverflow.com/questions/5980042/how-to-implement-the-verbose-or-v-option-into-a-script
@@ -36,7 +37,7 @@ def curlprint(host, method, path, headers, data=None, upload=None, file=None, fi
         uploadp = ''
         if upload:
             uploadp = '-T ' + upload
-        print("curl -X {method} http://{host}{path} {headers_params} {data_params} {upload_params} {file_params}".format(
+        print("curl -X {method} \"http://{host}{path}\" {headers_params} {data_params} {upload_params} {file_params}".format(
             method=method,
             host=host,
             path=path,
@@ -73,6 +74,18 @@ def d(o, p, deflt="-"):
             return d(o[k], p[1:], deflt)
         else:
             return deflt
+
+
+# Will take an epoch timestamp and convert to human readable
+def t(o, fmt="%Y/%m/%d %H:%M:%S"):
+    if o == 0:
+        return "?"
+    else:
+        # Convert microsecond timestamps
+        dt = float(o / 1000000.0)
+        v = datetime.datetime.fromtimestamp(dt)
+        return v.strftime(fmt)
+
 
 # Helper function to generate a formatstring out of the format definition and the selected fields
 def mk_fmt_str(args):
