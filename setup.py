@@ -55,5 +55,8 @@ setup(
         'Topic :: System :: Systems Administration',
         'Topic :: Utilities',
     ],
+    install_requires=[
+          'websocket-client',
+    ],
     cmdclass={"install": fifo_install}
 )

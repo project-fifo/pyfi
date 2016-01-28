@@ -12,6 +12,12 @@ from datetime import datetime
 import sys
 import json
 
+import websocket
+import thread
+import time
+import ssl
+import tty
+
 def show_services(args):
     e = args.endpoint.get(args.uuid)
     if not e or not e.has_key('services'):
@@ -275,6 +281,46 @@ def backup_restore(args):
         exit(1)
         print 'Snapshot deleted successfully.'
 
+
+def ws_msg(ws, msg):
+    sys.stdout.write(msg)
+
+def ws_error(ws, error):
+    print error
+    exit(1)
+def ws_close(ws):
+    exit(0)
+
+def ws_open(ws):
+    def run(*args):
+        c = sys.stdin.read(1)
+        if not c:
+            ws.close()
+            exit(0)
+        ws.send(c)
+        run()
+    thread.start_new_thread(run, ())
+
+def console(args):
+    w = args.endpoint._wiggle
+    r = w.get('sessions', 'one_time_token')
+    if not r:
+        print "Could not retrive one time token"
+        exit(1)
+    token = r['token']
+    host = w.host
+    api = w._apiEndpoint
+    endpoint = "wss://" + host + api + "vms/" + args.uuid + "/console?fifo_ott=" + token
+    ws = websocket.WebSocketApp(endpoint,
+                                on_message = ws_msg,
+                                on_error = ws_error,
+                                on_close = ws_close)
+    ws.on_open = ws_open
+    if w.insecure:
+        ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+    else:
+        ws.run_forever()
+
 class VM(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
@@ -471,6 +517,12 @@ class VM(Entity):
                                      help='uuid of VM to show')
         parser_vms_info.set_defaults(func=show_get,
                                      map_fn=vm_info_map_fn)
+
+        parser_vms_console = subparsers_vms.add_parser('console', help='consolees to a VM')
+        parser_vms_console.add_argument('uuid',
+                                     help='uuid of VM to show')
+        parser_vms_console.set_defaults(func=console)
+
         parser_vms_start = subparsers_vms.add_parser('start', help='starts a vm')
         parser_vms_start.add_argument('uuid',
                                       help='uuid of VM to start')

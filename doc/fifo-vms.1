@@ -3,7 +3,7 @@
 fifo-vms \- VM related commnads for the FiFo API
 .SH SYNOPSIS
 .B fifo vms
-[\-h] {metadata,list,get,svcs,svcadm,delete,create,info,start,stop,reboot,snapshots,backups}
+[\-h] {metadata,list,get,svcs,svcadm,delete,create,info,start,stop,reboot,snapshots,backups, console}
 
 .SH DESCRIPTION
 This program allows to mange, create and destroy FiFo VMs.
@@ -33,6 +33,10 @@ be returned, since there is no guaranteed order the result may vary.
 
 If the \-\-raw flag is given the entire json is printed otherwise
 only the 'config' section.
+.TP
+vms console <uuid|alias>
+Opens the console of the VM over a websocket. Please note that this
+is limited at the moment, ctrl+c/d will still be handled locally.
 .TP
 vms info <uuid|alias>
 This command gets the info section of the VM containing for example
