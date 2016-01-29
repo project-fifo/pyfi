@@ -1,7 +1,7 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 from .wiggle import Entity
-from fifo.helper import *
+from fifo.helper import d, ListAction, show_list, show_get, show_delete
 
 
 grouping_fmt = {

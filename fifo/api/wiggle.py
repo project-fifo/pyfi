@@ -6,20 +6,21 @@ import json
 import time
 import copy
 import urllib
-from pprint import pprint
-from fifo.helper import *
+from fifo.helper import vprint, curlprint, is_uuid
 
 class Wiggle:
     def __init__(self):
         self._token = False
         self._apiEndpoint = '/api/2/'
+        self.insecure = False
+        self._apiVersion = '2'
+        self.host = ''
+        self.headers = {'content-type': 'application/json;charset=UTF-8',
+                        'accept': 'application/json'}
 
     def init(self, host, user, pw, token, apiVersion, insecure):
         self.host = host
         self.insecure = insecure
-        self.headers = {'content-type': 'application/json;charset=UTF-8',
-                        'accept': 'application/json'}
-        self._apiVersion = '2'
         if apiVersion:
             self._apiVersion = apiVersion
             self._apiEndpoint = '/api/' + apiVersion + '/'
@@ -201,15 +202,15 @@ class Wiggle:
         else:
             return json.loads(response.read())
 
-    def put_bindata(self, resource, entity, file, suffix='', headers=None):
+    def put_bindata(self, resource, entity, target, suffix='', headers=None):
         conn = self.conn()
         if isinstance(entity, str):
             entity = [entity]
         url = self._apiEndpoint + resource + '/' + '/'.join(entity) + suffix
         hdrs = headers or self.headers
-        vprint('PUT', url, '@' + file.name, hdrs)
-        curlprint(self.host, 'PUT', url, headers=hdrs, upload=file.name)
-        conn.request('PUT', url, file, hdrs)
+        vprint('PUT', url, '@' + target.name, hdrs)
+        curlprint(self.host, 'PUT', url, headers=hdrs, upload=target.name)
+        conn.request('PUT', url, target, hdrs)
         response = conn.getresponse()
         vprint('Status: ', response.status)
         if (response.status > 200 and response.status > 200):
@@ -246,15 +247,15 @@ class Wiggle:
             print response.status
             return False
 
-    def post_bindata(self, resource, entity, file, headers=None):
+    def post_bindata(self, resource, entity, sfile, headers=None):
         conn = self.conn()
         if isinstance(resource, str):
             resource = [resource]
         url = self._apiEndpoint + '/'.join(resource) + '/' + entity
         hdrs = headers or self.headers
-        vprint('POST', url, '@' + file.name, hdrs)
-        curlprint(self.host, 'POST', url, headers=hdrs, file=file.name, fileMode='binary')
-        conn.request('POST', url, file, hdrs)
+        vprint('POST', url, '@' + sfile.name, hdrs)
+        curlprint(self.host, 'POST', url, headers=hdrs, file=sfile.name, fileMode='binary')
+        conn.request('POST', url, sfile, hdrs)
         response = conn.getresponse()
         vprint('Status: ', response.status)
         if (response.status == 303):
@@ -347,13 +348,13 @@ class Entity:
     def _post(self, body):
         return self._wiggle.post(self._resource, body=body)
 
-    def _put_file(self, entity, target, file):
+    def _put_file(self, entity, target, sfile):
         hdrs = dict(self._wiggle.headers)
         hdrs['Content-Type'] = 'application/x-gzip'
-        return self._wiggle.put_bindata(self._resource, entity, headers=hdrs, suffix=target, file=file)
+        return self._wiggle.put_bindata(self._resource, entity, headers=hdrs, suffix=target, file=sfile)
 
-    def _post_file(self, entity, file):
-        return self._wiggle.post_bindata(self._resource, entity, file=file)
+    def _post_file(self, entity, sfile):
+        return self._wiggle.post_bindata(self._resource, entity, file=sfile)
 
     def _post_attr(self, uuid, entity, body):
         uuid = self.uuid_by_name(uuid)

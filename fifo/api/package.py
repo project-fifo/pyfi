@@ -1,8 +1,9 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 from .wiggle import Entity
-from fifo.helper import *
+from fifo.helper import d, ListAction, show_list, show_get, show_delete
 import re
+import argparse
 
 pkg_fmt = {
     'uuid':
@@ -58,7 +59,7 @@ def byte_size(string):
         'EB': 1024*1024*1024*1024*1024,
         'PB': 1024*1024*1024*1024*1024*1024,
     }
-    p = re.compile('(\d+)(B|KB|MB|GB|TB|EB|PB)?')
+    p = re.compile(r'(\d+)(B|KB|MB|GB|TB|EB|PB)?')
     m = p.match(string)
     if not m:
         msg = '%r is not byte size. Use <number>[B|KB|MB|GB|TB|PB|EB]' % string
@@ -109,10 +110,10 @@ def mk_cond(cond):
     if not cond in valid:
         msg = '%r is not a valid condition, must be one of %r' % (cond, valid)
         raise argparse.ArgumentTypeError(msg)
-    return cond;
+    return cond
 
 def mk_value(val):
-    num = re.compile('\d+')
+    num = re.compile(r'\d+')
     if num.match(val):
         return int(val)
     return val
