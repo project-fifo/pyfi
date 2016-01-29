@@ -91,8 +91,8 @@ def package_scale(scale):
 def package_random(rand):
     return {
         'weight': 'random',
-        'low': int(scale[0]),
-        'high': int(scale[1])
+        'low': int(rand[0]),
+        'high': int(rand[1])
     }
 
 
