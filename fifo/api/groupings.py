@@ -66,8 +66,8 @@ class Grouping(Entity):
         self._wiggle = wiggle
         self._resource = 'groupings'
 
-    def create(self, name, type):
-        return self._post({'name': name, 'type': type})
+    def create(self, name, gtype):
+        return self._post({'name': name, 'type': gtype})
 
     def add_element(self, uuid, element):
         return self._put_attr(uuid, ['elements', element], {})
