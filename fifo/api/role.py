@@ -1,7 +1,7 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 from .wiggle import Entity
-from fifo.helper import *
+from fifo.helper import d, ListAction, show_list, show_get, show_delete
 
 role_fmt = {
     'uuid':
@@ -33,10 +33,26 @@ def grant(args):
             exit(1)
     else:
         if res:
-            print 'Granted %r to %s' % (args.permission, res)
+            print 'Granted %r to %s' % (args.permission, args.uuid)
         else:
             print 'Grant failed: %r' % res
             exit(1)
+
+
+def revoke(args):
+    res = args.endpoint.revoke(args.uuid, args.permission)
+    if args.p:
+        if res:
+            exit(0)
+        else:
+            exit(1)
+    else:
+        if res:
+            print 'Revoked %r from %s' % (args.permission, args.uuid)
+        else:
+            print 'Revoke failed: %r' % res
+            exit(1)
+
 
 class Role(Entity):
     def __init__(self, wiggle):
@@ -48,6 +64,9 @@ class Role(Entity):
 
     def grant(self, role, permission):
         return self._put_attr(role, ['permissions'] + permission, {})
+
+    def revoke(self, role, permission):
+        return self._delete_attr(role, ['permissions'] + permission)
 
     def make_parser(self, subparsers):
         parser_roles = subparsers.add_parser('roles', help='role related commands')
@@ -78,3 +97,8 @@ class Role(Entity):
         parser_roles_grant.add_argument('uuid')
         parser_roles_grant.add_argument('permission', nargs='*')
         parser_roles_grant.set_defaults(func=grant)
+        parser_roles_revoke = subparsers_roles.add_parser('revoke', help='revokes a permission from a role')
+        parser_roles_revoke.add_argument('-p', action='store_true')
+        parser_roles_revoke.add_argument('uuid')
+        parser_roles_revoke.add_argument('permission', nargs='*')
+        parser_roles_revoke.set_defaults(func=revoke)

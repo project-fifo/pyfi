@@ -3,10 +3,11 @@
 from .wiggle import Entity
 from .package import Package
 from .dataset import Dataset
+from .org import Org
 
-from fifo.helper import *
-from fifo.api.package import *
-from fifo.api.dataset import *
+from fifo.helper import d, header, mk_fmt_str, mk_fmt_line, show_list, show_get
+#from fifo.api.package import *
+from fifo.api.dataset import ListAction
 
 from datetime import datetime
 import sys
@@ -281,7 +282,6 @@ def backup_restore(args):
         exit(1)
         print 'Snapshot deleted successfully.'
 
-
 def ws_msg(ws, msg):
     sys.stdout.write(msg)
 
@@ -320,6 +320,34 @@ def console(args):
         ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
     else:
         ws.run_forever()
+
+def owner_change(args):
+
+    # Validate that we are moving to an existing org
+    wiggle = args.endpoint._wiggle
+    org = Org(wiggle).uuid_by_name(args.org)
+    if not org:
+        print 'Could not find org: ' + args.org + ' - cannot complete move!'
+        exit(1)
+
+    # make change and validate if successful
+    e = args.endpoint.change_owner(args.uuid, args.org)
+    if not e:
+        print('error!')
+        print('Organisation %s not found' % args.org)
+        exit(1)
+    else:
+        update_vm = args.endpoint.get(args.uuid)
+        if not update_vm:
+            print('error!')
+            exit(1)
+        elif update_vm['owner'] != args.org:
+            print('error!')
+            print('MANUAL CHECK - Validation of VM move unsuccessful for ' + args.uuid)
+            exit(1)
+        else:
+            print('VM ownership change successful')
+            exit(0)
 
 class VM(Entity):
     def __init__(self, wiggle):
@@ -432,6 +460,9 @@ class VM(Entity):
             Arg = {'comment': comment,
                    'delete': delete}
         return self._post_attr(uuid, 'backups', Arg)
+
+    def change_owner(self,uuid, org_uuid):
+        return self._put_attr(uuid, 'owner', {'org': org_uuid})
 
 
     def make_parser(self, subparsers):
@@ -617,5 +648,9 @@ class VM(Entity):
                                            help='Delete the backup (or parent) after uploading.')
         parser_backups_create.add_argument('--xml', '-x', action='store_true', default=False,
                                            help='Save the VM\'s .xml for restoring.')
-
         parser_backups_create.set_defaults(func=backup_create)
+
+        parser_vms_owner = subparsers_vms.add_parser('owner', help='changes owner of a vm')
+        parser_vms_owner.add_argument('uuid', help='UUID of VM to change owner of')
+        parser_vms_owner.add_argument('org', help='UUID of the organisation to move the VM to.')
+        parser_vms_owner.set_defaults(func=owner_change)

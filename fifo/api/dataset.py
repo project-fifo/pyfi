@@ -2,7 +2,7 @@
 
 import sys
 from .wiggle import Entity
-from fifo.helper import *
+from fifo.helper import d, vprint, ListAction, show_list, show_get, show_delete
 import httplib
 import json
 import argparse

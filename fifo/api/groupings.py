@@ -1,7 +1,7 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 from .wiggle import Entity
-from fifo.helper import *
+from fifo.helper import d, ListAction, show_list, show_get, show_delete
 
 
 grouping_fmt = {
@@ -66,8 +66,8 @@ class Grouping(Entity):
         self._wiggle = wiggle
         self._resource = 'groupings'
 
-    def create(self, name, type):
-        return self._post({'name': name, 'type': type})
+    def create(self, name, gtype):
+        return self._post({'name': name, 'type': gtype})
 
     def add_element(self, uuid, element):
         return self._put_attr(uuid, ['elements', element], {})

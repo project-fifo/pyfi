@@ -1,7 +1,9 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
+
 from .wiggle import Entity
-from fifo.helper import *
+from fifo.helper import d, ListAction, show_list, show_get, show_delete
+import sys
 
 
 user_fmt = {
@@ -49,9 +51,24 @@ def grant(args):
             exit(1)
     else:
         if res:
-            print 'Granted %r to %s' % (args.permission, res)
+            print 'Granted %r to %s' % (args.permission, args.uuid)
         else:
             print 'Grant failed: %r' % res
+            exit(1)
+
+
+def revoke(args):
+    res = args.endpoint.revoke(args.uuid, args.permission)
+    if args.p:
+        if res:
+            exit(0)
+        else:
+            exit(1)
+    else:
+        if res:
+            print 'Revoked %r from %s' % (args.permission, args.uuid)
+        else:
+            print 'Revoke failed: %r' % res
             exit(1)
 
 def user_delete(args):
@@ -87,6 +104,9 @@ class User(Entity):
 
     def grant(self, user, permission):
         return self._put_attr(user, ['permissions'] + permission, {})
+
+    def revoke(self, user, permission):
+        return self._delete_attr(user, ['permissions'] + permission)
 
     def sign(self, uuid, comment, scope, csr):
         payload = {
@@ -146,3 +166,8 @@ class User(Entity):
         parser_users_grant.add_argument('uuid')
         parser_users_grant.add_argument('permission', nargs='*')
         parser_users_grant.set_defaults(func=grant)
+        parser_users_revoke = subparsers_users.add_parser('revoke', help='revokes a permission from a user')
+        parser_users_revoke.add_argument('-p', action='store_true')
+        parser_users_revoke.add_argument('uuid')
+        parser_users_revoke.add_argument('permission', nargs='*')
+        parser_users_revoke.set_defaults(func=revoke)

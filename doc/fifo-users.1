@@ -47,7 +47,7 @@ if privided the csr fill be read from this file, otherwise from STDIN.
 .B COMMENT
 an optional comment provided to identify the certificate, otherwise a default name will be used.
 .TP
-users grant USER PERM...
+users grant <uuid> USER PERM...
 Grants a user a permission where.
 
 .B USER
@@ -55,6 +55,9 @@ is the uuid of the user.
 
 .B PERM
 is one or more permission elements, i.e. cloud vms create
+.TP
+users grant <uuid> USER PERM...
+Revokes a permission from a user (ROLE and PERM as per grant).
 .TP
 users metadata <uuid> get
 Reads the metadata.
