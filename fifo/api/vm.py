@@ -303,7 +303,14 @@ def owner_change(args):
         else:
             print('VM ownership change successful')
             exit(0)
-
+def run_execute(args):
+    r = args.endpoint.execute(args.uuid, args.command, args.args)
+    if r:
+        print r['output']
+        exit(r['exit_code'])
+    else:
+        print "Failed to execute remote command."
+        exit(1)
 
 class VM(Entity):
     def __init__(self, wiggle):
@@ -333,6 +340,10 @@ class VM(Entity):
 
     def reboot(self, uuid):
         return self._put_attr(uuid, 'state', {'action': 'reboot'})
+
+    def execute(self, uuid, cmd, args):
+        return self._put_attr(uuid, 'command', {'command': cmd,
+                                                'args': args})
 
     def force_stop(self, uuid):
         return self._put_attr(uuid, 'state', {'action': 'stop', 'force': True})
@@ -445,6 +456,17 @@ class VM(Entity):
         parser_vms_get.add_argument('uuid',
                                     help='uuid of VM to show')
         parser_vms_get.set_defaults(func=show_get)
+
+        parser_vms_execute = subparsers_vms.add_parser('execute', help='executes a VM')
+        parser_vms_execute.add_argument('uuid',
+                                        help='uuid of VM to show')
+        parser_vms_execute.add_argument('command',
+                                        help='command to run')
+        parser_vms_execute.add_argument('args', metavar='arg', nargs='*',
+                                        help='arguments for the command, please make sure to' +
+                                        ' escape characters as ";" or ">"')
+        parser_vms_execute.set_defaults(func=run_execute)
+
 
         parser_vms_svcs = subparsers_vms.add_parser('svcs', help='shows service states on a VM')
         parser_vms_svcs.add_argument('-H', action='store_false',

@@ -48,6 +48,10 @@ all of it's snapshots will be deleted forever!
 If \-l is passed the vm is only deleted
 from the hypervisor but not from the system and goes into a stored state.
 .TP
+vms execute <vm uuid> <command> [ <arg> [ <arg> ...] ]
+Runs a command on a zone, prints the output and exits with the exit code
+of the command.
+.TP
 vms metadata <uuid> get
 Reads the metadata.
 .TP
