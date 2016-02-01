@@ -126,7 +126,10 @@ class Wiggle:
         conn.request('PUT', url, jbody, self.headers)
         response = conn.getresponse()
         vprint('Status: ', response.status)
-        if (response.status > 200 and response.status <= 400):
+        if response.status == 200:
+            return json.loads(response.read())
+        elif (response.status > 200 and response.status < 400):
+            print response.status
             return True
         else:
             return False
