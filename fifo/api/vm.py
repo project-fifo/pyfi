@@ -273,14 +273,23 @@ def backup_delete(args):
     if not e:
         print('error!')
         exit(1)
-        print 'Snapshot deleted successfully.'
+    print 'Snapshot deleted successfully.'
 
 def backup_restore(args):
-    e = args.endpoint.restore_backup(args.vmuuid, args.snapuuid, args.hypervisor)
+    e = args.endpoint.restore_backup(args.vmuuid, args.snapuuid, args.hypervisor,
+                                     args.package)
     if not e:
         print('error!')
         exit(1)
-        print 'Snapshot deleted successfully.'
+    print 'Backup is being restored.'
+
+def backup_rollback(args):
+    e = args.endpoint.rollback_backup(args.vmuuid, args.snapuuid, args.hypervisor,
+                                     args.package)
+    if not e:
+        print('error!')
+        exit(1)
+    print 'Backup is being rolled back.'
 
 def ws_msg(ws, msg):
     sys.stdout.write(msg)
@@ -456,13 +465,23 @@ class VM(Entity):
         else:
             return self._delete_attr(uuid, 'backups/' + snapid)
 
-    def restore_backup(self, uuid, snapid, hypervisor):
+    def restore_backup(self, uuid, snapid, hypervisor, package):
+        Arg = {'action': 'restore'}
         if hypervisor:
-            Arg = {'action':'rollback', 'hypervisor': hypervisor}
-        else:
-            Arg = {'action':'rollback'}
+            Arg['rules'] = [
+                {
+                    "attribute": "uuid",
+                    "condition": "=:=",
+                    "value":     hypervisor,
+                    "weight":    "must"
+                }]
+        if package:
+            Arg['package'] = package
         return self._put_attr(uuid, 'backups/' + snapid, Arg)
 
+    def rollback_backup(self, uuid, snapid):
+        Arg = {'action':'rollback'}
+        return self._put_attr(uuid, 'backups/' + snapid, Arg)
 
     def make_backup(self, uuid, comment, delete, parent):
         if parent:
@@ -476,7 +495,6 @@ class VM(Entity):
 
     def change_owner(self,uuid, org_uuid):
         return self._put_attr(uuid, 'owner', {'org': org_uuid})
-
 
     def make_parser(self, subparsers):
         parser_vms = subparsers.add_parser('vms', help='vm related commands')
@@ -657,12 +675,18 @@ class VM(Entity):
         parser_backups_delete.add_argument('-l', action='store_true', default=False,
                                            help='Delete only local version of the VM.')
         parser_backups_delete.set_defaults(func=backup_delete)
-        parser_backups_restore = subparsers_backups.add_parser('restore', help='rolls back a backup')
+        parser_backups_restore = subparsers_backups.add_parser('restore', help='restores back a backup')
         parser_backups_restore.add_argument('--hypervisor', default=False,
                                             help='Restore to a specific hypervisor.')
+        parser_backups_restore.add_argument('-p', '--package', default=False,
+                                            help='Restore with a different package.')
         parser_backups_restore.add_argument('snapuuid',
                                              help='UUID if the backup')
         parser_backups_restore.set_defaults(func=backup_restore)
+        parser_backups_rollback = subparsers_backups.add_parser('rollback', help='rolls back a backup')
+        parser_backups_rollback.add_argument('snapuuid',
+                                             help='UUID if the backup')
+        parser_backups_rollback.set_defaults(func=backup_rollback)
         parser_backups_create = subparsers_backups.add_parser('create', help='gets backups')
         parser_backups_create.add_argument('--parent', '-p', default=False,
                                            help='The parent of the backup.')
