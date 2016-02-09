@@ -7,6 +7,7 @@ import re
 from pprint import pprint
 import sys
 import datetime
+import time
 
 # Verbose print support
 # http://stackoverflow.com/questions/5980042/how-to-implement-the-verbose-or-v-option-into-a-script
@@ -77,7 +78,7 @@ def d(o, p, deflt="-"):
 
 
 # Will take an epoch timestamp and convert to human readable
-def t(o, fmt="%Y/%m/%d %H:%M:%S"):
+def t(o, fmt="%Y-%m-%d %H:%M:%S"):
     if o == 0:
         return "?"
     else:
@@ -86,6 +87,14 @@ def t(o, fmt="%Y/%m/%d %H:%M:%S"):
         v = datetime.datetime.fromtimestamp(dt)
         return v.strftime(fmt)
 
+def iso_to_ts(stime):
+    regex = '[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}'
+    if re.match(regex,stime):
+        tt = time.strptime(stime, "%Y-%m-%d %H:%M:%S")
+        ts = time.mktime(tt)
+        return int(ts) * 1000000
+    else:
+        return stime
 
 # Helper function to generate a formatstring out of the format definition and the selected fields
 def mk_fmt_str(args):
