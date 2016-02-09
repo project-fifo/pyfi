@@ -16,7 +16,16 @@ org_acct_fmt = {
     'action':
     {'title': 'Action', 'len': 8, 'fmt': '%-8s', 'get': lambda e: d(e, ['action'])},
     'timestamp':
-    {'title': 'Time', 'len': 19, 'fmt': '%-19s', 'get': lambda e: t(d(e, ['timestamp']))},
+    {'title': 'Timestamp', 'len': 16, 'fmt': '%-16s', 'get': lambda e: d(e, ['timestamp'])},
+ }
+
+org_acct_hr_fmt = {
+    'resource':
+    {'title': 'Resource UUID', 'len': 36, 'fmt': '%36s', 'get': lambda e: d(e, ['resource'])},
+    'action':
+    {'title': 'Action', 'len': 8, 'fmt': '%-8s', 'get': lambda e: d(e, ['action'])},
+    'timestamp':
+    {'title': 'Date & Time', 'len': 19, 'fmt': '%-19s', 'get': lambda e: t(d(e, ['timestamp']))},
  }
 
 def create(args):
@@ -96,6 +105,8 @@ class Org(Entity):
         parser_orgs_accounting.add_argument('-p', action='store_true',
                                             help='show in parsable format, rows sepperated by colon.')
         parser_orgs_accounting.add_argument('--raw', '-r', action='store_true',
+                                            help='print json array of complete data')
+        parser_orgs_accounting.add_argument('--readable', dest='fmt_def', action='store_const', const=org_acct_hr_fmt,
                                             help='print json array of complete data')
         parser_orgs_accounting.add_argument('uuid')
         parser_orgs_accounting.add_argument('start', help='Timestamp of the start of the accounting period')
