@@ -18,7 +18,7 @@ org_acct_fmt = {
     'timestamp':
     {'title': 'Timestamp', 'len': 16, 'fmt': '%-16s', 'get': lambda e: d(e, ['timestamp'])},
     'date':
-    {'title': 'Timestamp', 'len': 19, 'fmt': '%-19s', 'get': lambda e: t(d(e, ['timestamp']))},
+    {'title': 'Date & Time', 'len': 19, 'fmt': '%-19s', 'get': lambda e: t(d(e, ['timestamp']))},
  }
 
 def create(args):
