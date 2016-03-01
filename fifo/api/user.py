@@ -20,11 +20,11 @@ user_fmt = {
 
 
 def user_create(args):
-    if not args.password:
-        print 'You have to specify a passwrd'
+    if not args.userpassword:
+        print 'You have to specify a userpassword'
         exit(1)
     wiggle = args.endpoint._wiggle
-    reply = args.endpoint.create(args.name, args.password)
+    reply = args.endpoint.create(args.name, args.userpassword)
     if reply:
         if args.organization:
             args.endpoint.join_org(reply['uuid'], args.organization)
@@ -40,7 +40,7 @@ def user_create(args):
                 print 'User creation failed: %r' % reply
                 exit(1)
     else:
-        print 'Faied to create VM.'
+        print 'Faied to create User.'
 
 def grant(args):
     res = args.endpoint.grant(args.uuid, args.permission)
@@ -150,7 +150,7 @@ class User(Entity):
         parser_users_create.add_argument('name',
                                          help='Name of the user')
         parser_users_create.add_argument('-p', action='store_true')
-        parser_users_create.add_argument('--password', '-P',
+        parser_users_create.add_argument('--userpassword', '-U',
                                          help='Password of the user.')
         parser_users_create.add_argument('--role', '-g',
                                          help='Role of the user.')
