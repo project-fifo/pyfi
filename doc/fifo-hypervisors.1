@@ -27,6 +27,15 @@ represents the current SmartOS version running on the hypervisor.
 
 If the \-\-raw flag is used an array of hypervisor json objects is displayed.
 .TP
+hypervisors stats [\-p]
+Prints quick statistics for the whole cloud.
+
+The
+.B -p
+flag will print a easy consumable version in the form:
+total:used:reserved:free
+
+.TP
 hypervisors get <uuid|name>
 This command returns the JSON representation of a hypervisor object
 stored in the fifo server.
