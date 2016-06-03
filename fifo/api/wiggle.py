@@ -400,6 +400,9 @@ class Entity:
             self._fields = []
         return self._wiggle.full_list(self._resource, self._fields)
 
+    def uuids(self):
+        return self._wiggle.list(self._resource)
+
     def get(self, uuid):
         uuid = self.uuid_by_name(uuid)
         return self._wiggle.get(self._resource, uuid)

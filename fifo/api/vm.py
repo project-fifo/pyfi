@@ -44,6 +44,13 @@ def svcadm_action(args):
         print('Failed to %s service %s on %s.' % (args.action, args.service, args.uuid))
         exit(1)
 
+def show_count(args):
+    e = args.endpoint.uuids()
+    if not e:
+        exit(1)
+    print(len(e))
+
+
 
 def vm_action(args):
     if args.action == 'start':
@@ -501,7 +508,7 @@ class VM(Entity):
         parser_vms.set_defaults(endpoint=self)
         subparsers_vms = parser_vms.add_subparsers(help='vm commands')
         self.add_metadata_parser(subparsers_vms)
-        parser_vms_list = subparsers_vms.add_parser('list', help='lists a vm')
+        parser_vms_list = subparsers_vms.add_parser('list', help='lists all vms')
         parser_vms_list.add_argument('--fmt',
                                      action=ListAction, default=['uuid', 'state', 'alias'],
                                      help='Rows to show, valid options are: uuid, alias, ip, state, hypervisor')
@@ -513,6 +520,13 @@ class VM(Entity):
                                     help='print json array of complete data')
         parser_vms_list.set_defaults(func=show_list,
                                      fmt_def=vm_fmt)
+
+        parser_vms_count = subparsers_vms.add_parser('count', help='counts vm')
+        parser_vms_count.set_defaults(func=show_count)
+
+
+
+
         parser_vms_get = subparsers_vms.add_parser('get', help='gets a VM')
         parser_vms_get.add_argument('--raw', '-r', dest='fmt_def', action='store_const',
                                     const=vm_raw_map_fn, default=vm_map_fn,
