@@ -50,8 +50,6 @@ def show_count(args):
         exit(1)
     print(len(e))
 
-
-
 def vm_action(args):
     if args.action == 'start':
         args.endpoint.start(args.uuid)
@@ -523,9 +521,6 @@ class VM(Entity):
 
         parser_vms_count = subparsers_vms.add_parser('count', help='counts vm')
         parser_vms_count.set_defaults(func=show_count)
-
-
-
 
         parser_vms_get = subparsers_vms.add_parser('get', help='gets a VM')
         parser_vms_get.add_argument('--raw', '-r', dest='fmt_def', action='store_const',

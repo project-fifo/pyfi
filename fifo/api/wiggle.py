@@ -354,7 +354,7 @@ class Entity:
     def _put_file(self, entity, target, sfile):
         hdrs = dict(self._wiggle.headers)
         hdrs['Content-Type'] = 'application/x-gzip'
-        return self._wiggle.put_bindata(self._resource, entity, headers=hdrs, suffix=target, file=sfile)
+        return self._wiggle.put_bindata(self._resource, entity, headers=hdrs, suffix=target, target=sfile)
 
     def _post_file(self, entity, sfile):
         return self._wiggle.post_bindata(self._resource, entity, file=sfile)
