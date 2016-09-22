@@ -122,7 +122,7 @@ snapshot_fmt = {
     {'title': 'UUID', 'len': 36, 'fmt': '%36s', 'get': lambda e: d(e, ['uuid'])},
     'timestamp':
     {'title': 'Timestamp', 'len': 20, 'fmt': '%-20s',
-     'get': lambda e: datetime.fromtimestamp(d(e, ['timestamp'])/1000000).isoformat()},
+     'get': lambda e: datetime.fromtimestamp(d(e, ['timestamp'], 0)/1000000).isoformat()},
     'size':
     {'title': 'Size', 'len': 5, 'fmt': '%5d', 'get': lambda e: d(e, ['size'])},
     'comment':
