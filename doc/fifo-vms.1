@@ -3,7 +3,7 @@
 fifo-vms \- VM related commnads for the FiFo API
 .SH SYNOPSIS
 .B fifo vms
-[\-h] {metadata,list,get,svcs,svcadm,delete,create,info,start,stop,reboot,snapshots,backups, console}
+[\-h] {metadata,list,get,svcs,svcadm,delete,create,info,start,stop,reboot,snapshots,backups,console}
 
 .SH DESCRIPTION
 This program allows to mange, create and destroy FiFo VMs.
@@ -176,11 +176,11 @@ deleted.
 The \-x option will also upload the VM's .xml config file, this will
 be used to recreate snapshots after total node failure.
 .TP
-vms backup <vm uuid|alias> delete [\-l] <uuid|name>
+vms backups <vm uuid|alias> delete [\-l] <uuid|name>
 Removes the backup, if \-l is passed it will stay in the cloud storage
 and only be removed form the hypervisor.
 .TP
-vms backup <vm uuid|alias> restore [\-\-hypervisor <hypervisor>] <uuid>
+vms backups <vm uuid|alias> restore [\-\-hypervisor <hypervisor>] <uuid>
 Restores the backup, trying to find the quickeset way to restore using
 combinations of local, full an incremental backups.
 
