@@ -113,7 +113,7 @@ def mk_cond(cond):
     return cond
 
 def mk_value(val):
-    num = re.compile(r'\d+')
+    num = re.compile(r'^\d+$')
     if num.match(val):
         return int(val)
     return val
