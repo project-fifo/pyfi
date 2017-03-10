@@ -12,8 +12,11 @@ from fifo.api.dataset import ListAction
 from datetime import datetime
 import sys
 import json
+try:
+    import websocket
+except ImportError:
+    print("Websockets not supported")
 
-import websocket
 import thread
 import time
 import ssl
