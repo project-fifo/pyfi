@@ -14,8 +14,9 @@ import sys
 import json
 try:
     import websocket
+    ws_support = True
 except ImportError:
-    print("Websockets not supported")
+    ws_support = False
 
 import thread
 import time
@@ -319,6 +320,9 @@ def ws_open(ws):
     thread.start_new_thread(run, ())
 
 def console(args):
+    if not ws_support:
+        print("This feature does require the 'websocket' library to be installed")
+        exit 1
     w = args.endpoint._wiggle
     r = w.get('sessions', 'one_time_token')
     if not r:
