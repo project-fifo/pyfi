@@ -322,7 +322,7 @@ def ws_open(ws):
 def console(args):
     if not ws_support:
         print("This feature does require the 'websocket' library to be installed")
-        exit 1
+        exit(1)
     w = args.endpoint._wiggle
     r = w.get('sessions', 'one_time_token')
     if not r:
