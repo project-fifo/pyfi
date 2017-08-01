@@ -1,5 +1,6 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
+import json
 from .wiggle import Entity
 from fifo.helper import d, ListAction, show_list, show_get, show_delete
 
@@ -42,6 +43,10 @@ def create(args):
         print 'IP range creation failed: %r' % res
         exit(1)
 
+def claim(args):
+    e = args.endpoint.claim(args.uuid)
+    print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
+
 class Iprange(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
@@ -62,6 +67,9 @@ class Iprange(Entity):
 
         return self._post(specs)
 
+    def claim(self, uuid):
+        return self._put(uuid, '')
+
     def make_parser(self, subparsers):
         parser_ipranges = subparsers.add_parser('ipranges', help='iprange related commands')
         parser_ipranges.set_defaults(endpoint=self)
@@ -79,6 +87,12 @@ class Iprange(Entity):
         parser_ipranges_get = subparsers_ipranges.add_parser('get', help='gets an iprange')
         parser_ipranges_get.add_argument('uuid')
         parser_ipranges_get.set_defaults(func=show_get)
+
+        parser_ipranges_claim = subparsers_ipranges.add_parser('claim', help='claims an ip from an iprange')
+        parser_ipranges_claim.add_argument('uuid')
+        parser_ipranges_claim.set_defaults(func=claim)
+
+
         parser_ipranges_delete = subparsers_ipranges.add_parser('delete', help='deletes an iprange')
         parser_ipranges_delete.add_argument('uuid')
         parser_ipranges_delete.set_defaults(func=show_delete)
