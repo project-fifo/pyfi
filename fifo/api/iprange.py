@@ -47,6 +47,10 @@ def claim(args):
     e = args.endpoint.claim(args.uuid)
     print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
 
+def release(args):
+    e = args.endpoint.release(args.uuid, args.ip)
+    print(json.dumps(e, sort_keys=True, indent=2, separators=(',', ': ')))
+
 class Iprange(Entity):
     def __init__(self, wiggle):
         self._wiggle = wiggle
@@ -70,6 +74,9 @@ class Iprange(Entity):
     def claim(self, uuid):
         return self._put(uuid, '')
 
+    def release(self, uuid, ip):
+        return self._delete_attr(uuid, ip)
+
     def make_parser(self, subparsers):
         parser_ipranges = subparsers.add_parser('ipranges', help='iprange related commands')
         parser_ipranges.set_defaults(endpoint=self)
@@ -91,6 +98,11 @@ class Iprange(Entity):
         parser_ipranges_claim = subparsers_ipranges.add_parser('claim', help='claims an ip from an iprange')
         parser_ipranges_claim.add_argument('uuid')
         parser_ipranges_claim.set_defaults(func=claim)
+
+        parser_ipranges_release = subparsers_ipranges.add_parser('release', help='releases an ip from an iprange')
+        parser_ipranges_release.add_argument('uuid')
+        parser_ipranges_release.add_argument('ip')
+        parser_ipranges_release.set_defaults(func=release)
 
 
         parser_ipranges_delete = subparsers_ipranges.add_parser('delete', help='deletes an iprange')
